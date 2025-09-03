@@ -1,0 +1,24 @@
+{
+  "name": "ownproject",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "gulp",
+    "Comment" : "Con esto podras iniciar en la terminal el gulp con npm run dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "This going to be a like noteblog",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "browser-sync": "^3.0.4",
+    "gulp": "^5.0.1",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-sass": "^6.0.1",
+    "sass": "^1.92.0"
+  }
+}

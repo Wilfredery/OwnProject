@@ -5,22 +5,22 @@ const browserSync = require('browser-sync').create();
 
 // Rutas
 const paths = {
-  scss: 'Public/scss/**/*.scss',
-  css: 'Public/css',
-  html: 'Public/*.html',
-  js: 'Public/js/**/*.js'
+  scss: 'Public/scss/**/*.scss',    // Todos los SCSS
+  css: 'Public/css/',                // Carpeta donde se genera CSS
+  html: 'Public/*.html',             // Todos los HTML
+  js: 'Public/js/**/*.js'            // Todos los JS
 };
 
 // Compilar SASS y minificar CSS
 function styles() {
   return src(paths.scss)
-    .pipe(sass().on('error', sass.logError))
-    .pipe(cleanCSS())
-    .pipe(dest(paths.css))
-    .pipe(browserSync.stream());
+    .pipe(sass().on('error', sass.logError)) // Compila SCSS
+    .pipe(cleanCSS())                        // Minifica CSS
+    .pipe(dest(paths.css))                   // Guarda en carpeta CSS
+    .pipe(browserSync.stream());             // Inyecta cambios sin recargar toda la página
 }
 
-// Recargar navegador
+// Recargar navegador para HTML y JS
 function reload(done) {
   browserSync.reload();
   done();
@@ -30,13 +30,13 @@ function reload(done) {
 function serve() {
   browserSync.init({
     server: {
-      baseDir: 'Public'
+      baseDir: 'Public'  // Carpeta base del servidor
     }
   });
 
-  watch(paths.scss, styles);       // Observa cambios en SASS
-  watch(paths.html, reload);        // Observa cambios en HTML
-  watch(paths.js, reload);          // Observa cambios en JS
+  watch(paths.scss, styles);  // Observa cambios en SCSS
+  watch(paths.html, reload);   // Observa cambios en HTML
+  watch(paths.js, reload);     // Observa cambios en JS
 }
 
 // Tarea por defecto

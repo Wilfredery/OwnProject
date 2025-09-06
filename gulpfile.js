@@ -3,6 +3,7 @@ const sass = require('gulp-sass')(require('sass'));
 const cleanCSS = require('gulp-clean-css');
 const browserSync = require('browser-sync').create();
 const fs = require('fs');
+const nodemon = require('nodemon');
 
 // Rutas
 const paths = {
@@ -11,7 +12,8 @@ const paths = {
   cssDest: 'public/build/css',
   img: 'src/img/**/*',
   imgDest: 'public/build/img',
-  ejs: 'views/**/*.ejs'
+  ejs: 'views/**/*.ejs',
+  server: 'backend/server.js'
 };
 
 // Compilar SCSS
@@ -37,13 +39,28 @@ function reload(done) {
   done();
 }
 
-// Servidor de desarrollo con live reload
-function serve() {
-  browserSync.init({
-    proxy: 'http://localhost:3000', // Express
-    port: 3001,
-    open: true,
-    notify: false
+// Levantar servidor con nodemon y sincronizar con Browsersync
+function serve(done) {
+  let started = false;
+
+  nodemon({
+    script: paths.server,
+    watch: [paths.server]
+  }).on('start', () => {
+    if (!started) {
+      started = true;
+      browserSync.init({
+        proxy: 'http://localhost:3000', // Express
+        port: 3001,
+        open: true,
+        notify: false
+      });
+      done();
+    } else {
+      setTimeout(() => {
+        browserSync.reload(); // recarga navegador al reiniciar nodemon
+      }, 500);
+    }
   });
 
   watch(paths.scss, styles);

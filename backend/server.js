@@ -1,11 +1,11 @@
 // backend/server.js
-const express = require('express');
-const path = require('path');
-
+const express = require('express'); //Trae Express: el framework HTTP que maneja rutas, middlewares y respuestas.
+const path = require('path');//Útil para construir rutas de archivos de forma segura entre sistemas (Windows/Linux)
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Configuración de vistas con EJS
+//Le dices a Express que uses EJS y dónde están los archivos .ejs
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '../views'));
 
@@ -21,7 +21,7 @@ app.use((req, res, next) => {
 
 // Rutas
 app.get('/', (req, res) => {
-  res.render('index', { title: 'Pagina principal1' });
+  res.render('index', { title: 'Pagina principal12' });
 });
 
 app.get('/about', (req, res) => {
@@ -29,6 +29,7 @@ app.get('/about', (req, res) => {
 });
 
 // Servidor
+//Permite que el puerto sea configurable por variables de entorno (útil en hosting).
 app.listen(PORT, () => {
   console.log(`Servidor Express en http://localhost:${PORT}`);
 });

@@ -44,8 +44,8 @@ function serve(done) {
   let started = false;
 
   nodemon({
-    script: paths.server,
-    watch: [paths.server]
+  script: paths.server,
+  watch: ['backend/**/*.js', 'views/**/*.ejs'] // Mira todo el backend y vistas
   }).on('start', () => {
     if (!started) {
       started = true;

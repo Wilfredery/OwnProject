@@ -1,1 +1,96 @@
 Info sobre la api express: https://expressjs.com/es/api.html?utm_source=chatgpt.com
+
+Colores
+🌞 Light Theme
+
+Background: #F9FAFB
+
+Card/Surface: #FFFFFF
+
+Primary (Botones, links): #3B82F6
+
+Primary Hover: #2563EB
+
+Secondary (Acciones secundarias / etiquetas): #10B981
+
+Text Primary: #111827
+
+Text Secondary: #6B7280
+
+Border/Divider: #E5E7EB
+
+Highlight/Warning: #F59E0B
+
+🌙 Dark Theme
+
+Background: #111827
+
+Card/Surface: #1F2937
+
+Primary (Botones, links): #60A5FA
+
+Primary Hover: #3B82F6
+
+Secondary (Acciones secundarias / etiquetas): #34D399
+
+Text Primary: #F9FAFB
+
+Text Secondary: #9CA3AF
+
+Border/Divider: #374151
+
+Highlight/Warning: #FBBF24
+
+1. Inter (la más usada en interfaces modernas)
+
+Diseñada para UI, súper legible en pantallas.
+
+Usada en Vercel, Linear, Notion clones.
+
+Perfecta si buscas un look moderno y minimalista.
+👉 Inter en Google Fonts
+
+2. Roboto
+
+Clásico de Google (Android, Material Design).
+
+Equilibrada entre formal y casual.
+
+Muy buen soporte en todos los tamaños.
+👉 Roboto en Google Fonts
+
+3. Poppins
+
+Más redondeada, con un toque amigable.
+
+Da un aire fresco y un poco más “creativo” que Roboto.
+👉 Poppins en Google Fonts
+
+4. Nunito Sans
+
+Similar a Poppins pero más sobria.
+
+Se siente muy agradable en interfaces con mucho texto.
+👉 Nunito Sans en Google Fonts
+
+🔹 Combinación recomendada
+
+No uses demasiadas tipografías.
+
+Una para UI y títulos.
+
+La misma (en variantes regular / medium / bold) para texto y botones.
+
+Ejemplo:
+
+Inter Regular (400) → cuerpo de notas.
+
+Inter Medium (500) / Bold (700) → títulos, botones, headers.
+
+🔹 Bonus
+
+Si en algún momento quisieras un estilo más manuscrito / creativo para los títulos del block de notas, podrías combinar algo como:
+
+Inter para todo lo principal.
+
+Caveat o Shadows Into Light solo para los headers (simulando escritura a mano).

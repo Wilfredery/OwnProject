@@ -1,6 +1,7 @@
 const { src, dest, watch, series, parallel } = require('gulp');
 const sass = require('gulp-sass')(require('sass'));
 const cleanCSS = require('gulp-clean-css');
+const sourcemaps = require('gulp-sourcemaps'); // <-- NUEVO
 const browserSync = require('browser-sync').create();
 const fs = require('fs');
 const nodemon = require('nodemon');
@@ -19,8 +20,10 @@ const paths = {
 // Compilar SCSS
 function styles() {
   return src(paths.scssEntry)
+    .pipe(sourcemaps.init()) // <-- Inicia el mapeo
     .pipe(sass().on('error', sass.logError))
     .pipe(cleanCSS())
+    .pipe(sourcemaps.write('.')) // <-- Guarda app.css.map en la misma carpeta
     .pipe(dest(paths.cssDest))
     .pipe(browserSync.stream());
 }
@@ -44,8 +47,8 @@ function serve(done) {
   let started = false;
 
   nodemon({
-  script: paths.server,
-  watch: ['backend/**/*.js', 'views/**/*.ejs'] // Mira todo el backend y vistas
+    script: paths.server,
+    watch: ['backend/**/*.js', 'views/**/*.ejs'] // Mira todo el backend y vistas
   }).on('start', () => {
     if (!started) {
       started = true;

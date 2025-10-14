@@ -1,16 +1,24 @@
 const { src, dest, watch, series, parallel } = require('gulp');
 const sass = require('gulp-sass')(require('sass'));
 const cleanCSS = require('gulp-clean-css');
-const sourcemaps = require('gulp-sourcemaps'); // <-- NUEVO
+const sourcemaps = require('gulp-sourcemaps');
 const browserSync = require('browser-sync').create();
 const fs = require('fs');
 const nodemon = require('nodemon');
+
+// --- Integración con Webpack ---
+const webpack = require('webpack');
+const webpackStream = require('webpack-stream');
+const webpackConfig = require('./webpack.config.js');
 
 // Rutas
 const paths = {
   scssEntry: 'src/scss/app.scss',
   scss: 'src/scss/**/*.scss',
   cssDest: 'public/build/css',
+  jsEntry: 'src/js/app.js',
+  js: 'src/js/**/*.js',
+  jsDest: 'public/build/js',
   img: 'src/img/**/*',
   imgDest: 'public/build/img',
   ejs: 'views/**/*.ejs',
@@ -20,11 +28,19 @@ const paths = {
 // Compilar SCSS
 function styles() {
   return src(paths.scssEntry)
-    .pipe(sourcemaps.init()) // <-- Inicia el mapeo
+    .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
     .pipe(cleanCSS())
-    .pipe(sourcemaps.write('.')) // <-- Guarda app.css.map en la misma carpeta
+    .pipe(sourcemaps.write('.'))
     .pipe(dest(paths.cssDest))
+    .pipe(browserSync.stream());
+}
+
+// Compilar JavaScript con Webpack
+function scripts() {
+  return src(paths.jsEntry)
+    .pipe(webpackStream(webpackConfig, webpack))
+    .pipe(dest(paths.jsDest))
     .pipe(browserSync.stream());
 }
 
@@ -42,18 +58,18 @@ function reload(done) {
   done();
 }
 
-// Levantar servidor con nodemon y sincronizar con Browsersync
+// Servidor con Nodemon + BrowserSync
 function serve(done) {
   let started = false;
 
   nodemon({
     script: paths.server,
-    watch: ['backend/**/*.js', 'views/**/*.ejs'] // Mira todo el backend y vistas
+    watch: ['backend/**/*.js', 'views/**/*.ejs']
   }).on('start', () => {
     if (!started) {
       started = true;
       browserSync.init({
-        proxy: 'http://localhost:3000', // Express
+        proxy: 'http://localhost:3000',
         port: 3001,
         open: true,
         notify: false
@@ -61,18 +77,20 @@ function serve(done) {
       done();
     } else {
       setTimeout(() => {
-        browserSync.reload(); // recarga navegador al reiniciar nodemon
+        browserSync.reload();
       }, 500);
     }
   });
 
+  // Watchers
   watch(paths.scss, styles);
+  watch(paths.js, scripts); // 👈 observa JS y recompila con Webpack
   watch(paths.img, images);
   watch(paths.ejs, reload);
 }
 
 // Tarea por defecto
 exports.default = series(
-  parallel(styles, images),
+  parallel(styles, scripts, images),
   serve
 );

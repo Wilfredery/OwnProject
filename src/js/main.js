@@ -1,3 +1,3 @@
 (function () {
-    alert('Hello from main.js!');
+    console.log('desde el src/main.js, corregido');
 })();

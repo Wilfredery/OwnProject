@@ -21,7 +21,7 @@ app.use((req, res, next) => {
 
 // Rutas
 app.get('/', (req, res) => {
-  res.render('index', { title: 'Pagina principal12' });
+  res.render('index', { title: 'Pagina principal' });
 });
 
 app.get('/about', (req, res) => {

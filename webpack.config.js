@@ -1,3 +1,4 @@
+//Importa el módulo nativo de Node.js path para manejar rutas absolutas/relativas sin importar el sistema operativo.
 const path = require('path');
 
 module.exports = {

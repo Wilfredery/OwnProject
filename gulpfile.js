@@ -36,13 +36,17 @@ function styles() {
     .pipe(browserSync.stream());
 }
 
-// Compilar JavaScript con Webpack
+// Compilar JavaScript con Webpack y recargar automáticamente
 function scripts() {
   return src(paths.jsEntry)
     .pipe(webpackStream(webpackConfig, webpack))
     .pipe(dest(paths.jsDest))
-    .pipe(browserSync.stream());
+    .on('end', () => {
+      console.log('✅ JS recompilado con éxito. Recargando navegador...');
+      browserSync.reload();
+    });
 }
+
 
 // Copiar imágenes
 function images(done) {

@@ -1,0 +1,71 @@
+@use 'variables' as v;
+@use 'sass:color';
+
+.menu-container {
+  position: relative;
+
+  .menu-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.6rem; // ícono un poco más grande
+    color: var(v.$negro);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+
+    &:focus {
+      outline: 2px solid var(v.$gris-claro); // accesibilidad
+      outline-offset: 2px;
+    }
+  }
+
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%; // justo debajo del botón
+    min-width: 180px;
+    background: var(v.$negro);
+    border: 1px solid var(v.$gris-oscuro);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0;
+    transform: translateY(-10px);
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      li {
+        a, button {
+          display: block;
+          width: 100%;
+          text-align: left;
+          padding: 10px 16px;
+          background: none;
+          border: none;
+          cursor: pointer;
+          color: var(v.$blanco);
+          text-decoration: none;
+          font-size: 0.95rem;
+
+          &:hover {
+            background: var(v.$gris-claro);
+            color: var(v.$negro);
+          }
+        }
+      }
+    }
+  }
+
+  &.open .dropdown-menu {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

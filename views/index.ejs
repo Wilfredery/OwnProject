@@ -1,3 +1,32 @@
 <%- include('partials/header') %>
-    
+
+        <section class="actions">
+            <button class="create-btn">CREATE YOUR FIRST NOTE</button>
+            <button class="search-btn">Search for any note</button>
+        </section>
+
+        <section class="recent-notes">
+            <h2>Check the notes that you've already done</h2>
+                <div class="notes-grid">
+                    <article class="note">
+                        <div class="note-img"></div>
+                        <p class="note-title">Nombre del título</p>
+                    </article>
+                    <!-- más artículos -->
+                </div>
+        </section>
+
+
+        <section class="guide">
+            <h3>How to use this page?</h3>
+                <div class="guide-content">
+                        <p>Use image to guide the users through this page</p>
+
+                        <div class="guide-nav">
+                            <button class="prev">←</button>
+                            <button class="next">→</button>
+                        </div>
+                </div>
+        </section>
+
 <%- include('partials/footer') %>

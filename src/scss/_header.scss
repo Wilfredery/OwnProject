@@ -1,0 +1,18 @@
+@use 'variables' as v;
+@use 'sass:color';
+
+
+.header {
+    background-color: v.$azul;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    .logo {
+        color: v.$blanco;
+        font-weight: 400;
+    }
+    .spanTitulo {
+        color: v.$negro;
+        font-weight: 900;
+    }
+}

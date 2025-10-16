@@ -1,7 +1,20 @@
 (function () {
-    const notes = []; // simulando notas guardadas
-    const createBtn = document.querySelector('.create-btn');
-    createBtn.textContent = notes.length === 0
-    ? 'CREATE YOUR FIRST NOTE'
-    : 'CREATE A NOTE';
+  // Simula notas guardadas
+  const notes = [];
+
+  // Busca el botón
+  const createBtn = document.querySelector('.create-btn');
+
+  // Si no existe el botón, sigue ejecutando el resto del código sin errores
+  if (!createBtn) {
+    console.warn('⚠️ No se encontró .create-btn en esta página, continuando sin modificar el botón.');
+    return; // simplemente detiene esta parte, no afecta otras funciones del archivo
+  }
+
+  // Si existe, actualiza el texto según la cantidad de notas
+createBtn.innerHTML = notes.length === 0
+  ? '<span class="btn-icon">📝</span><span class="btn-text">CREATE YOUR FIRST NOTE!</span>'
+  : '<span class="btn-icon">➕</span><span class="btn-text">CREATE A NOTE</span>';
+
+
 })();

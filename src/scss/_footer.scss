@@ -1,0 +1,11 @@
+@use 'variables' as v;
+@use 'sass:color';
+
+.footer {
+  background-color: v.$azul;
+  text-align: center;
+  padding: 1rem 0;
+  color: v.$blanco;
+  font-size: 1.4rem;
+  margin-top: auto; // 👈 importante: empuja el footer hacia abajo
+}

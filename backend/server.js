@@ -24,9 +24,14 @@ app.get('/', (req, res) => {
   res.render('index', { title: 'Pagina principal' });
 });
 
-app.get('/about', (req, res) => {
-  res.render('about', { title: 'Acerca de' });
+app.get('/account-settings', (req, res) => {
+  res.render('acc&sett', { title: 'Account & Settings' });
 });
+
+app.get('/search', (req, res) => {
+  res.render('search', { title: 'Search Notes' });
+});
+
 
 // Servidor
 //Permite que el puerto sea configurable por variables de entorno (útil en hosting).

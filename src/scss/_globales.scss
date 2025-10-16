@@ -11,6 +11,9 @@ html {
 body {
     font-family: v.$fuente_principal;
     font-size: 1.8rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; // altura total de la pantalla
 }
 a {
     text-decoration: none;
@@ -18,6 +21,10 @@ a {
 img {
     width: 100%;
     height: auto;
+}
+
+main {
+  flex: 1; // ocupa el espacio restante entre header y footer
 }
 
 .swal2-popup {

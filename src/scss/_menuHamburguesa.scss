@@ -3,20 +3,24 @@
 
 .menu-container {
     position: relative;
-    top: 100%; // debajo del header
-    right: 20px;
-    margin-top: 10px;
+    top: 50%; // debajo del header
+    right: 1rem;
+    margin-top: 1.5rem;
 
     .menu-btn {
         background: none;
         border: none;
         cursor: pointer;
         font-size: 4rem; // ícono un poco más grande
-        color: v.$blanco;
+        color: v.$negro;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 8px;
+
+        &:hover {
+          color: color.adjust(v.$blanco, $lightness: -20%);
+        }
 
         &:focus {
           outline: 2px solid var(v.$gris-claro); // accesibilidad
@@ -30,10 +34,11 @@
     right: 0;
     top: 100%; // justo debajo del botón
     min-width: 180px;
-    background-color: v.$azul;
-    border: 1px solid var(v.$gris-oscuro);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    background-color: v.$blanco;
+    border: 1px solid v.$gris-oscuro;
+    border-radius: 1rem;
+    -webkit-box-shadow: 0px 7px 14px -1px rgba(0,0,0,0.75); 
+box-shadow: 0px 7px 14px -1px rgba(0,0,0,0.75);
     z-index: 1000;
     transition: opacity 0.3s ease, transform 0.3s ease;
     opacity: 0;
@@ -53,13 +58,15 @@
           background: none;
           border: none;
           cursor: pointer;
-          color: v.$blanco;
+          color: v.$negro;
           text-decoration: none;
           font-size: 1.7rem;
+          border: 1px solid v.$gris-claro;
 
           &:hover {
-            background: var(v.$gris-claro);
-            color: var(v.$blanco);
+            background: v.$azul;
+            color: v.$blanco;
+            font-weight: 800;
           }
         }
       }

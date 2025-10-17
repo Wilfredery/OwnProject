@@ -1,22 +1,24 @@
 <%- include('partials/header') %>
     <section class="settings">
-        <h2>Account & Settings</h2>
+        <h2 class="settings__h2">Account & Settings</h2>
         
         <p class="user-name">Wilfredery A.</p>
 
         <div class="option">
-            <label>Theme:</label>
-            <select id="theme">
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
+            <label class="option__label">Elegir un tema claro u oscuro:</label>
+
+            <select class="option__theme" id="theme">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
             </select>
         </div>
 
         <div class="option">
-            <label>Language:</label>
-            <select id="language">
-            <option value="es">Español</option>
-            <option value="en">English</option>
+            <label class="option__label">Seleccione un idioma disponible:</label>
+
+            <select class="option__language" id="language">
+                <option value="es">Español</option>
+                <option value="en">English</option>
             </select>
         </div>
     </section>

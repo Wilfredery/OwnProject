@@ -1,0 +1,29 @@
+@use 'variables' as v;
+@use 'mixins'as m;
+@use 'sass:color';
+
+.settings {
+
+    &__h2 {
+        text-align: center;
+    }
+}
+
+.option {
+    text-align: center;
+    margin-top: 2rem;
+    
+    &__label {
+        font-size: 2rem;
+        color: v.$negro;
+        font-weight: 700;
+    }
+
+    &__theme {
+        @include m.boton(v.$blanco, v.$negro);
+    }
+
+    &__language {
+        @include m.boton(v.$blanco, v.$negro);
+    }
+}

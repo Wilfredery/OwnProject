@@ -13,17 +13,22 @@ body {
 }
 
 .actions {
-  display: gap;
-  justify-content: center;
-  column-gap: 2rem;
+  display: flex;
+  justify-content: space-between;
+  margin: 2rem;
 
   .create-btn, .search-btn {
     @include m.boton(v.$blanco, v.$fuente-principal);
+    border: 1px solid v.$azul;
+    border-radius: 5%;
+    margin: 0 2rem;
 
     &:hover {
       background-color: color.adjust(v.$azul, $lightness: -10%);
       color: v.$blanco;
       cursor: pointer;
+      -webkit-box-shadow: 1px 3px 11px 1px rgba(0,0,0,0.82); 
+      box-shadow: 1px 3px 11px 1px rgba(0,0,0,0.82);
     }
   }
 }

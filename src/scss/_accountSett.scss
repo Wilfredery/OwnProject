@@ -3,27 +3,63 @@
 @use 'sass:color';
 
 .settings {
-
+    
     &__h2 {
         text-align: center;
     }
 }
 
 .option {
-    text-align: center;
-    margin-top: 2rem;
+    &:nth-child(2) {
+        margin-top: 7rem;
+    }
     
     &__label {
-        font-size: 2rem;
-        color: v.$negro;
-        font-weight: 700;
-    }
-
-    &__theme {
-        @include m.boton(v.$blanco, v.$negro);
-    }
-
-    &__language {
-        @include m.boton(v.$blanco, v.$negro);
+        font-weight: bold;
+        text-transform: uppercase;
     }
 }
+
+.custom-select {
+  position: relative;
+  width: 150px;
+  cursor: pointer;
+  user-select: none;
+
+  .selected {
+    border: 1px solid v.$azul;
+    padding: 0.6rem 1rem;
+    border-radius: 4px;
+    background: v.$blanco;
+    color: v.$negro;
+  }
+
+  .options {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: v.$blanco;
+    border: 1px solid v.$azul;
+    border-radius: 1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      padding: 0.6rem 1rem;
+      transition: background 0.2s ease;
+
+      &:hover {
+        background: v.$azul; // ✅ aquí sí puedes poner azul
+        color: v.$blanco;
+      }
+    }
+  }
+
+  &.open .options {
+    display: block;
+  }
+}
+

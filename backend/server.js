@@ -29,7 +29,7 @@ app.get('/account-settings', (req, res) => {
 });
 
 app.get('/search', (req, res) => {
-  res.render('search', { title: 'Search Notes' });
+  res.render('search', { title: 'Search Note' });
 });
 
 

@@ -1,4 +1,5 @@
 (function () {
+  
   // Simula notas guardadas
   const notes = [];
 

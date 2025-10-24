@@ -1,32 +1,26 @@
 <%- include('partials/header') %>
 
-        <h2 class="settings__h2">Account & Settings</h2>
+        <h2 class="settings__h2" data-i18n>Cuenta y ajustes</h2>
         
         <p class="user-name">Wilfredery A.</p>
     <section class="settings">
 
         <div class="option">
-            <label class="option__label">Tema:</label>
 
-            <div class="custom-select">
-                <div class="selected">Light</div>
-                <ul class="options">
-                    <li data-value="light">Light</li>
-                    <li data-value="dark">Dark</li>
-                </ul>
+            <div class="theme-switcher">
+                <label for="theme-toggle">Tema:</label>
+                <button id="theme-toggle">Light 🌞</button>
             </div>
+
         </div>
 
         <div class="option">
-            <label class="option__label">Idioma:</label>
 
-            <div class="custom-select">
-                <div class="selected">Español</div>
-                <ul class="options">
-                    <li data-value="es">Español</li>
-                    <li data-value="en">English</li>
-                </ul>
+            <div class="lang-switcher">
+                <label for="lang-toggle">Idioma:</label>
+                <button id="lang-toggle">Español 🇪🇸</button>
             </div>
+
         </div>
     </section>
 

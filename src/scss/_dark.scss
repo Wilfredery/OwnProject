@@ -1,0 +1,54 @@
+@use 'variables' as v;
+
+/* ===========================
+   Tema Oscuro
+   =========================== */
+body.dark {
+  background-color: v.$azul-oscuro;
+  color: v.$blanco;
+
+  .header {
+    background-color: v.$azul-oscuro;
+    border-bottom: 1px solid v.$gris;
+  }
+
+  .logo, .spanTitulo {
+    color: v.$blanco;
+  }
+
+  .actions {
+    .create-btn, .search-btn {
+      background-color: v.$gris-oscuro;
+      border: 1px solid v.$azul;
+      color: v.$blanco;
+
+      &:hover {
+        background-color: v.$azul;
+        color: v.$blanco;
+      }
+    }
+  }
+
+  .shadowbox {
+    background-color: v.$gris-oscuro;
+    color: v.$blanco;
+  }
+
+  .footer {
+    background-color: v.$azul-oscuro;
+    color: v.$gris-claro;
+    border-top: 1px solid v.$gris;
+  }
+}
+
+.lang-switcher, .theme-switcher {
+  body.dark & button {
+    border-color: v.$blanco;
+    color: v.$blanco;
+
+    &:hover {
+      background-color: v.$blanco;
+      color: v.$azul-oscuro;
+    }
+  }
+}

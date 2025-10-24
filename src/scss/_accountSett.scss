@@ -11,7 +11,7 @@
 
 .option {
     &:nth-child(2) {
-        margin-top: 7rem;
+        margin-top: 2rem;
     }
     
     &__label {
@@ -20,46 +20,28 @@
     }
 }
 
-.custom-select {
-  position: relative;
-  width: 150px;
-  cursor: pointer;
-  user-select: none;
+.lang-switcher, .theme-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0 2rem 1rem; // pequeño margen inferior respecto al de tema
 
-  .selected {
-    border: 1px solid v.$azul;
-    padding: 0.6rem 1rem;
-    border-radius: 4px;
-    background: v.$blanco;
-    color: v.$negro;
+  label {
+    font-weight: 600;
   }
 
-  .options {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background: v.$blanco;
+  button {
+    background-color: transparent;
     border: 1px solid v.$azul;
-    border-radius: 1rem;
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    color: v.$azul;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 
-    li {
-      padding: 0.6rem 1rem;
-      transition: background 0.2s ease;
-
-      &:hover {
-        background: v.$azul; // ✅ aquí sí puedes poner azul
-        color: v.$blanco;
-      }
+    &:hover {
+      background-color: v.$azul;
+      color: v.$blanco;
     }
   }
-
-  &.open .options {
-    display: block;
-  }
 }
-

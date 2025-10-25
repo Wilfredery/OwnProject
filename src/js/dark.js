@@ -4,20 +4,24 @@
     const toggleBtn = document.getElementById('theme-toggle');
     const body = document.body;
 
-    if (!toggleBtn) return; // Si no hay botón, no hace nada
+    if (!toggleBtn) return;
 
-    // Comprobar si ya hay un tema guardado
-    const savedTheme = localStorage.getItem('theme');
+    // Leer y aplicar tema guardado
+    const savedTheme = localStorage.getItem('theme') || 'light';
     if (savedTheme === 'dark') {
       body.classList.add('dark');
       toggleBtn.textContent = 'Dark 🌙';
+    } else {
+      body.classList.remove('dark');
+      toggleBtn.textContent = 'Light 🌞';
     }
 
-    // Evento de cambio de tema
+    // Cambiar tema al hacer clic
     toggleBtn.addEventListener('click', () => {
       const isDark = body.classList.toggle('dark');
+      const newTheme = isDark ? 'dark' : 'light';
       toggleBtn.textContent = isDark ? 'Dark 🌙' : 'Light 🌞';
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      localStorage.setItem('theme', newTheme);
     });
   });
 })();

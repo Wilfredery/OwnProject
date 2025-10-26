@@ -9,7 +9,7 @@ body.dark {
 
   .header {
     background-color: v.$azul-oscuro;
-    border-bottom: 1px solid v.$gris;
+    border-bottom: 1px solid v.$azul;
   }
 
   .logo, .spanTitulo {
@@ -37,18 +37,60 @@ body.dark {
   .footer {
     background-color: v.$azul-oscuro;
     color: v.$gris-claro;
-    border-top: 1px solid v.$gris;
+    border-top: 1px solid v.$azul;
+
+    &__texto {
+      color: v.$gris-claro;
+    }
+  }
+
+  .menu-btn {
+    color: v.$blanco;
+
+    &:hover {
+      color: v.$azul;
+    }
+  }
+
+  .dropdown-menu {
+    background-color: v.$gris-oscuro;
+    border: 1px solid v.$azul;
+
+    ul {
+      li{
+        a {
+          color: v.$blanco;
+
+          &:hover {
+            background: v.$azul;
+            color: v.$blanco;
+          }
+        }
+      }
+    }
+  }
+
+  .footer {
+    .linkdln {
+      a {
+        color: v.$blanco;
+
+        &:hover {
+          color: v.$azul;
+        }
+      }
+    }
   }
 }
 
 .lang-switcher, .theme-switcher {
   body.dark & button {
-    border-color: v.$blanco;
+    border-color: v.$azul;
     color: v.$blanco;
 
     &:hover {
-      background-color: v.$blanco;
-      color: v.$azul-oscuro;
+      background-color: v.$azul;
+      color: v.$blanco;
     }
   }
 }

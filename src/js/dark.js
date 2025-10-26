@@ -4,24 +4,20 @@
     const toggleBtn = document.getElementById('theme-toggle');
     const body = document.body;
 
-    if (!toggleBtn) return;
-
-    // Leer y aplicar tema guardado
+    // Aplicar el tema guardado SIEMPRE, aunque no haya botón
     const savedTheme = localStorage.getItem('theme') || 'light';
-    if (savedTheme === 'dark') {
-      body.classList.add('dark');
-      toggleBtn.textContent = 'Dark 🌙';
-    } else {
-      body.classList.remove('dark');
-      toggleBtn.textContent = 'Light 🌞';
-    }
+    body.classList.toggle('dark', savedTheme === 'dark');
 
-    // Cambiar tema al hacer clic
-    toggleBtn.addEventListener('click', () => {
-      const isDark = body.classList.toggle('dark');
-      const newTheme = isDark ? 'dark' : 'light';
-      toggleBtn.textContent = isDark ? 'Dark 🌙' : 'Light 🌞';
-      localStorage.setItem('theme', newTheme);
-    });
+    // Si existe el botón, sincronizar su texto y agregar evento
+    if (toggleBtn) {
+      toggleBtn.textContent = savedTheme === 'dark' ? 'Dark 🌙' : 'Light 🌞';
+
+      toggleBtn.addEventListener('click', () => {
+        const isDark = body.classList.toggle('dark');
+        const newTheme = isDark ? 'dark' : 'light';
+        toggleBtn.textContent = isDark ? 'Dark 🌙' : 'Light 🌞';
+        localStorage.setItem('theme', newTheme);
+      });
+    }
   });
 })();

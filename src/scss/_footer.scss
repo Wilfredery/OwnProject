@@ -4,14 +4,13 @@
 .footer {
   background-color: v.$azul;
   text-align: center;
-  padding: 1rem 0;
   color: v.$blanco;
   font-size: 2rem;
   margin-top: auto; // 👈 importante: empuja el footer hacia abajo
   margin-top: 1.7rem;
   font-weight: 700;
 
-  .footertexto {
+  &__texto {
     color: v.$negro;
   }
 

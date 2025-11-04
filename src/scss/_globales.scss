@@ -14,6 +14,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh; // altura total de la pantalla
+    background-color: v.$blanco;
 }
 a {
     text-decoration: none;

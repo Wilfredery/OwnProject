@@ -14,8 +14,8 @@
 
   // Si existe, actualiza el texto según la cantidad de notas
 createBtn.innerHTML = notes.length === 0
-  ? '<span class="btn-icon">📝</span><span class="btn-text">CREATE YOUR FIRST NOTE!</span>'
-  : '<span class="btn-icon">➕</span><span class="btn-text">CREATE A NOTE</span>';
+  ? '<span class="btn-icon" >📝</span><span class="btn-text" data-i18n="create_note">¡Crea tu primera nota!</span>'
+  : '<span class="btn-icon">➕</span><span class="btn-text" data-i18n="create_note">Crea una nota!</span>';
 
 
 })();

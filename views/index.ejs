@@ -1,12 +1,12 @@
 <%- include('partials/header') %>
 
         <section class="actions">
-            <button class="create-btn">CREATE YOUR FIRST NOTE</button>
-            <button class="search-btn"><span>🔎</span>SEARCH YOUR NOTES!</button>
+            <button class="create-btn" >📝<span data-i18n="create_note"></span></button>
+            <button class="search-btn" >🔎<span data-i18n="search_notes"></span></button>
         </section>
 
         <section class="recent-notes">
-            <h2>Check the notes that you've already done</h2>
+            <h2 class="recent-notes__title" data-i18n="check_notes"></h2>
                 <div class="notes-grid">
                     <article class="note">
                         <div class="note-img"></div>
@@ -18,12 +18,12 @@
 
 
         <section class="guide">
-            <h3>How to use this page?</h3>
+            <h3 class="guide__title" data-i18n="askguide"></h3>
                 <div class="guide-content">
-                        <h4>Menu Hamburguesa</h4>
+                        <h4 class="guide__title--subtitle">Menu Hamburguesa</h4>
                         <p>Gracias al menu hamburguesa puedes proceder en dirigirte a las diferentes ubicaciones de la pagina.</p>
 
-                        <h4>Titulo</h4>
+                        <h4 class="guide__title--subtitle">Titulo</h4>
                         <P>El titulo de la pagina esta diseño para que al momento de darle click al mismo se pueda dirigir a la pagina principal por si te encuentras en otro parte.</P>
 
 

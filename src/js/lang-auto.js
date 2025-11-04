@@ -1,21 +1,19 @@
-(function() {
+(function () {
   document.addEventListener('DOMContentLoaded', () => {
     const langBtn = document.getElementById('lang-toggle');
-    if (!langBtn) return;
-
     let currentLang = localStorage.getItem('lang') || 'es';
 
     async function loadLanguage(lang) {
       try {
-        const response = await fetch(`/lang/${lang}.json`);
-        return await response.json();
-      } catch (err) {
-        console.error(`Error al cargar ${lang}.json:`, err);
+        const res = await fetch(`/lang/${lang}.json`);
+        return await res.json();
+      } catch (e) {
+        console.error(`Error cargando ${lang}.json`, e);
         return {};
       }
     }
 
-    async function applyTranslations(langData) {
+    function applyTranslations(langData) {
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (langData[key]) el.textContent = langData[key];
@@ -28,16 +26,20 @@
       const langData = await loadLanguage(lang);
       applyTranslations(langData);
 
-      // Cambiar texto del botón de idioma
-      langBtn.textContent = lang === 'es' ? 'Español 🇪🇸' : 'English 🇬🇧';
+      if (langBtn) {
+        langBtn.textContent = lang === 'es' ? 'Español 🇪🇸' : 'English 🇬🇧';
+      }
     }
 
-    langBtn.addEventListener('click', async () => {
-      const newLang = currentLang === 'es' ? 'en' : 'es';
-      await setLanguage(newLang);
-    });
+    // ✅ Solo si hay botón de cambiar idioma
+    if (langBtn) {
+      langBtn.addEventListener('click', async () => {
+        const newLang = currentLang === 'es' ? 'en' : 'es';
+        await setLanguage(newLang);
+      });
+    }
 
-    // Idioma inicial
+    // ✅ Siempre cargar idioma seleccionado
     setLanguage(currentLang);
   });
 })();

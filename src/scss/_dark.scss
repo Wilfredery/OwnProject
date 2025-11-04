@@ -24,7 +24,7 @@ body.dark {
   .actions {
     .create-btn, .search-btn {
       background-color: v.$gris-oscuro;
-      border: 1px solid v.$azul;
+      border: .1rem solid v.$azul;
       color: v.$blanco;
 
       &:hover {
@@ -42,7 +42,7 @@ body.dark {
   .footer {
     background-color: v.$azul-oscuro;
     color: v.$gris-claro;
-    border-top: 1px solid v.$azul;
+    border-top: .1rem solid v.$azul;
 
     &__texto {
       color: v.$gris-claro;
@@ -59,7 +59,7 @@ body.dark {
 
   .dropdown-menu {
     background-color: v.$gris-oscuro;
-    border: 1px solid v.$azul;
+    border: .1rem solid v.$azul;
 
     ul {
       li{

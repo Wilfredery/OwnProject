@@ -2,10 +2,6 @@
 @use 'mixins'as m;
 @use 'sass:color';
 
-body {
-    background-color: v.$blanco;
-}
-
 .notes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -22,6 +18,7 @@ body {
     border: 1px solid v.$azul;
     border-radius: 5%;
     margin: 0 2rem;
+    text-transform: uppercase;
 
     &:hover {
       background-color: color.adjust(v.$azul, $lightness: -10%);
@@ -40,5 +37,27 @@ body {
   // padding: 1rem;
   @include m.contenedor;
 }
+
+.recent-notes{
+  
+  &__title{
+    text-align: center;
+    margin: 3rem 0;
+  }
+}
+
+.guide {
+
+  &__title{
+    text-align: center;
+    margin: 3rem 0;
+  }
+
+  &__title--subtitle{
+    margin: 3rem 0;
+  }
+}
+
+
 
 

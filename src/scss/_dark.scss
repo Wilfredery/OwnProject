@@ -7,6 +7,15 @@ body.dark {
   background-color: v.$azul-oscuro;
   color: v.$blanco;
 
+  //SweetAlert
+  .minimal-alert {
+    color: v.$azul;
+    background-color: v.$azul-oscuro;
+    border: .1rem solid v.$azul;
+  }
+
+//SweetAlert
+
   .shadowbox {
   -webkit-box-shadow: 0px 0px 10px 0px #3B82F6; 
   box-shadow: 0px 0px 10px 0px #3B82F6;
@@ -45,6 +54,10 @@ body.dark {
     border-top: .1rem solid v.$azul;
 
     &__texto {
+      color: v.$gris-claro;
+    }
+
+    &__year {
       color: v.$gris-claro;
     }
   }
@@ -112,4 +125,20 @@ body.dark {
       color: v.$blanco;
     }
   }
+}
+
+.minimal-alert {
+  border-radius: 14px !important;
+  padding: 12px 18px !important;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0,0,0,0.05);
+  font-family: 'Inter', sans-serif;
+  font-size: 1.5rem;
+  box-shadow: 
+    0 2px 8px rgba(0,0,0,0.08),
+    0 6px 24px rgba(0,0,0,0.06) !important;
+}
+
+[data-theme='dark'] .minimal-alert {
+  border: 1px solid rgba(255,255,255,0.08);
 }

@@ -112,6 +112,22 @@ body.dark {
       }
     }
   }
+
+
+  //INICIO _CREAR.SCSS
+  .crear {
+    &__titulo {
+      color: v.$blanco;
+    }
+
+    &__inputTitulo, &__inputContenido {
+      background-color: v.$gris-oscuro;
+      color: v.$blanco;
+      border: .1rem solid v.$azul;
+    }
+  }
+
+  //FIN _CREAR.SCSS
 }
 
 
@@ -142,3 +158,4 @@ body.dark {
 [data-theme='dark'] .minimal-alert {
   border: 1px solid rgba(255,255,255,0.08);
 }
+

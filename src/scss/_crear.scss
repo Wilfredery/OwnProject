@@ -1,0 +1,75 @@
+@use 'variables' as v;
+@use 'sass:color';
+
+.crear {
+  width: 100%;
+  max-width: 95%;
+  margin: 0 auto;
+  padding: 2rem;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.crear__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  .crear__titulo {
+    font-size: 3rem;
+    font-weight: 700;
+    color: v.$negro;
+  }
+
+  .crear__btnSave {
+    background: v.$azul;
+    color: v.$blanco;
+    padding: 1.5rem;
+    border-radius: 2rem;
+    font-size: 1.6rem;
+    cursor: pointer;
+    border: none;
+    text-transform: uppercase;
+    font-weight: 800;
+    transition: 0.2s ease;
+
+    &:hover {
+      background: color.adjust(v.$azul, $lightness: -10%);
+    }
+  }
+}
+
+.crear__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  .crear__inputTitulo {
+    font-size: 2rem;
+    padding: 1rem;
+    border: 1px solid v.$gris-claro;
+    border-radius: .8rem;
+    outline: none;
+    margin-bottom: 2rem;
+
+    &:focus {
+      border-color: v.$azul;
+    }
+  }
+
+  .crear__inputContenido {
+    height: 50vh;
+    resize: none;
+    font-size: 1.6rem;
+    padding: 1rem;
+    border: 1px solid v.$gris-claro;
+    border-radius: .8rem;
+    outline: none;
+
+    &:focus {
+      border-color: v.$azul;
+    }
+  }
+}

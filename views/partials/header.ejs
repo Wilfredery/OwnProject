@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 
-            <script>
+<script>
   (() => {
     const theme = localStorage.getItem('theme');
     if (theme === 'dark') document.body.classList.add('dark');
@@ -39,8 +39,9 @@
             <!-- Menú desplegable -->
             <nav class="dropdown-menu">
             <ul>
-                <li><a href="/account-settings" ><span>🧑</span><span data-i18n="page_accountSettings">Account & Settings</span><span>⚙️</span></a></li>
                 <li><a href="/search" ><span>🔍</span><span data-i18n="page_searchNotes">Search Notes</span></a></li>
+                <li><a href="/crear"><span>✏️</span><span data-i18n="crearNota">crear nota</span></a></li>
+                <li><a href="/account-settings" ><span>🧑</span><span data-i18n="page_accountSettings">Account & Settings</span><span>⚙️</span></a></li>
             </ul>
             </nav>
         </div>

@@ -32,6 +32,10 @@ app.get('/search', (req, res) => {
   res.render('search', { title: 'Search Note' });
 });
 
+app.get('/crear', (req, res) => {
+  res.render('crear', { title: 'Create Note' });
+});
+
 
 // Servidor
 //Permite que el puerto sea configurable por variables de entorno (útil en hosting).

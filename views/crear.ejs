@@ -1,0 +1,29 @@
+<%- include('partials/header') %>
+
+<main class="crear">
+
+  <header class="crear__header">
+    <h1 class="crear__titulo" data-i18n="crear__titulo"></h1>
+    <button class="crear__btnSave" id="save-note" data-i18n="crear__btnSave">Guardar</button>
+  </header>
+
+  <section class="crear__form">
+    <input 
+      type="text" 
+      id="note-title" 
+      class="crear__inputTitulo" 
+      placeholder="Título de la nota..." 
+      data-i18n-placeholder="crear__inputTitulo"
+    >
+
+    <textarea 
+      id="note-content"
+      class="crear__inputContenido"
+      placeholder="Escribe tu nota aquí..."
+      data-i18n-placeholder="crear__inputContenido"
+    ></textarea>
+  </section>
+
+</main>
+
+<%- include('partials/footer') %>

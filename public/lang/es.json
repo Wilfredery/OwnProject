@@ -10,5 +10,10 @@
   "footer_text": " Todos los derechos reservados",
   "page_accountSettings": "Cuenta y ajustes",
   "page_searchNotes": "Buscar notas",
-  "askguide": "¿Cómo usar esta página?"
+  "askguide": "¿Cómo usar esta página?",
+  "crear__titulo": "Crear nota",
+  "crear__btnSave": "Guardar",
+  "crear__inputTitulo": "Título",
+  "crear__inputContenido": "Escribe tu nota aquí...",
+  "crearNota": "Crear nota"
 }

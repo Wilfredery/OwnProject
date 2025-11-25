@@ -14,9 +14,34 @@
     }
 
     function applyTranslations(langData) {
+      // Texto normal
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (langData[key]) el.textContent = langData[key];
+      });
+
+      // Placeholder
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (langData[key]) el.placeholder = langData[key];
+      });
+
+      // Title
+      document.querySelectorAll('[data-i18n-title]').forEach(el => {
+        const key = el.getAttribute('data-i18n-title');
+        if (langData[key]) el.title = langData[key];
+      });
+
+      // Alt (imágenes)
+      document.querySelectorAll('[data-i18n-alt]').forEach(el => {
+        const key = el.getAttribute('data-i18n-alt');
+        if (langData[key]) el.alt = langData[key];
+      });
+
+      // Value (inputs tipo button o submit)
+      document.querySelectorAll('[data-i18n-value]').forEach(el => {
+        const key = el.getAttribute('data-i18n-value');
+        if (langData[key]) el.value = langData[key];
       });
     }
 

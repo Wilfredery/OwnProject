@@ -15,5 +15,6 @@
   "crear__btnSave": "Guardar",
   "crear__inputTitulo": "Título",
   "crear__inputContenido": "Escribe tu nota aquí...",
-  "crearNota": "Crear nota"
+  "crearNota": "Crear nota",
+  "search_placeholder": "Buscar notas..."
 }

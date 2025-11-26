@@ -1,0 +1,22 @@
+<%- include("partials/header") %>
+
+<section class="editar">
+    <h2 class="editar__titulo" data-i18n="edit_note">Editar Nota</h2>
+
+    <form class="editar__form" id="edit-form">
+        <input type="hidden" id="note-id" value="<%= noteId %>">
+
+        <label class="editar__form--titulo" data-i18n="title">Título:</label>
+        <input id="edit-title" class="editar__input" type="text">
+
+        <label class="editar__form--contenido" data-i18n="content">Contenido:</label>
+        <textarea id="edit-content" class="editar__textarea"></textarea>
+
+        <div class="editar__actions">
+            <button type="submit" class="editar__save-btn">💾 Guardar</button>
+            <button type="button" id="delete-note" class="editar__delete-btn">🗑 Eliminar</button>
+        </div>
+    </form>
+</section>
+
+<%- include("partials/footer") %>

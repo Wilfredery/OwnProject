@@ -36,6 +36,12 @@ app.get('/crear', (req, res) => {
   res.render('crear', { title: 'Create Note' });
 });
 
+app.get("/editar/:id", (req, res) => {
+    const noteId = req.params.id;
+    res.render("editar", { noteId });
+});
+
+
 
 // Servidor
 //Permite que el puerto sea configurable por variables de entorno (útil en hosting).

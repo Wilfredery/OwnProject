@@ -1,4 +1,5 @@
 @use 'variables' as v;
+@use 'sass:color';
 
 /* ===========================
    Tema Oscuro
@@ -100,18 +101,59 @@ body.dark {
     }
   }
 
-  
+  //Inicio del search.scss
   .search {
+    &__titulo {
+      color: v.$blanco;
+    }
+
     &__input {
-      background-color: v.$gris-claro;
+      background-color: v.$azul-oscuro;
       border: .2rem solid v.$azul;
-      color: v.$negro;
+      color: v.$blanco;
 
       &::placeholder {
         color: v.$negro;
       }
     }
   }
+
+  //Fin del search.scss
+
+  //INICIO LISTADO DEL SEARCH.SCSS
+  .results {
+
+  .note-item {
+    background: v.$gris-oscuro;
+    border-color: color.adjust(v.$azul, $lightness: -10%);
+    box-shadow: none;
+
+    &:hover {
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+
+    .info {
+      h3 {
+        color: v.$blanco;
+      }
+      p {
+        color: color.adjust(v.$blanco, $lightness: -40%);
+      }
+    }
+
+    .actions {
+
+      .edit-btn {
+        background: v.$azul;
+      }
+
+      .delete-btn {
+        background: #ff6b6b;
+      }
+    }
+  }
+}
+  //FIN LISTADO DEL SEARCH.SCSS
 
 
   //INICIO _CREAR.SCSS
@@ -128,10 +170,37 @@ body.dark {
   }
 
   //FIN _CREAR.SCSS
+
+  //INICIO EDITAR.SCSS
+.editar {
+  color: v.$blanco;
+
+  .editar__titulo {
+    color: v.$blanco;
+  }
+
+  .editar__input,
+  .editar__textarea {
+    background: transparent;
+    border-color: color.adjust(v.$gris-oscuro, $lightness: 10%);
+    color: v.$blanco;
+
+    &:focus {
+      border-color: v.$azul;
+    }
+  }
+
+  .editar__delete-btn {
+    background: #ff6b6b;
+  }
 }
 
 
-.lang-switcher, .theme-switcher {
+  //FIN EDITAR.SCSS
+
+
+  //Inicio boton  de ajuste
+  .lang-switcher, .theme-switcher {
   body.dark & button {
     border-color: v.$azul;
     color: v.$blanco;
@@ -155,7 +224,12 @@ body.dark {
     0 6px 24px rgba(0,0,0,0.06) !important;
 }
 
-[data-theme='dark'] .minimal-alert {
+.minimal-alert {
   border: 1px solid rgba(255,255,255,0.08);
 }
+  //fin boton de ajuste
+}
+
+
+
 

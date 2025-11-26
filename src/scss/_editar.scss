@@ -1,0 +1,100 @@
+@use 'variables' as v;
+@use 'sass:color';
+
+.editar {
+  width: 100%;
+  max-width: 95%;
+  margin: 0 auto;
+  padding: 2rem;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- HEADER ---------- */
+.editar__titulo {
+  font-size: 3rem;
+  font-weight: 700;
+  color: v.$negro;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+/* ---------- FORM ---------- */
+.editar__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* TÍTULO INPUT */
+.editar__input {
+  font-size: 2rem;
+  padding: 1rem;
+  border: 1px solid v.$gris-claro;
+  border-radius: .8rem;
+  outline: none;
+  margin-bottom: 2rem;
+
+  &:focus {
+    border-color: v.$azul;
+  }
+}
+
+/* CONTENIDO TEXTAREA */
+.editar__textarea {
+  height: 50vh;
+  resize: none;
+  font-size: 1.6rem;
+  padding: 1rem;
+  border: 1px solid v.$gris-claro;
+  border-radius: .8rem;
+  outline: none;
+
+  &:focus {
+    border-color: v.$azul;
+  }
+}
+
+/* ---------- BOTONES ---------- */
+.editar__actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+
+  .editar__save-btn {
+    background: v.$azul;
+    color: v.$blanco;
+    padding: 1.5rem 2.5rem;
+    border-radius: 2rem;
+    font-size: 1.6rem;
+    cursor: pointer;
+    border: none;
+    text-transform: uppercase;
+    font-weight: 800;
+    transition: 0.2s ease;
+
+    &:hover {
+      background: color.adjust(v.$azul, $lightness: -10%);
+    }
+  }
+
+  .editar__delete-btn {
+    background: #e74c3c;
+    color: v.$blanco;
+    padding: 1.5rem 2.5rem;
+    border-radius: 2rem;
+    font-size: 1.6rem;
+    cursor: pointer;
+    border: none;
+    text-transform: uppercase;
+    font-weight: 800;
+    transition: 0.2s ease;
+
+    &:hover {
+      background: color.adjust(#e74c3c, $lightness: -10%);
+    }
+  }
+}
+

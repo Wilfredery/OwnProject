@@ -1,20 +1,111 @@
 @use 'variables' as v;
 @use 'sass:color';
 
-
 .search {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
 
-    &__titulo {
-        text-align: center;
+  &__titulo {
+    font-size: 2.8rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: v.$negro;
+  }
+
+  &__input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid v.$gris-claro;
+    border-radius: 10px;
+    font-size: 1.6rem;
+    margin-bottom: 2rem;
+    outline: none;
+
+    &:focus {
+      border-color: v.$azul;
+    }
+  }
+
+.results {
+  list-style: none;
+  padding: 0;
+  margin-top: 2rem;
+
+  .note-item {
+    padding: 1.6rem;
+    margin-bottom: 1.4rem;
+    background: v.$blanco;
+    border-radius: 12px;
+    border: 1px solid v.$gris-claro;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: transform .15s ease, box-shadow .15s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
     }
 
-    &__input {
-        display: block;
-        width: 100%;
-        padding: 1rem;
-        margin: 2rem 0;
-        font-size: 1.6rem;
-        border: .1rem solid v.$negro;
-        border-radius: 1rem;
+    /* INFO */
+    .info {
+      flex: 1;
+
+      h3 {
+        font-size: 2.1rem;
+        font-weight: 700;
+        margin: 0;
+        color: v.$negro;
+      }
+
+      p {
+        font-size: 1.5rem;
+        color: v.$gris-oscuro;
+        margin-top: 0.4rem;
+        line-height: 1.4;
+      }
     }
+
+    /* ACTIONS */
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+
+      button {
+        font-size: 1.3rem;
+        padding: .8rem 1.4rem;
+        border-radius: 1.6rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        border: none;
+        cursor: pointer;
+        transition: 0.2s ease;
+      }
+
+      .edit-btn {
+        background: v.$azul;
+        color: v.$blanco;
+
+        &:hover {
+          background: color.adjust(v.$azul, $lightness: -10%);
+          transform: translateY(-2px);
+        }
+      }
+
+      .delete-btn {
+        background: #e74c3c;
+        color: v.$blanco;
+
+        &:hover {
+          background: color.adjust(#e74c3c, $lightness: -10%);
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+}
 }

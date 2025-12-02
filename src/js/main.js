@@ -1,21 +1,34 @@
-(function () {
-  
-  // Simula notas guardadas
-  const notes = [];
+import { db } from "./firebase.js";
+import { collection, getDocs } from "firebase/firestore";
 
-  // Busca el botón
+(async function () {
+
+  // 🔍 Buscar el botón
   const createBtn = document.querySelector('.create-btn');
 
-  // Si no existe el botón, sigue ejecutando el resto del código sin errores
+  // 👉 Si el botón NO existe, salimos sin errores (igual que otros scripts tuyos)
   if (!createBtn) {
-    console.warn('⚠️ No se encontró .create-btn en esta página, continuando sin modificar el botón.');
-    return; // simplemente detiene esta parte, no afecta otras funciones del archivo
+    // console.warn('⚠️ No hay .create-btn en esta página.');
+    return;
   }
 
-  // Si existe, actualiza el texto según la cantidad de notas
-createBtn.innerHTML = notes.length === 0
-  ? '<span class="btn-icon" >📝</span><span class="btn-text" data-i18n="create_note">¡Crea tu primera nota!</span>'
-  : '<span class="btn-icon">➕</span><span class="btn-text" data-i18n="create_note">Crea una nota!</span>';
+  // 🔥 Cantidad real de notas en Firestore
+  async function getNotesCount() {
+    try {
+      const snapshot = await getDocs(collection(db, "notes"));
+      return snapshot.size;
+    } catch (err) {
+      console.error("Error obteniendo notas:", err);
+      return 0; // fallback seguro
+    }
+  }
 
+  const notesCount = await getNotesCount();
+
+  // 🔄 Actualizar texto según cantidad de notas
+  createBtn.innerHTML =
+    notesCount === 0
+      ? `<span class="btn-icon">📝</span><span class="btn-text" data-i18n="create_note_first">¡Crea tu primera nota!</span>`
+      : `<span class="btn-icon">➕</span><span class="btn-text" data-i18n="create_note">Crear nota</span>`;
 
 })();

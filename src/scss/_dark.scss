@@ -129,7 +129,8 @@ body.dark {
     box-shadow: none;
 
     &:hover {
-      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+      -webkit-box-shadow: 2px 4px 17px 3px v.$negro; 
+      box-shadow: 2px 4px 17px 3px v.$negro;
     }
 
     .info {

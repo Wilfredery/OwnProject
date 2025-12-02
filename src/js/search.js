@@ -1,67 +1,171 @@
-(function () {
+import { db } from "./firebase.js";
+import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
 
-document.addEventListener("DOMContentLoaded", () => {
+(async function () {
 
-    const notes = [
-        { id: "1", title: "Tarea de JavaScript", content: "Aprender funciones" },
-        { id: "2", title: "Compras", content: "Leche, pan, huevos" },
-        { id: "3", title: "Ideas de proyecto", content: "App de notas con Firebase" },
-    ];
+  // 🔥 Cargar notas desde Firebase
+async function loadNotes() {
+  const notes = [];
+  const querySnapshot = await getDocs(collection(db, "notes"));
+
+  querySnapshot.forEach(docSnap => {
+    const data = docSnap.data();
+
+    notes.push({
+      id: docSnap.id,
+      title: data.title,
+      content: data.content,
+      created_at: data.created_at ? data.created_at.toDate() : null
+    });
+  });
+
+  return notes;
+}
+
+
+  // 🔥 Eliminar nota REAL desde Firebase
+  async function deleteNoteFromFirestore(id) {
+    try {
+      await deleteDoc(doc(db, "notes", id));
+      return true;
+    } catch (error) {
+      console.error("Error eliminando nota:", error);
+      return false;
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+
+    // 🟡 Cargar notas reales
+    let notes = await loadNotes();
 
     const searchInput = document.getElementById("search");
     const resultsContainer = document.getElementById("results");
 
+     if (!searchInput || !resultsContainer) return; // 🛑 Evita errores
+
     function renderNotes(filteredNotes) {
-        resultsContainer.innerHTML = "";
+      resultsContainer.innerHTML = "";
 
-        if (filteredNotes.length === 0) {
-            resultsContainer.innerHTML = `<p class="no-results">No se encontraron notas</p>`;
-            return;
-        }
+      if (filteredNotes.length === 0) {
+        resultsContainer.innerHTML = `<p class="no-results" data-i18n="findlist"></p>`;
+        return;
+      }
 
-        filteredNotes.forEach(note => {
-            const li = document.createElement("li");
-            li.classList.add("note-item");
+      filteredNotes.forEach(note => {
+        const li = document.createElement("li");
+        li.classList.add("note-item");
 
-            li.innerHTML = `
-                <div class="info">
-                    <h3>${note.title}</h3>
-                    <p>${note.content.substring(0, 60)}...</p>
-                </div>
+        li.innerHTML = `
+          <div class="info">
+              <h3>${note.title}</h3>
+              <p>${note.content.substring(0, 60)}...</p>
+              <p class="fecha">${note.created_at ? note.created_at.toLocaleDateString() : ""}</p>
+          </div>
 
-                <div class="actions">
-                    <button class="edit-btn" data-id="${note.id}">✏ Editar</button>
-                    <button class="delete-btn" data-id="${note.id}">🗑 Eliminar</button>
-                </div>
-            `;
+          <div class="actions">
+              <button class="edit-btn" data-id="${note.id}">✏ Editar</button>
+              <button class="delete-btn" data-id="${note.id}">🗑 Eliminar</button>
+          </div>
+        `;
 
-            resultsContainer.appendChild(li);
-        });
+        resultsContainer.appendChild(li);
+      });
     }
 
     // 👉 Mostrar todas al inicio
     renderNotes(notes);
 
-    // 👉 Filtrar desde la primera letra
+    // 👉 Filtrar con cada tecla
     searchInput.addEventListener("input", () => {
-        const query = searchInput.value.trim().toLowerCase();
+      const query = searchInput.value.trim().toLowerCase();
 
-        const filtered = notes.filter(note =>
-            note.title.toLowerCase().includes(query) ||
-            note.content.toLowerCase().includes(query)
-        );
+      const filtered = notes.filter(note =>
+        note.title.toLowerCase().includes(query) ||
+        note.content.toLowerCase().includes(query)
+      );
 
-        renderNotes(filtered);
+      renderNotes(filtered);
     });
 
-    // ⭐⭐⭐ AQUI AGREGO LO DEL PASO 5 (EDITAR) ⭐⭐⭐
-    resultsContainer.addEventListener("click", (e) => {
-        if (e.target.classList.contains("edit-btn")) {
-            const id = e.target.dataset.id;
-            window.location.href = `/editar/${id}`;
-        }
+    // ⭐⭐⭐ EDITAR + ELIMINAR ⭐⭐⭐
+    resultsContainer.addEventListener("click", async (e) => {
+
+      /* --------- EDITAR --------- */
+      if (e.target.classList.contains("edit-btn")) {
+        const id = e.target.dataset.id;
+        window.location.href = `/editar/${id}`;
+        return;
+      }
+
+      /* --------- ELIMINAR --------- */
+      if (e.target.classList.contains("delete-btn")) {
+
+        const id = e.target.dataset.id;
+
+        Swal.fire({
+          title: "¿Eliminar nota?",
+          text: "Esta acción no se puede deshacer.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#e74c3c",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Sí, eliminar",
+          cancelButtonText: "Cancelar",
+          reverseButtons: true,
+          backdrop: true,
+          allowOutsideClick: true,
+          heightAuto: false
+        }).then(async (result) => {
+
+          if (
+            result.dismiss === Swal.DismissReason.cancel ||
+            result.dismiss === Swal.DismissReason.backdrop
+          ) {
+            Swal.fire({
+              title: "Cancelado",
+              text: "La nota no fue eliminada.",
+              icon: "info",
+              timer: 1200,
+              confirmButtonColor: "#3085d6"
+            });
+            return;
+          }
+
+          // 🟢 Confirmó eliminación REAL en Firebase
+          if (result.isConfirmed) {
+
+            const ok = await deleteNoteFromFirestore(id);
+
+            if (!ok) {
+              Swal.fire({
+                title: "Error",
+                text: "Hubo un problema eliminando la nota.",
+                icon: "error",
+                timer: 1500,
+              });
+              return;
+            }
+
+            // 🧹 Actualizar lista local
+            notes = notes.filter(n => n.id !== id);
+
+            renderNotes(notes);
+
+            Swal.fire({
+              title: "Eliminada",
+              text: "La nota fue eliminada correctamente.",
+              icon: "success",
+              timer: 1500,
+              confirmButtonColor: "#3085d6"
+            });
+          }
+
+        });
+      }
+
     });
 
-});
+  });
 
 })();

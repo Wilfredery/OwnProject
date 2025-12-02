@@ -6,3 +6,4 @@ import './dark.js';
 import './lang-auto.js';
 import './crear.js';
 import './editar.js';
+import './firebase.js';

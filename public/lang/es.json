@@ -16,5 +16,6 @@
   "crear__inputTitulo": "Título",
   "crear__inputContenido": "Escribe tu nota aquí...",
   "crearNota": "Crear nota",
-  "search_placeholder": "Buscar notas..."
+  "search_placeholder": "Buscar notas...",
+  "findlist": "No se encontraron notas"
 }

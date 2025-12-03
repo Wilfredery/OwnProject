@@ -4,7 +4,8 @@
   "language": "Idioma:",
   "spanish": "Español 🇪🇸",
   "english": "Inglés 🇬🇧",
-  "create_note": "¡Crea tu primera nota!",
+  "create_noteFirst": "¡Crea tu primera nota!",
+  "create_note": "¡Crea una nota!",
   "search_notes": "¡Busca tus notas!",
   "check_notes": "¡Revisa las notas que ya has hecho!",
   "footer_text": " Todos los derechos reservados",
@@ -17,5 +18,7 @@
   "crear__inputContenido": "Escribe tu nota aquí...",
   "crearNota": "Crear nota",
   "search_placeholder": "Buscar notas...",
-  "findlist": "No se encontraron notas"
+  "findlist": "No se encontraron notas",
+  "editar": "✏Editar",
+  "eliminar": "🗑Eliminar"
 }

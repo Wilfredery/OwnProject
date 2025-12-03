@@ -49,6 +49,8 @@ async function loadNotes() {
 
       if (filteredNotes.length === 0) {
         resultsContainer.innerHTML = `<p class="no-results" data-i18n="findlist"></p>`;
+        applyTranslations(currentLangData);
+
         return;
       }
 
@@ -64,10 +66,11 @@ async function loadNotes() {
           </div>
 
           <div class="actions">
-              <button class="edit-btn" data-id="${note.id}">✏ Editar</button>
-              <button class="delete-btn" data-id="${note.id}">🗑 Eliminar</button>
+              <button class="edit-btn" data-id="${note.id}" data-i18n="editar"></button>
+              <button class="delete-btn" data-id="${note.id}" data-i18n="eliminar"></button>
           </div>
         `;
+        applyTranslations(currentLangData);
 
         resultsContainer.appendChild(li);
       });

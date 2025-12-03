@@ -31,14 +31,22 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
       const messages = {
         es: {
-          missing: "Debes completar el título y contenido.",
-          saved: "Nota guardada correctamente 📒",
-          error: "Hubo un error al guardar 😞"
+          missing: "⚠️ Debes completar el título y el contenido.",
+          saved: "📒 Nota guardada correctamente",
+          error: "😞 Hubo un error al guardar.",
+
+          askNew: "¿Qué deseas hacer ahora?",
+          createAgain: "📝 Crear otra nota",
+          goList: "📋 Ir a la lista"
         },
         en: {
-          missing: "You must complete the title and content.",
-          saved: "Note saved successfully 📒",
-          error: "There was an error saving 😞"
+          missing: "⚠️ You must complete the title and content.",
+          saved: "📒 Note saved successfully",
+          error: "😞 An error occurred while saving.",
+
+          askNew: "What would you like to do next?",
+          createAgain: "📝 Create another note",
+          goList: "📋 Go to list"
         }
       };
 
@@ -54,7 +62,7 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
         return;
       }
 
-      // 🟡 Guardar en Firestore
+      // ✔ Guardar en Firestore
       const success = await saveNoteToFirestore(title, content);
 
       if (!success) {
@@ -69,19 +77,39 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
         return;
       }
 
-      // 🟢 Nota guardada correctamente
+      // ✔ Toast de guardado
       Swal.fire({
         title: messages[currentLang].saved,
         icon: "success",
         position: "top",
         toast: true,
-        timer: 1800,
+        timer: 1600,
         showConfirmButton: false
+      }).then(() => {
+
+        // ✔ Modal profesional con 2 opciones
+        Swal.fire({
+          title: messages[currentLang].askNew,
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: messages[currentLang].createAgain,
+          cancelButtonText: messages[currentLang].goList,
+          reverseButtons: true,
+          focusCancel: false,
+          allowOutsideClick: false
+        }).then(choice => {
+          if (choice.isConfirmed) {
+            // 🟦 Crear otra nota
+            document.getElementById("note-title").value = "";
+            document.getElementById("note-content").value = "";
+          } else {
+            // 🟧 Ir a la lista
+            window.location.href = "/search";
+          }
+        });
+
       });
 
-      // Opcional: limpiar inputs
-      document.getElementById("note-title").value = "";
-      document.getElementById("note-content").value = "";
     });
 
   });

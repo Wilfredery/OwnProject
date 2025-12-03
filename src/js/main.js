@@ -28,7 +28,10 @@ import { collection, getDocs } from "firebase/firestore";
   // 🔄 Actualizar texto según cantidad de notas
   createBtn.innerHTML =
     notesCount === 0
-      ? `<span class="btn-icon">📝</span><span class="btn-text" data-i18n="create_note_first">¡Crea tu primera nota!</span>`
-      : `<span class="btn-icon">➕</span><span class="btn-text" data-i18n="create_note">Crear nota</span>`;
+      ? `<span class="btn-icon">📝</span><span class="btn-text" data-i18n="create_noteFirst"></span>`
+      : `<span class="btn-icon">➕</span><span class="btn-text" data-i18n="create_note"></span>`;
+      applyTranslations(currentLangData);
+
+
 
 })();

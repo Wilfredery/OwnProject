@@ -4,7 +4,8 @@
   "language": "Language:",
   "spanish": "Spanish 🇪🇸",
   "english": "English 🇬🇧",
-  "create_note": "Create your first note!",
+  "create_noteFirst": "Create your first note!",
+  "create_note": "Create a note!",
   "search_notes": "Search your notes!",
   "check_notes": "Check the notes that you've already done!",
   "footer_text": " All rights reserved",
@@ -17,5 +18,7 @@
   "crear__inputContenido": "Write your note here...",
   "crearNota": "Create Note",
   "search_placeholder": "Search notes...",
-  "findlist": "No notes found"
+  "findlist": "No notes found",
+  "editar": "✏Edit",
+  "eliminar": "🗑Delete"
 }

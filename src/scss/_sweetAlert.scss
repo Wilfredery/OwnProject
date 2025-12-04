@@ -1,6 +1,7 @@
 @use 'variables' as v;
 @use 'sass:color';
 
+//Pertenece al change lang y theme.
 .minimal-alert {
   color: v.$negro;
   background-color: v.$blanco;
@@ -14,3 +15,4 @@
     0 .2rem .8rem rgba(0,0,0,0.08),
     0 .6rem 2.4rem rgba(0,0,0,0.06) !important;
 }
+//Fin Pertenece al change lang y theme.

@@ -97,7 +97,45 @@ async function loadNotes() {
       /* --------- EDITAR --------- */
       if (e.target.classList.contains("edit-btn")) {
         const id = e.target.dataset.id;
-        window.location.href = `/editar/${id}`;
+
+        Swal.fire({
+          title: "¿Editar nota?",
+          text: "Vas a editar esta nota.",
+          icon: "question",
+          showCancelButton: true,
+          customClass: { 
+            popup: 'minimal-alert' 
+          },
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#e74c3c",
+          confirmButtonText: "Sí, editar",
+          cancelButtonText: "Cancelar",
+          reverseButtons: true,
+          backdrop: true,
+          allowOutsideClick: true,
+          heightAuto: false
+        }).then(result => {
+
+          if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+              title: "Cancelado",
+              text: "No se abrió el editor.",
+              icon: "info",
+              timer: 1200,
+              customClass: { 
+                popup: 'minimal-alert' 
+              }
+            });
+            return;
+          }
+
+          if (result.isConfirmed) {
+            // 🔵 Si el usuario confirma → ir a la página de edición
+            window.location.href = `/editar/${id}`;
+          }
+
+        });
+
         return;
       }
 
@@ -110,6 +148,9 @@ async function loadNotes() {
           title: "¿Eliminar nota?",
           text: "Esta acción no se puede deshacer.",
           icon: "warning",
+          customClass: { 
+            popup: 'minimal-alert' 
+          },
           showCancelButton: true,
           confirmButtonColor: "#e74c3c",
           cancelButtonColor: "#3085d6",
@@ -121,15 +162,19 @@ async function loadNotes() {
           heightAuto: false
         }).then(async (result) => {
 
-          if (
-            result.dismiss === Swal.DismissReason.cancel ||
-            result.dismiss === Swal.DismissReason.backdrop
-          ) {
+          // ❌ Si toca afuera → NO mostrar nada (igual que EDITAR)
+          if (result.dismiss === Swal.DismissReason.backdrop) return;
+
+          // ❌ Si presiona CANCELAR → mostrar mensaje de cancelado (igual que EDITAR)
+          if (result.dismiss === Swal.DismissReason.cancel) {
             Swal.fire({
               title: "Cancelado",
               text: "La nota no fue eliminada.",
               icon: "info",
               timer: 1200,
+              customClass: { 
+                popup: 'minimal-alert' 
+              },
               confirmButtonColor: "#3085d6"
             });
             return;
@@ -152,7 +197,6 @@ async function loadNotes() {
 
             // 🧹 Actualizar lista local
             notes = notes.filter(n => n.id !== id);
-
             renderNotes(notes);
 
             Swal.fire({
@@ -163,12 +207,8 @@ async function loadNotes() {
               confirmButtonColor: "#3085d6"
             });
           }
-
         });
       }
-
     });
-
   });
-
 })();

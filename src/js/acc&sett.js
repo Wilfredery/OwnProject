@@ -17,8 +17,7 @@ customSelects.forEach((customSelect) => {
       customSelect.classList.remove('open');
 
       // Si quieres hacer algo según el valor:
-      const value = option.dataset.value;
-      console.log('Seleccionado:', value);
+      // const value = option.dataset.value;
     });
   });
 });

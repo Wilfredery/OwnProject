@@ -104,7 +104,9 @@ document.addEventListener('DOMContentLoaded', () => {
           showConfirmButton: false,
           timer: 1600,
           timerProgressBar: true,
-          customClass: { popup: 'minimal-alert' }
+          customClass: { 
+            popup: 'minimal-alert' 
+          }
         });
       }
     });

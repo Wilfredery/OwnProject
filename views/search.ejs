@@ -1,11 +1,17 @@
 <%- include('partials/header') %>
     <section class="search">
-        <h2 class="search__titulo">Search here</h2>
+        <div class="search__Cont">
+            <h2 class="search__titulo" data-i18n="buscarSearch"></h2>
 
-        <input class="search__input" type="text" id="search" placeholder="Search notes..." data-i18n-placeholder="search_placeholder">
-        
+            <input class="search__input" type="text" id="search" placeholder="Search notes..." data-i18n-placeholder="search_placeholder">
+
+        </div>
+
         <ul class="results" id="results"></ul>
+    
     </section>
+
+    
 
 
 <%- include('partials/footer') %>

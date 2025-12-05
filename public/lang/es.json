@@ -19,6 +19,7 @@
   "crearNota": "Crear nota",
   "search_placeholder": "Buscar notas...",
   "findlist": "No se encontraron notas",
-  "editar": "✏Editar",
-  "eliminar": "🗑Eliminar"
+  "editar": "✏ Editar",
+  "eliminar": "🗑 Eliminar",
+  "buscarSearch": "Buscar"
 }

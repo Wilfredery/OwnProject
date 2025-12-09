@@ -4,23 +4,23 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
 (async function () {
 
   // 🔥 Cargar notas desde Firebase
-async function loadNotes() {
-  const notes = [];
-  const querySnapshot = await getDocs(collection(db, "notes"));
+  async function loadNotes() {
+    const notes = [];
+    const querySnapshot = await getDocs(collection(db, "notes"));
 
-  querySnapshot.forEach(docSnap => {
-    const data = docSnap.data();
+    querySnapshot.forEach(docSnap => {
+      const data = docSnap.data();
 
-    notes.push({
-      id: docSnap.id,
-      title: data.title,
-      content: data.content,
-      created_at: data.created_at ? data.created_at.toDate() : null
+      notes.push({
+        id: docSnap.id,
+        title: data.title,
+        content: data.content,
+        created_at: data.created_at ? data.created_at.toDate() : null
+      });
     });
-  });
 
-  return notes;
-}
+    return notes;
+  }
 
 
   // 🔥 Eliminar nota REAL desde Firebase
@@ -42,8 +42,12 @@ async function loadNotes() {
     const searchInput = document.getElementById("search");
     const resultsContainer = document.getElementById("results");
 
-     if (!searchInput || !resultsContainer) return; // 🛑 Evita errores
+    if (!searchInput || !resultsContainer) return; // 🛑 Evita errores
 
+
+    /* ==========================================================
+       🟦 RENDERIZAR NOTAS
+    =========================================================== */
     function renderNotes(filteredNotes) {
       resultsContainer.innerHTML = "";
 
@@ -70,16 +74,20 @@ async function loadNotes() {
               <button class="delete-btn" data-id="${note.id}" data-i18n="eliminar"></button>
           </div>
         `;
-        applyTranslations(currentLangData);
 
+        applyTranslations(currentLangData);
         resultsContainer.appendChild(li);
       });
     }
 
+
     // 👉 Mostrar todas al inicio
     renderNotes(notes);
 
-    // 👉 Filtrar con cada tecla
+
+    /* ==========================================================
+       🟦 BÚSQUEDA
+    =========================================================== */
     searchInput.addEventListener("input", () => {
       const query = searchInput.value.trim().toLowerCase();
 
@@ -91,7 +99,59 @@ async function loadNotes() {
       renderNotes(filtered);
     });
 
-    // ⭐⭐⭐ EDITAR + ELIMINAR ⭐⭐⭐
+
+
+    /* ==========================================================
+       🟦 FILTROS (Fecha: reciente/antigua, A-Z / Z-A)
+    =========================================================== */
+
+    const filterToggle = document.getElementById("filterToggle");
+    const filterPanel = document.getElementById("filterPanel");
+
+    // Abrir / cerrar panel
+    filterToggle.addEventListener("click", () => {
+      filterPanel.classList.toggle("hidden");
+    });
+
+    // Función de ordenamiento
+    function sortNotes(type) {
+      let sorted = [...notes];
+
+      switch (type) {
+        case "date-desc":
+          sorted.sort((a, b) => b.created_at - a.created_at);
+          break;
+
+        case "date-asc":
+          sorted.sort((a, b) => a.created_at - b.created_at);
+          break;
+
+        case "alpha-asc":
+          sorted.sort((a, b) => a.title.localeCompare(b.title, "es", { sensitivity: "base" }));
+          break;
+
+        case "alpha-desc":
+          sorted.sort((a, b) => b.title.localeCompare(a.title, "es", { sensitivity: "base" }));
+          break;
+      }
+
+      renderNotes(sorted);
+    }
+
+    // Oír clicks en botones del panel
+    document.querySelectorAll(".search__filter--option").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const type = btn.dataset.sort;
+        sortNotes(type);
+        filterPanel.classList.add("hidden");
+      });
+    });
+
+
+
+    /* ==========================================================
+       ⭐⭐⭐ EDITAR + ELIMINAR ⭐⭐⭐
+    =========================================================== */
     resultsContainer.addEventListener("click", async (e) => {
 
       /* --------- EDITAR --------- */
@@ -130,7 +190,6 @@ async function loadNotes() {
           }
 
           if (result.isConfirmed) {
-            // 🔵 Si el usuario confirma → ir a la página de edición
             window.location.href = `/editar/${id}`;
           }
 
@@ -162,10 +221,8 @@ async function loadNotes() {
           heightAuto: false
         }).then(async (result) => {
 
-          // ❌ Si toca afuera → NO mostrar nada (igual que EDITAR)
           if (result.dismiss === Swal.DismissReason.backdrop) return;
 
-          // ❌ Si presiona CANCELAR → mostrar mensaje de cancelado (igual que EDITAR)
           if (result.dismiss === Swal.DismissReason.cancel) {
             Swal.fire({
               title: "Cancelado",
@@ -180,7 +237,6 @@ async function loadNotes() {
             return;
           }
 
-          // 🟢 Confirmó eliminación REAL en Firebase
           if (result.isConfirmed) {
 
             const ok = await deleteNoteFromFirestore(id);
@@ -210,5 +266,6 @@ async function loadNotes() {
         });
       }
     });
+
   });
 })();

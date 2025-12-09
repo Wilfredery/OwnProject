@@ -35,86 +35,134 @@
     }
   }
 
-.results {
-  list-style: none;
-  padding: 0;
-  margin-top: 2rem;
+  .results {
+    list-style: none;
+    padding: 0;
+    margin-top: 2rem;
 
-  .note-item {
-    padding: 1.6rem;
-    margin-bottom: 1.4rem;
-    background: v.$blanco;
-    border-radius: 12px;
-    border: 1px solid v.$gris-claro;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-    transition: transform .15s ease, box-shadow .15s ease;
-
-    &:hover {
-      transform: translateY(-3px);
-      -webkit-box-shadow: 2px 4px 17px 3px #000000; 
-      box-shadow: 2px 4px 17px 3px #000000;
-    }
-
-    /* INFO */
-    .info {
-      flex: 1;
-
-      h3 {
-        font-size: 2.1rem;
-        font-weight: 700;
-        margin: 0;
-        color: v.$negro;
-      }
-
-      p {
-        font-size: 1.5rem;
-        color: v.$gris-oscuro;
-        margin-top: 0.4rem;
-        line-height: 1.4;
-      }
-    }
-
-    /* ACTIONS */
-    .actions {
+    .note-item {
+      padding: 1.6rem;
+      margin-bottom: 1.4rem;
+      background: v.$blanco;
+      border-radius: 12px;
+      border: 1px solid v.$gris-claro;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
       display: flex;
-      flex-direction: column;
-      gap: .6rem;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      transition: transform .15s ease, box-shadow .15s ease;
 
-      button {
-        font-size: 1.3rem;
-        padding: .8rem 1.4rem;
-        border-radius: 1.6rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        border: none;
-        cursor: pointer;
-        transition: 0.2s ease;
+      &:hover {
+        transform: translateY(-3px);
+        -webkit-box-shadow: 2px 4px 17px 3px #000000; 
+        box-shadow: 2px 4px 17px 3px #000000;
       }
 
-      .edit-btn {
-        background: v.$azul;
-        color: v.$blanco;
+      /* INFO */
+      .info {
+        flex: 1;
 
-        &:hover {
-          background: color.adjust(v.$azul, $lightness: -10%);
-          transform: translateY(-2px);
+        h3 {
+          font-size: 2.1rem;
+          font-weight: 700;
+          margin: 0;
+          color: v.$negro;
+        }
+
+        p {
+          font-size: 1.5rem;
+          color: v.$gris-oscuro;
+          margin-top: 0.4rem;
+          line-height: 1.4;
         }
       }
 
-      .delete-btn {
-        background: #e74c3c;
-        color: v.$blanco;
+      /* ACTIONS */
+      .actions {
+        display: flex;
+        flex-direction: column;
+        gap: .6rem;
 
-        &:hover {
-          background: color.adjust(#e74c3c, $lightness: -10%);
-          transform: translateY(-2px);
+        button {
+          font-size: 1.3rem;
+          padding: .8rem 1.4rem;
+          border-radius: 1.6rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          border: none;
+          cursor: pointer;
+          transition: 0.2s ease;
+        }
+
+        .edit-btn {
+          background: v.$azul;
+          color: v.$blanco;
+
+          &:hover {
+            background: color.adjust(v.$azul, $lightness: -10%);
+            transform: translateY(-2px);
+          }
+        }
+
+        .delete-btn {
+          background: #e74c3c;
+          color: v.$blanco;
+
+          &:hover {
+            background: color.adjust(#e74c3c, $lightness: -10%);
+            transform: translateY(-2px);
+          }
         }
       }
     }
   }
+  //FILTRO SEARCH
+  &__filter {
+    margin-top: 1rem;
+  }
+
+  &__filter--btn {
+    padding: .8rem 1.2rem;
+    background-color: v.$blanco;
+    color: v.$negro;
+    font-weight: 600;
+    border: .1rem solid v.$azul;
+    border-radius: .6rem;
+    cursor: pointer;
+  }
+    .hidden {
+    display: none;
+  }
+
+  &__filter--panel {
+    margin-top: 1rem;
+    padding: 1.2rem;
+    background-color: v.$blanco;
+    border: .1rem solid v.$azul;
+    border-radius: 0.8rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+  }
+
+
+
+  &__filter--option {
+    padding: .8rem;
+    background-color: v.$blanco;
+    border: .1rem solid v.$azul;
+    border-radius: .6rem;
+    font-weight: 600;
+    color: v.$negro;
+    cursor: pointer;
+
+    &:hover {
+      background: color.adjust(v.$azul, $lightness: -10%);
+    }
+  }
+  //FIN SEARCH
 }
-}
+

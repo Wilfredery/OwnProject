@@ -1,17 +1,30 @@
 <%- include('partials/header') %>
-    <section class="search">
-        <div class="search__Cont">
-            <h2 class="search__titulo" data-i18n="buscarSearch"></h2>
 
-            <input class="search__input" type="text" id="search" placeholder="Search notes..." data-i18n-placeholder="search_placeholder">
+<section class="search">
+    <div class="search__Cont">
+        <h2 class="search__titulo" data-i18n="buscarSearch"></h2>
 
+        <input class="search__input" type="text" id="search" placeholder="Search notes..." data-i18n-placeholder="search_placeholder">
+    </div>
+
+    <!-- 🟦 BOTÓN DE FILTROS -->
+    <div class="search__filter">
+        <button id="filterToggle" class="search__filter--btn" data-i18n="filters">
+            🔽 Filtros
+        </button>
+
+        <!-- PANEL OCULTO -->
+        <div id="filterPanel" class="search__filter--panel hidden">
+            <h3 data-i18n="order_by"></h3>
+
+            <button class="search__filter--option" data-sort="date-desc" data-i18n="newest_first"></button>
+            <button class="search__filter--option" data-sort="date-asc" data-i18n="oldest_first"></button>
+            <button class="search__filter--option" data-sort="alpha-asc" data-i18n="a_z"></button>
+            <button class="search__filter--option" data-sort="alpha-desc" data-i18n="z_a"></button>
         </div>
+    </div>
 
-        <ul class="results" id="results"></ul>
-    
-    </section>
-
-    
-
+    <ul class="results" id="results"></ul>
+</section>
 
 <%- include('partials/footer') %>

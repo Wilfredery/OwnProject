@@ -21,5 +21,11 @@
   "findlist": "No se encontraron notas",
   "editar": "✏ Editar",
   "eliminar": "🗑 Eliminar",
-  "buscarSearch": "Buscar"
+  "buscarSearch": "Buscar",
+  "filters": "Filtros",
+"order_by": "Ordenar por",
+"newest_first": "Más recientes primero",
+"oldest_first": "Más antiguas primero",
+"a_z": "A - Z",
+"z_a": "Z - A"
 }

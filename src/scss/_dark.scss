@@ -116,6 +116,36 @@ body.dark {
         color: v.$negro;
       }
     }
+
+    //Inicio de filtrosearch
+
+    &__filter--btn {
+      background-color: v.$azul-oscuro;
+      border: .1rem solid v.$azul;
+      color: v.$blanco;
+
+      &:hover {
+        background-color: v.$azul;
+        color: v.$blanco;
+      }
+    }
+    &__filter--panel {
+      background-color: color.adjust(v.$azul-oscuro, $lightness: 10%);
+      border: .1rem solid v.$azul;
+    }
+
+    &__filter--option {
+      background: v.$gris-oscuro;
+      color: v.$blanco;
+      border: .1rem solid v.$azul;
+
+      &:hover {
+        background-color: v.$azul;
+        color: v.$blanco;
+      }
+    }
+
+    //fin de filtrosearch
   }
 
   //Fin del search.scss

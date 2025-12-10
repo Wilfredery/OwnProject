@@ -38,7 +38,7 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
 
     // 🟡 Cargar notas reales
     let notes = await loadNotes();
-
+    const userLocale = navigator.language || "es-ES";
     const searchInput = document.getElementById("search");
     const resultsContainer = document.getElementById("results");
 
@@ -62,11 +62,21 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
         const li = document.createElement("li");
         li.classList.add("note-item");
 
+        //<p class="fecha">${note.created_at ? note.created_at.toLocaleDateString() : ""}</p>
         li.innerHTML = `
           <div class="info">
               <h3>${note.title}</h3>
               <p>${note.content.substring(0, 60)}...</p>
-              <p class="fecha">${note.created_at ? note.created_at.toLocaleDateString() : ""}</p>
+              <p class="fecha">
+                ${note.created_at 
+                  ? note.created_at.toLocaleDateString(userLocale) + 
+                    " " + 
+                    note.created_at.toLocaleTimeString(userLocale, { 
+                      hour: '2-digit', 
+                      minute: '2-digit' 
+                    }) 
+                  : ""}
+              </p>
           </div>
 
           <div class="actions">

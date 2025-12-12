@@ -1,0 +1,24 @@
+<%- include('partials/header') %>
+<section class="login">
+  <h1 class="login__titulo">Iniciar sesión</h1>
+
+  <form id="login-form" class="login__form">
+    <label class="login__form--tituloEmail">Email</label>
+    <input id="login-email" type="email" required />
+
+    <label class="login__form--passw">Contraseña</label>
+    <input id="login-pass" type="password" required />
+
+    <button class="login__form--submit" type="submit">Entrar</button>
+  </form>
+
+  <div class="login__options">
+    <button id="google-btn" class="login__options--google" data-i18n="google"></button>
+    <a id="forgot-btn" class="login__options--olvidar" href="/olvidar">Olvidé mi contraseña</a>
+    <a class="login__options--crearCuenta" href="/register">¿No tienes cuenta? Crear cuenta</a>
+  </div>
+
+  
+</section>
+
+<%- include('partials/footer') %>

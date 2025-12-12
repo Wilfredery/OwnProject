@@ -27,6 +27,9 @@
   "newest_first": "Newest first",
   "oldest_first": "Oldest first",
   "a_z": "A - Z",
-  "z_a": "Z - A"
+  "z_a": "Z - A",
+  "login": "Login",
+  "register": "Sign Up",
+  "google": "Login with Google"
 
 }

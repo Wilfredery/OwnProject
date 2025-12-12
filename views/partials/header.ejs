@@ -9,8 +9,6 @@
   });
 </script>
 
-
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
@@ -39,11 +37,14 @@
 
             <!-- Menú desplegable -->
             <nav class="dropdown-menu">
-            <ul>
-                <li><a href="/search" ><span>🔍</span><span data-i18n="page_searchNotes">Search Notes</span></a></li>
-                <li><a href="/crear"><span>✏️</span><span data-i18n="crearNota">crear nota</span></a></li>
-                <li><a href="/account-settings" ><span>🧑</span><span data-i18n="page_accountSettings">Account & Settings</span><span>⚙️</span></a></li>
-            </ul>
+                <ul>
+                    <!-- LINKS NORMALES -->
+                    <li><a href="/search"><span>🔍</span><span data-i18n="page_searchNotes">Search Notes</span></a></li>
+                    <li><a href="/crear"><span>✏️</span><span data-i18n="crearNota">crear nota</span></a></li>
+                    <li><a href="/account-settings"><span>🧑</span><span data-i18n="page_accountSettings">Account & Settings</span><span>⚙️</span></a></li>
+                    <li id="guest-controls"><a href="/login"><span>🔐</span><span data-i18n="login">Iniciar Sesión</span></a></li>
+                    <li id="guest-controls-register"><a href="/register"><span>📝</span><span data-i18n="register">Crear Cuenta</span></a></li> 
+                </ul>
             </nav>
         </div>
     </header>

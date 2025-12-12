@@ -41,7 +41,17 @@ app.get("/editar/:id", (req, res) => {
     res.render("editar", { noteId });
 });
 
+app.get('/login', (req, res) => {
+  res.render('login', { title: 'Login' });
+});
 
+app.get('/olvidar', (req, res) => {
+  res.render('olvidar', { title: 'Forgot Password' });
+});
+
+app.get('/register', (req, res) => {
+  res.render('register', { title: 'Register' });
+});
 
 // Servidor
 //Permite que el puerto sea configurable por variables de entorno (útil en hosting).

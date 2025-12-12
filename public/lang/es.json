@@ -27,5 +27,8 @@
 "newest_first": "Más recientes primero",
 "oldest_first": "Más antiguas primero",
 "a_z": "A - Z",
-"z_a": "Z - A"
+"z_a": "Z - A",
+"login": "Iniciar sesión",
+"register": "Registrarse",
+"google": "Iniciar sesión con Google"
 }

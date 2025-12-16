@@ -1,3 +1,28 @@
 <%- include('partials/header') %>
+<section class="register">
+  <h1 class="register__titulo" data-i18n="registerTitle"></h1>
+
+  <form id="register-form" class="register__form">
+
+    <label for="" class="register__form--nickname" data-i18n="nickname"></label>
+    <input id="register-nick" class="register__form--input" type="text" required />
+
+    <label class="register__form--tituloEmail" data-i18n="emailRegister"></label>
+    <input id="register-email" class="register__form--input" type="email" required />
+
+    <label class="register__form--passw" data-i18n="passwordRegister"></label>
+    <input id="register-pass" class="register__form--input" type="password" required />
+
+    <button class="register__form--submit" type="submit" data-i18n="submitRegister"></button>
+  </form>
+
+  <div class="register__options">
+    <button id="google-btn" class="register__options--google" data-i18n="googleCreate"></button>
+    <a id="forgot-btn" class="register__options--olvidar" href="/olvidar" data-i18n="forgotPassowrd"></a>
+    <a class="register__options--cuenta" href="/login" data-i18n="createExist"></a>
+  </div>
+
+  
+</section>
 
 <%- include('partials/footer') %>

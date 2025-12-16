@@ -1,21 +1,21 @@
 <%- include('partials/header') %>
 <section class="login">
-  <h1 class="login__titulo">Iniciar sesión</h1>
+  <h1 class="login__titulo" data-i18n="logintitulo">Iniciar sesión</h1>
 
   <form id="login-form" class="login__form">
-    <label class="login__form--tituloEmail">Email</label>
-    <input id="login-email" type="email" required />
+    <label class="login__form--tituloEmail" data-i18n="emailLogin"></label>
+    <input id="login-email" class="login__form--input" type="email" required />
 
-    <label class="login__form--passw">Contraseña</label>
-    <input id="login-pass" type="password" required />
+    <label class="login__form--passw" data-i18n="passwordLogin"></label>
+    <input id="login-pass" class="login__form--input" type="password" required />
 
-    <button class="login__form--submit" type="submit">Entrar</button>
+    <button class="login__form--submit" type="submit" data-i18n="submitLogin"></button>
   </form>
 
   <div class="login__options">
     <button id="google-btn" class="login__options--google" data-i18n="google"></button>
-    <a id="forgot-btn" class="login__options--olvidar" href="/olvidar">Olvidé mi contraseña</a>
-    <a class="login__options--crearCuenta" href="/register">¿No tienes cuenta? Crear cuenta</a>
+    <a id="forgot-btn" class="login__options--olvidar" href="/olvidar" data-i18n="forgotPassowrd"></a>
+    <a class="login__options--crearCuenta" href="/register" data-i18n="createAcc"></a>
   </div>
 
   

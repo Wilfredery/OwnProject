@@ -101,6 +101,61 @@ body.dark {
     }
   }
 
+  //Inicio register
+  .register {
+
+    &__form {
+      &--input {
+        background-color: v.$gris-oscuro;
+        color: v.$blanco;
+        border: .1rem solid v.$azul;
+      }
+
+    }
+
+    &__options {
+      &--google {
+        background-color: v.$gris-oscuro;
+        border: .1rem solid v.$azul;
+        color: v.$azul;
+
+        &:hover {
+          background-color: v.$azul;
+          color: v.$blanco;
+        }
+      }
+    }
+  }
+
+  //Fin register
+
+  //Inicio login
+
+  .login {
+
+    &__form {
+      &--input {
+        background-color: v.$gris-oscuro;
+        color: v.$blanco;
+        border: .1rem solid v.$azul;
+      }
+
+    }
+    &__options {
+      &--google {
+        background-color: v.$gris-oscuro;
+        border: .1rem solid v.$azul;
+        color: v.$azul;
+
+        &:hover {
+          background-color: v.$azul;
+          color: v.$blanco;
+        }
+      }
+    }
+  }
+
+  //Fin login
   //Inicio del search.scss
   .search {
     &__titulo {

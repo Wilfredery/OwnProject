@@ -53,6 +53,14 @@ app.get('/register', (req, res) => {
   res.render('register', { title: 'Register' });
 });
 
+app.get('/linkconfirm', (req, res) => {
+  res.render('linkconfirm', { title: 'Link Confirm' });
+});
+
+app.get('/password', (req, res) => {
+  res.render('password', { title: 'Reset Password' });
+});
+
 // Servidor
 //Permite que el puerto sea configurable por variables de entorno (útil en hosting).
 app.listen(PORT, () => {

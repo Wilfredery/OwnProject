@@ -48,7 +48,13 @@
   "emailForgot": "Email",
   "submitForgot": "Send Link",
   "nickname": "Nickname/Username",
-  "createExist": "Never mind, I have an account"
+  "createExist": "Never mind, I have an account",
+  "resetTitle": "Reset Password",
+  "newPassword": "New Password",
+  "confirmPassword": "Confirm Password",
+  "submitReset": "Reset Password",
+  "confirmTitle": "Thank you for registering!",
+  "confirmText": "You can press the link to sign up, enjoy our app!"
   
 
 }

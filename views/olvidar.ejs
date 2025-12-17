@@ -1,3 +1,17 @@
 <%- include('partials/header') %>
+<section class="forgot">
+  <h1 class="forgot__title" data-i18n="forgotTitle">Recuperar contraseña</h1>
+
+  <form id="forgot-form" class="forgot__form">
+    <label class="forgot__form--label" data-i18n="emailForgot"></label>
+    <input id="forgot-email" class="forgot__form--input" type="email" required />
+    <button class="forgot__form--submit" type="submit" data-i18n="submitForgot">
+      Enviar enlace</button>
+  </form>
+
+  <div class="forgot__links">
+    <a href="/login" class="forgot__link" data-i18n="backToLogin"></a>
+  </div>
+</section>
 
 <%- include('partials/footer') %>

@@ -48,5 +48,11 @@
   "emailForgot": "Correo electrónico",
   "submitForgot": "Enviar enlace",
   "nickname": "Apodo/Nombre de usuario",
-  "createExist": "No importa, ya tengo una cuenta"
+  "createExist": "No importa, ya tengo una cuenta",
+  "resetTitle": "Restablecer contraseña",
+  "newPassword": "Nueva contraseña",
+  "confirmPassword": "Confirmar contraseña",
+  "submitReset": "Restablecer contraseña",
+  "confirmTitle": "¡Gracias por registrarte!",
+  "confirmText": "¡Puedes presionar el enlace para registrarte, disfruta de nuestra aplicación!"
 }

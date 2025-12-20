@@ -1,5 +1,7 @@
 import { db } from "./firebase.js";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import Swal from "sweetalert2";
+
 
 (function () {
 

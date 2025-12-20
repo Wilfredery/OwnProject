@@ -31,7 +31,4 @@ import { collection, getDocs } from "firebase/firestore";
       ? `<span class="btn-icon">📝</span><span class="btn-text" data-i18n="create_noteFirst"></span>`
       : `<span class="btn-icon">➕</span><span class="btn-text" data-i18n="create_note"></span>`;
       applyTranslations(currentLangData);
-
-
-
 })();

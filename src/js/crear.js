@@ -1,4 +1,6 @@
 import { db } from "./firebase.js";
+import Swal from "sweetalert2";
+
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 (async function () {

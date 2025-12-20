@@ -1,4 +1,6 @@
 import { db } from "./firebase.js";
+import Swal from "sweetalert2";
+
 import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
 
 (async function () {
@@ -270,6 +272,9 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
               text: "La nota fue eliminada correctamente.",
               icon: "success",
               timer: 1500,
+              customClass: { 
+                popup: 'minimal-alert' 
+              },
               confirmButtonColor: "#3085d6"
             });
           }

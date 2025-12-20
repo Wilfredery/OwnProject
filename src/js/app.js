@@ -1,4 +1,5 @@
 import './lang-auto.js';
+import './header.js';
 // import './auth.js';
 //import './login.js';
 import './auth-ui.js';
@@ -10,3 +11,6 @@ import './dark.js';
 import './crear.js';
 import './editar.js';
 import './firebase.js';
+// import './password.js';
+// import './register.js';
+// import './olvidar.js';

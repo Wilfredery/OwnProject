@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 });
 
 // Rutas
-app.get('/', (req, res) => {
+app.get('/main', (req, res) => {
   res.render('index', { title: 'Pagina principal' });
 });
 
@@ -41,7 +41,7 @@ app.get("/editar/:id", (req, res) => {
     res.render("editar", { noteId });
 });
 
-app.get('/login', (req, res) => {
+app.get('/', (req, res) => {
   res.render('login', { title: 'Login' });
 });
 

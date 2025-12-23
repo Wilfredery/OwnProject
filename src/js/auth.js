@@ -45,7 +45,7 @@ export function initAuthListener({ onSignedIn, onSignedOut } = {}) {
 }
 
 /** Forzar ruta solo para usuarios autenticados (en el cliente) */
-export function requireAuth(redirectTo = "/login") {
+export function requireAuth(redirectTo = "/") {
   return new Promise((resolve, reject) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       unsubscribe();

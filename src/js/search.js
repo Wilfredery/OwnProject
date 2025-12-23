@@ -1,11 +1,12 @@
 import { db } from "./firebase.js";
 import Swal from "sweetalert2";
-
 import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
 
 (async function () {
 
-  // 🔥 Cargar notas desde Firebase
+  /* ==========================================================
+     🔥 CARGAR NOTAS DESDE FIREBASE
+  ========================================================== */
   async function loadNotes() {
     const notes = [];
     const querySnapshot = await getDocs(collection(db, "notes"));
@@ -24,8 +25,9 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
     return notes;
   }
 
-
-  // 🔥 Eliminar nota REAL desde Firebase
+  /* ==========================================================
+     🗑️ ELIMINAR NOTA
+  ========================================================== */
   async function deleteNoteFromFirestore(id) {
     try {
       await deleteDoc(doc(db, "notes", id));
@@ -38,70 +40,148 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
 
   document.addEventListener("DOMContentLoaded", async () => {
 
-    // 🟡 Cargar notas reales
     let notes = await loadNotes();
+    let currentNotes = [];
+    let currentPage = 1;
+
+    const ITEMS_PER_PAGE = 10;
     const userLocale = navigator.language || "es-ES";
+
     const searchInput = document.getElementById("search");
     const resultsContainer = document.getElementById("results");
+    const paginationContainer = document.getElementById("pagination");
 
-    if (!searchInput || !resultsContainer) return; // 🛑 Evita errores
+    if (!searchInput || !resultsContainer || !paginationContainer) return;
 
+    /* ==========================================================
+       🔢 PAGINACIÓN << < 1 2 3 > >>
+    ========================================================== */
+    function renderPagination(totalItems) {
+      paginationContainer.innerHTML = "";
+
+      const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+      if (totalPages <= 1) return;
+
+      // ⏮️ PRIMERA
+      const firstBtn = document.createElement("button");
+      firstBtn.textContent = "<<";
+      firstBtn.classList.add("search__pagination--page-btn");
+      firstBtn.disabled = currentPage === 1;
+      firstBtn.addEventListener("click", () => {
+        currentPage = 1;
+        renderNotes(currentNotes);
+      });
+      paginationContainer.appendChild(firstBtn);
+
+      // ◀️ ANTERIOR
+      const prevBtn = document.createElement("button");
+      prevBtn.textContent = "<";
+      prevBtn.classList.add("search__pagination--page-btn");
+      prevBtn.disabled = currentPage === 1;
+      prevBtn.addEventListener("click", () => {
+        currentPage--;
+        renderNotes(currentNotes);
+      });
+      paginationContainer.appendChild(prevBtn);
+
+      // 🔢 NÚMEROS
+      for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement("button");
+        btn.textContent = i;
+        btn.classList.add("search__pagination--page-btn");
+
+        if (i === currentPage) btn.classList.add("active");
+
+        btn.addEventListener("click", () => {
+          currentPage = i;
+          renderNotes(currentNotes);
+        });
+
+        paginationContainer.appendChild(btn);
+      }
+
+      // ▶️ SIGUIENTE
+      const nextBtn = document.createElement("button");
+      nextBtn.textContent = ">";
+      nextBtn.classList.add("search__pagination--page-btn");
+      nextBtn.disabled = currentPage === totalPages;
+      nextBtn.addEventListener("click", () => {
+        currentPage++;
+        renderNotes(currentNotes);
+      });
+      paginationContainer.appendChild(nextBtn);
+
+      // ⏭️ ÚLTIMA
+      const lastBtn = document.createElement("button");
+      lastBtn.textContent = ">>";
+      lastBtn.classList.add("search__pagination--page-btn");
+      lastBtn.disabled = currentPage === totalPages;
+      lastBtn.addEventListener("click", () => {
+        currentPage = totalPages;
+        renderNotes(currentNotes);
+      });
+      paginationContainer.appendChild(lastBtn);
+    }
 
     /* ==========================================================
        🟦 RENDERIZAR NOTAS
-    =========================================================== */
-    function renderNotes(filteredNotes) {
+    ========================================================== */
+    function renderNotes(list) {
       resultsContainer.innerHTML = "";
+      currentNotes = list;
 
-      if (filteredNotes.length === 0) {
+      if (list.length === 0) {
         resultsContainer.innerHTML = `<p class="no-results" data-i18n="findlist"></p>`;
+        paginationContainer.innerHTML = "";
         applyTranslations(currentLangData);
-
         return;
       }
 
-      filteredNotes.forEach(note => {
+      const start = (currentPage - 1) * ITEMS_PER_PAGE;
+      const end = start + ITEMS_PER_PAGE;
+      const paginatedNotes = list.slice(start, end);
+
+      paginatedNotes.forEach(note => {
         const li = document.createElement("li");
         li.classList.add("note-item");
 
-        //<p class="fecha">${note.created_at ? note.created_at.toLocaleDateString() : ""}</p>
         li.innerHTML = `
           <div class="info">
-              <h3>${note.title}</h3>
-              <p>${note.content.substring(0, 60)}...</p>
-              <p class="fecha">
-                ${note.created_at 
-                  ? note.created_at.toLocaleDateString(userLocale) + 
-                    " " + 
-                    note.created_at.toLocaleTimeString(userLocale, { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    }) 
-                  : ""}
-              </p>
+            <h3>${note.title}</h3>
+            <p>${note.content.substring(0, 60)}...</p>
+            <p class="fecha">
+              ${note.created_at
+                ? note.created_at.toLocaleDateString(userLocale) + " " +
+                  note.created_at.toLocaleTimeString(userLocale, {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                  })
+                : ""}
+            </p>
           </div>
 
           <div class="actions">
-              <button class="edit-btn" data-id="${note.id}" data-i18n="editar"></button>
-              <button class="delete-btn" data-id="${note.id}" data-i18n="eliminar"></button>
+            <button class="edit-btn" data-id="${note.id}" data-i18n="editar"></button>
+            <button class="delete-btn" data-id="${note.id}" data-i18n="eliminar"></button>
           </div>
         `;
 
-        applyTranslations(currentLangData);
         resultsContainer.appendChild(li);
       });
-    }
 
+      applyTranslations(currentLangData);
+      renderPagination(list.length);
+    }
 
     // 👉 Mostrar todas al inicio
     renderNotes(notes);
 
-
     /* ==========================================================
-       🟦 BÚSQUEDA
-    =========================================================== */
+       🔍 BÚSQUEDA
+    ========================================================== */
     searchInput.addEventListener("input", () => {
       const query = searchInput.value.trim().toLowerCase();
+      currentPage = 1;
 
       const filtered = notes.filter(note =>
         note.title.toLowerCase().includes(query) ||
@@ -111,21 +191,16 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
       renderNotes(filtered);
     });
 
-
-
     /* ==========================================================
-       🟦 FILTROS (Fecha: reciente/antigua, A-Z / Z-A)
-    =========================================================== */
-
+       🟦 FILTROS
+    ========================================================== */
     const filterToggle = document.getElementById("filterToggle");
     const filterPanel = document.getElementById("filterPanel");
 
-    // Abrir / cerrar panel
     filterToggle.addEventListener("click", () => {
       filterPanel.classList.toggle("hidden");
     });
 
-    // Función de ordenamiento
     function sortNotes(type) {
       let sorted = [...notes];
 
@@ -133,151 +208,86 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
         case "date-desc":
           sorted.sort((a, b) => b.created_at - a.created_at);
           break;
-
         case "date-asc":
           sorted.sort((a, b) => a.created_at - b.created_at);
           break;
-
         case "alpha-asc":
           sorted.sort((a, b) => a.title.localeCompare(b.title, "es", { sensitivity: "base" }));
           break;
-
         case "alpha-desc":
           sorted.sort((a, b) => b.title.localeCompare(a.title, "es", { sensitivity: "base" }));
           break;
       }
 
+      currentPage = 1;
       renderNotes(sorted);
     }
 
-    // Oír clicks en botones del panel
     document.querySelectorAll(".search__filter--option").forEach(btn => {
       btn.addEventListener("click", () => {
-        const type = btn.dataset.sort;
-        sortNotes(type);
+        sortNotes(btn.dataset.sort);
         filterPanel.classList.add("hidden");
       });
     });
 
-
-
     /* ==========================================================
-       ⭐⭐⭐ EDITAR + ELIMINAR ⭐⭐⭐
-    =========================================================== */
+       ✏️ EDITAR / 🗑️ ELIMINAR
+    ========================================================== */
     resultsContainer.addEventListener("click", async (e) => {
 
-      /* --------- EDITAR --------- */
+      // ✏️ EDITAR
       if (e.target.classList.contains("edit-btn")) {
         const id = e.target.dataset.id;
 
-        Swal.fire({
+        const result = await Swal.fire({
           title: "¿Editar nota?",
           text: "Vas a editar esta nota.",
           icon: "question",
           showCancelButton: true,
-          customClass: { 
-            popup: 'minimal-alert' 
-          },
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#e74c3c",
           confirmButtonText: "Sí, editar",
           cancelButtonText: "Cancelar",
-          reverseButtons: true,
-          backdrop: true,
-          allowOutsideClick: true,
-          heightAuto: false
-        }).then(result => {
-
-          if (result.dismiss === Swal.DismissReason.cancel) {
-            Swal.fire({
-              title: "Cancelado",
-              text: "No se abrió el editor.",
-              icon: "info",
-              timer: 1200,
-              customClass: { 
-                popup: 'minimal-alert' 
-              }
-            });
-            return;
-          }
-
-          if (result.isConfirmed) {
-            window.location.href = `/editar/${id}`;
-          }
-
+          reverseButtons: true
         });
 
+        if (result.isConfirmed) {
+          window.location.href = `/editar/${id}`;
+        }
         return;
       }
 
-      /* --------- ELIMINAR --------- */
+      // 🗑️ ELIMINAR
       if (e.target.classList.contains("delete-btn")) {
-
         const id = e.target.dataset.id;
 
-        Swal.fire({
+        const result = await Swal.fire({
           title: "¿Eliminar nota?",
           text: "Esta acción no se puede deshacer.",
           icon: "warning",
-          customClass: { 
-            popup: 'minimal-alert' 
-          },
           showCancelButton: true,
-          confirmButtonColor: "#e74c3c",
-          cancelButtonColor: "#3085d6",
           confirmButtonText: "Sí, eliminar",
           cancelButtonText: "Cancelar",
-          reverseButtons: true,
-          backdrop: true,
-          allowOutsideClick: true,
-          heightAuto: false
-        }).then(async (result) => {
+          reverseButtons: true
+        });
 
-          if (result.dismiss === Swal.DismissReason.backdrop) return;
+        if (!result.isConfirmed) return;
 
-          if (result.dismiss === Swal.DismissReason.cancel) {
-            Swal.fire({
-              title: "Cancelado",
-              text: "La nota no fue eliminada.",
-              icon: "info",
-              timer: 1200,
-              customClass: { 
-                popup: 'minimal-alert' 
-              },
-              confirmButtonColor: "#3085d6"
-            });
-            return;
-          }
+        const ok = await deleteNoteFromFirestore(id);
+        if (!ok) return;
 
-          if (result.isConfirmed) {
+        notes = notes.filter(n => n.id !== id);
 
-            const ok = await deleteNoteFromFirestore(id);
+        const totalPages = Math.ceil(notes.length / ITEMS_PER_PAGE);
+        if (currentPage > totalPages) {
+          currentPage = totalPages;
+        }
 
-            if (!ok) {
-              Swal.fire({
-                title: "Error",
-                text: "Hubo un problema eliminando la nota.",
-                icon: "error",
-                timer: 1500,
-              });
-              return;
-            }
+        renderNotes(notes);
 
-            // 🧹 Actualizar lista local
-            notes = notes.filter(n => n.id !== id);
-            renderNotes(notes);
-
-            Swal.fire({
-              title: "Eliminada",
-              text: "La nota fue eliminada correctamente.",
-              icon: "success",
-              timer: 1500,
-              customClass: { 
-                popup: 'minimal-alert' 
-              },
-              confirmButtonColor: "#3085d6"
-            });
-          }
+        Swal.fire({
+          title: "Eliminada",
+          icon: "success",
+          timer: 1200,
+          showConfirmButton: false
         });
       }
     });

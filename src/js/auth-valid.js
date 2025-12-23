@@ -11,7 +11,7 @@ export function requireAuth(redirect = true) {
 
     if (!user) {
         if (redirect) {
-            window.location.href = "/login";
+            window.location.href = "/";
             return null;
         }
         throw new Error("Usuario no autenticado");

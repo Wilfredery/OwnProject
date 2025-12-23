@@ -228,45 +228,68 @@ body.dark {
     }
 
     //fin de filtrosearch
-  }
 
+    //INICIO LISTADO DEL SEARCH.SCSS
+    &__results {
+
+      .note-item {
+        background: v.$gris-oscuro;
+        border-color: color.adjust(v.$azul, $lightness: -10%);
+        box-shadow: none;
+
+        &:hover {
+          -webkit-box-shadow: 2px 4px 17px 3px v.$negro; 
+          box-shadow: 2px 4px 17px 3px v.$negro;
+        }
+
+        .info {
+          h3 {
+            color: v.$blanco;
+          }
+          p {
+            color: color.adjust(v.$blanco, $lightness: -40%);
+          }
+        }
+
+        .actions {
+
+          .edit-btn {
+            background: v.$azul;
+          }
+
+          .delete-btn {
+            background: #ff6b6b;
+          }
+        }
+      }
+    }
+    //FIN LISTADO DEL SEARCH.SCSS
+
+
+    //Inicio pagination
+    &__pagination {
+      &--page-btn {
+        background-color: v.$azul-oscuro;
+        border: .1rem solid v.$azul;
+        color: v.$blanco;
+
+        &.active {
+          background: #3085d6;
+        color: white;
+        border-color: #3085d6;
+        }
+            /* 🔴 AGREGA ESTO */
+        &:disabled {
+          opacity: 0.35;
+          cursor: not-allowed;
+          pointer-events: none;
+        }
+      }
+    }
+  }
   //Fin del search.scss
 
-  //INICIO LISTADO DEL SEARCH.SCSS
-  .results {
 
-  .note-item {
-    background: v.$gris-oscuro;
-    border-color: color.adjust(v.$azul, $lightness: -10%);
-    box-shadow: none;
-
-    &:hover {
-      -webkit-box-shadow: 2px 4px 17px 3px v.$negro; 
-      box-shadow: 2px 4px 17px 3px v.$negro;
-    }
-
-    .info {
-      h3 {
-        color: v.$blanco;
-      }
-      p {
-        color: color.adjust(v.$blanco, $lightness: -40%);
-      }
-    }
-
-    .actions {
-
-      .edit-btn {
-        background: v.$azul;
-      }
-
-      .delete-btn {
-        background: #ff6b6b;
-      }
-    }
-  }
-}
-  //FIN LISTADO DEL SEARCH.SCSS
 
 
   //INICIO _CREAR.SCSS

@@ -59,6 +59,9 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
           position: "top",
           toast: true,
           timer: 1800,
+          customClass: {
+            popup: 'minimal-alert'
+          },
           showConfirmButton: false
         });
         return;
@@ -74,6 +77,9 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
           position: "top",
           toast: true,
           timer: 2000,
+          customClass: {
+            popup: 'minimal-alert'
+          },
           showConfirmButton: false
         });
         return;
@@ -86,6 +92,9 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
         position: "top",
         toast: true,
         timer: 1600,
+        customClass: {
+          popup: 'minimal-alert'
+        },
         showConfirmButton: false
       }).then(() => {
 
@@ -98,6 +107,9 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
           cancelButtonText: messages[currentLang].goList,
           reverseButtons: true,
           focusCancel: false,
+          customClass: {
+            popup: 'minimal-alert'
+          },
           allowOutsideClick: false
         }).then(choice => {
           if (choice.isConfirmed) {

@@ -246,6 +246,9 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
           showCancelButton: true,
           confirmButtonText: "Sí, editar",
           cancelButtonText: "Cancelar",
+          customClass: {
+          popup: 'minimal-alert'
+          },
           reverseButtons: true
         });
 
@@ -266,6 +269,9 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
           showCancelButton: true,
           confirmButtonText: "Sí, eliminar",
           cancelButtonText: "Cancelar",
+          customClass: {
+            popup: 'minimal-alert'
+          },
           reverseButtons: true
         });
 
@@ -286,6 +292,9 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
         Swal.fire({
           title: "Eliminada",
           icon: "success",
+          customClass: {
+            popup: 'minimal-alert'
+          },
           timer: 1200,
           showConfirmButton: false
         });

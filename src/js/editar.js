@@ -67,6 +67,9 @@ import Swal from "sweetalert2";
           title: "Nota actualizada ✔",
           timer: 1300,
           position: "top",
+          customClass: {
+            popup: 'minimal-alert'
+          },
           showConfirmButton: false
         });
 
@@ -76,6 +79,9 @@ import Swal from "sweetalert2";
           icon: "error",
           title: "Error actualizando 😞",
           timer: 1400,
+          customClass: {
+              popup: 'minimal-alert'
+          },
           showConfirmButton: false
         });
       }
@@ -90,6 +96,9 @@ import Swal from "sweetalert2";
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Sí, eliminar",
+        customClass: {
+          popup: 'minimal-alert'
+        },
         cancelButtonText: "Cancelar"
       }).then(async (result) => {
 
@@ -102,6 +111,9 @@ import Swal from "sweetalert2";
             icon: "success",
             title: "Eliminada",
             timer: 1500,
+            customClass: {
+              popup: 'minimal-alert'
+            },
             showConfirmButton: false
           });
 
@@ -115,6 +127,9 @@ import Swal from "sweetalert2";
             icon: "error",
             title: "No se pudo eliminar",
             timer: 1500,
+            customClass: {
+              popup: 'minimal-alert'
+            },
             showConfirmButton: false
           });
         }

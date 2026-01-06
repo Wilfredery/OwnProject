@@ -21,6 +21,6 @@ export function initHeaderMenu() {
 
 // Inicializar todo
 document.addEventListener("DOMContentLoaded", () => {
-    initTheme();
+    // initTheme();
     initHeaderMenu();
 });

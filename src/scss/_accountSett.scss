@@ -1,30 +1,53 @@
 @use 'variables' as v;
-@use 'mixins'as m;
+@use 'mixins' as m;
 @use 'sass:color';
 
+/* ===========================
+   SETTINGS BASE
+=========================== */
+
 .settings {
-    
-    &__h2 {
-        text-align: center;
+  &__h2 {
+    text-align: center;
+  }
+
+  &__user {
+    text-align: center;
+    margin: 1.5rem 0;
+
+    &--userName {
+      font-weight: 600;
+      font-size: 2rem;
+      color: v.$azul;
     }
+  }
 }
+
+/* ===========================
+   OPTION BLOCK
+=========================== */
 
 .option {
-    &:nth-child(2) {
-        margin-top: 2rem;
-    }
-    
-    &__label {
-        font-weight: bold;
-        text-transform: uppercase;
-    }
+  &:nth-child(2) {
+    margin-top: 2rem;
+  }
+
+  &__label {
+    font-weight: bold;
+    text-transform: uppercase;
+  }
 }
 
-.lang-switcher, .theme-switcher {
+/* ===========================
+   THEME & LANGUAGE SWITCHERS
+=========================== */
+
+.lang-switcher,
+.theme-switcher {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin: 1rem 0 2rem 1rem; // pequeño margen inferior respecto al de tema
+  margin: 1rem 0 2rem 1rem;
 
   label {
     font-weight: 600;
@@ -42,6 +65,57 @@
     &:hover {
       background-color: v.$azul;
       color: v.$blanco;
+    }
+  }
+}
+
+/* ===========================
+   SECURITY SECTION
+=========================== */
+
+.settings__security {
+  margin-top: 2.5rem;
+
+  &--subtitle {
+    margin-bottom: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  &--btn {
+    display: block;
+    width: 100%;
+    margin-bottom: 0.8rem;
+    padding: 0.6rem;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &--btnSecondary {
+    background-color: transparent;
+    border: 1px solid v.$azul;
+    color: v.$azul;
+
+    &:hover:not(:disabled) {
+      background-color: v.$azul;
+      color: v.$blanco;
+    }
+  }
+
+  &--btnDanger {
+    background-color: color.adjust(v.$rojo, $lightness: -5%);
+    color: v.$blanco;
+
+    &:hover:not(:disabled) {
+      background-color: color.adjust(v.$rojo, $lightness: -10%);
     }
   }
 }

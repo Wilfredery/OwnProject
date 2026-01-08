@@ -1,15 +1,31 @@
-import { db } from "./firebase.js";
 import Swal from "sweetalert2";
-import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
+import { db, getCurrentUser, onAuthReady } from "./auth.js";
+import {
+  collection,
+  getDocs,
+  doc,
+  deleteDoc,
+  query,
+  where
+} from "firebase/firestore";
 
 (async function () {
 
   /* ==========================================================
-     🔥 CARGAR NOTAS DESDE FIREBASE
+     🔥 CARGAR NOTAS DEL USUARIO ACTUAL (ESPERANDO AUTH)
   ========================================================== */
   async function loadNotes() {
+    const user = await onAuthReady(); // ⬅️ CLAVE
+    if (!user) return [];
+
     const notes = [];
-    const querySnapshot = await getDocs(collection(db, "notes"));
+
+    const q = query(
+      collection(db, "notes"),
+      where("uid", "==", user.uid)
+    );
+
+    const querySnapshot = await getDocs(q);
 
     querySnapshot.forEach(docSnap => {
       const data = docSnap.data();
@@ -54,7 +70,7 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
     if (!searchInput || !resultsContainer || !paginationContainer) return;
 
     /* ==========================================================
-       🔢 PAGINACIÓN << < 1 2 3 > >>
+       🔢 PAGINACIÓN
     ========================================================== */
     function renderPagination(totalItems) {
       paginationContainer.innerHTML = "";
@@ -62,7 +78,6 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
       const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
       if (totalPages <= 1) return;
 
-      // ⏮️ PRIMERA
       const firstBtn = document.createElement("button");
       firstBtn.textContent = "<<";
       firstBtn.classList.add("search__pagination--page-btn");
@@ -73,7 +88,6 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
       });
       paginationContainer.appendChild(firstBtn);
 
-      // ◀️ ANTERIOR
       const prevBtn = document.createElement("button");
       prevBtn.textContent = "<";
       prevBtn.classList.add("search__pagination--page-btn");
@@ -84,12 +98,10 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
       });
       paginationContainer.appendChild(prevBtn);
 
-      // 🔢 NÚMEROS
       for (let i = 1; i <= totalPages; i++) {
         const btn = document.createElement("button");
         btn.textContent = i;
         btn.classList.add("search__pagination--page-btn");
-
         if (i === currentPage) btn.classList.add("active");
 
         btn.addEventListener("click", () => {
@@ -100,7 +112,6 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
         paginationContainer.appendChild(btn);
       }
 
-      // ▶️ SIGUIENTE
       const nextBtn = document.createElement("button");
       nextBtn.textContent = ">";
       nextBtn.classList.add("search__pagination--page-btn");
@@ -111,7 +122,6 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
       });
       paginationContainer.appendChild(nextBtn);
 
-      // ⏭️ ÚLTIMA
       const lastBtn = document.createElement("button");
       lastBtn.textContent = ">>";
       lastBtn.classList.add("search__pagination--page-btn");
@@ -173,19 +183,18 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
       renderPagination(list.length);
     }
 
-    // 👉 Mostrar todas al inicio
     renderNotes(notes);
 
     /* ==========================================================
        🔍 BÚSQUEDA
     ========================================================== */
     searchInput.addEventListener("input", () => {
-      const query = searchInput.value.trim().toLowerCase();
+      const q = searchInput.value.trim().toLowerCase();
       currentPage = 1;
 
       const filtered = notes.filter(note =>
-        note.title.toLowerCase().includes(query) ||
-        note.content.toLowerCase().includes(query)
+        note.title.toLowerCase().includes(q) ||
+        note.content.toLowerCase().includes(q)
       );
 
       renderNotes(filtered);
@@ -235,7 +244,6 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
     ========================================================== */
     resultsContainer.addEventListener("click", async (e) => {
 
-      // ✏️ EDITAR
       if (e.target.classList.contains("edit-btn")) {
         const id = e.target.dataset.id;
 
@@ -246,9 +254,7 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
           showCancelButton: true,
           confirmButtonText: "Sí, editar",
           cancelButtonText: "Cancelar",
-          customClass: {
-          popup: 'minimal-alert'
-          },
+          customClass: { popup: "minimal-alert" },
           reverseButtons: true
         });
 
@@ -258,7 +264,6 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
         return;
       }
 
-      // 🗑️ ELIMINAR
       if (e.target.classList.contains("delete-btn")) {
         const id = e.target.dataset.id;
 
@@ -269,9 +274,7 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
           showCancelButton: true,
           confirmButtonText: "Sí, eliminar",
           cancelButtonText: "Cancelar",
-          customClass: {
-            popup: 'minimal-alert'
-          },
+          customClass: { popup: "minimal-alert" },
           reverseButtons: true
         });
 
@@ -283,20 +286,16 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
         notes = notes.filter(n => n.id !== id);
 
         const totalPages = Math.ceil(notes.length / ITEMS_PER_PAGE);
-        if (currentPage > totalPages) {
-          currentPage = totalPages;
-        }
+        if (currentPage > totalPages) currentPage = totalPages;
 
         renderNotes(notes);
 
         Swal.fire({
           title: "Eliminada",
           icon: "success",
-          customClass: {
-            popup: 'minimal-alert'
-          },
           timer: 1200,
-          showConfirmButton: false
+          showConfirmButton: false,
+          customClass: { popup: "minimal-alert" }
         });
       }
     });

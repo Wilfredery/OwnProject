@@ -1,23 +1,28 @@
-import { db } from "./firebase.js";
+// src/js/crear.js
 import Swal from "sweetalert2";
-
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db, serverTimestamp, getCurrentUser } from "./auth.js";
+import { collection, addDoc } from "firebase/firestore";
 
 (async function () {
 
-  async function saveNoteToFirestore(title, content) {
-    try {
-      await addDoc(collection(db, "notes"), {
-        title,
-        content,
-        created_at: serverTimestamp()
-      });
-      return true;
-    } catch (error) {
-      console.error("Error al guardar la nota", error);
-      return false;
-    }
+async function saveNoteToFirestore(title, content) {
+  const user = await getCurrentUser(); // ✅ AWAIT AQUÍ
+  if (!user) return false;
+
+  try {
+    await addDoc(collection(db, "notes"), {
+      uid: user.uid,               // 🔐 CLAVE
+      title,
+      content,
+      created_at: serverTimestamp()
+    });
+    return true;
+  } catch (error) {
+    console.error("Error al guardar la nota", error);
+    return false;
   }
+}
+
 
   document.addEventListener("DOMContentLoaded", () => {
 
@@ -29,14 +34,13 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
       const title = document.getElementById("note-title").value.trim();
       const content = document.getElementById("note-content").value.trim();
 
-      const currentLang = localStorage.getItem('lang') || 'es';
+      const currentLang = localStorage.getItem("lang") || "es";
 
       const messages = {
         es: {
           missing: "⚠️ Debes completar el título y el contenido.",
           saved: "📒 Nota guardada correctamente",
           error: "😞 Hubo un error al guardar.",
-
           askNew: "¿Qué deseas hacer ahora?",
           createAgain: "📝 Crear otra nota",
           goList: "📋 Ir a la lista"
@@ -45,7 +49,6 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
           missing: "⚠️ You must complete the title and content.",
           saved: "📒 Note saved successfully",
           error: "😞 An error occurred while saving.",
-
           askNew: "What would you like to do next?",
           createAgain: "📝 Create another note",
           goList: "📋 Go to list"
@@ -59,15 +62,12 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
           position: "top",
           toast: true,
           timer: 1800,
-          customClass: {
-            popup: 'minimal-alert'
-          },
+          customClass: { popup: "minimal-alert" },
           showConfirmButton: false
         });
         return;
       }
 
-      // ✔ Guardar en Firestore
       const success = await saveNoteToFirestore(title, content);
 
       if (!success) {
@@ -77,28 +77,22 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
           position: "top",
           toast: true,
           timer: 2000,
-          customClass: {
-            popup: 'minimal-alert'
-          },
+          customClass: { popup: "minimal-alert" },
           showConfirmButton: false
         });
         return;
       }
 
-      // ✔ Toast de guardado
       Swal.fire({
         title: messages[currentLang].saved,
         icon: "success",
         position: "top",
         toast: true,
         timer: 1600,
-        customClass: {
-          popup: 'minimal-alert'
-        },
+        customClass: { popup: "minimal-alert" },
         showConfirmButton: false
       }).then(() => {
 
-        // ✔ Modal profesional con 2 opciones
         Swal.fire({
           title: messages[currentLang].askNew,
           icon: "question",
@@ -106,26 +100,19 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
           confirmButtonText: messages[currentLang].createAgain,
           cancelButtonText: messages[currentLang].goList,
           reverseButtons: true,
-          focusCancel: false,
-          customClass: {
-            popup: 'minimal-alert'
-          },
+          customClass: { popup: "minimal-alert" },
           allowOutsideClick: false
         }).then(choice => {
           if (choice.isConfirmed) {
-            // 🟦 Crear otra nota
             document.getElementById("note-title").value = "";
             document.getElementById("note-content").value = "";
           } else {
-            // 🟧 Ir a la lista
             window.location.href = "/search";
           }
         });
 
       });
-
     });
-
   });
 
 })();

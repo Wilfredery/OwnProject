@@ -1,26 +1,43 @@
-import { db } from "./firebase.js";
-import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
+// src/js/editar.js
 import Swal from "sweetalert2";
-
+import { db, onAuthReady } from "./auth.js";
+import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 
 (function () {
 
   document.addEventListener("DOMContentLoaded", async () => {
 
     const noteIdIdentificador = document.getElementById("note-id");
-        // ⛔ Si esta página NO es editar.ejs, salimos sin errores
+
+    // ⛔ Si no estamos en editar.ejs
     if (!noteIdIdentificador) return;
 
-    // ✔ Si estamos en editar.ejs, seguimos...
     const noteId = noteIdIdentificador.value;
-    
+
     const titleInput = document.getElementById("edit-title");
     const contentInput = document.getElementById("edit-content");
     const form = document.getElementById("edit-form");
     const deleteBtn = document.getElementById("delete-note");
 
+    /* ==========================================================
+       🔐 ESPERAR USUARIO AUTENTICADO
+    ========================================================== */
+    const user = await onAuthReady();
 
-    // 1️⃣ Cargar datos reales de Firestore
+    if (!user) {
+      Swal.fire({
+        icon: "warning",
+        title: "Debes iniciar sesión",
+        timer: 1500,
+        showConfirmButton: false
+      });
+      window.location.href = "/login";
+      return;
+    }
+
+    /* ==========================================================
+       🔥 CARGAR NOTA (Y VALIDAR PROPIETARIO)
+    ========================================================== */
     async function loadNote() {
       try {
         const docRef = doc(db, "notes", noteId);
@@ -36,7 +53,27 @@ import Swal from "sweetalert2";
           return null;
         }
 
-        return { id: docSnap.id, ...docSnap.data() };
+        const data = docSnap.data();
+
+        // 🔒 VALIDACIÓN CRÍTICA
+        if (data.uid !== user.uid) {
+          Swal.fire({
+            icon: "error",
+            title: "Acceso denegado",
+            text: "Esta nota no te pertenece",
+            timer: 1800,
+            showConfirmButton: false
+          });
+
+          setTimeout(() => {
+            window.location.href = "/search";
+          }, 1800);
+
+          return null;
+        }
+
+        return { id: docSnap.id, ...data };
+
       } catch (error) {
         console.error("Error cargando nota:", error);
         return null;
@@ -45,21 +82,22 @@ import Swal from "sweetalert2";
 
     // 🔥 Cargar nota
     const note = await loadNote();
-
     if (!note) return;
 
     // Rellenar inputs
     titleInput.value = note.title;
     contentInput.value = note.content;
 
-    // 2️⃣ Guardar cambios en Firestore
+    /* ==========================================================
+       ✏️ ACTUALIZAR NOTA
+    ========================================================== */
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       try {
         await updateDoc(doc(db, "notes", noteId), {
-          title: titleInput.value,
-          content: contentInput.value
+          title: titleInput.value.trim(),
+          content: contentInput.value.trim()
         });
 
         Swal.fire({
@@ -67,9 +105,7 @@ import Swal from "sweetalert2";
           title: "Nota actualizada ✔",
           timer: 1300,
           position: "top",
-          customClass: {
-            popup: 'minimal-alert'
-          },
+          customClass: { popup: "minimal-alert" },
           showConfirmButton: false
         });
 
@@ -79,15 +115,15 @@ import Swal from "sweetalert2";
           icon: "error",
           title: "Error actualizando 😞",
           timer: 1400,
-          customClass: {
-              popup: 'minimal-alert'
-          },
+          customClass: { popup: "minimal-alert" },
           showConfirmButton: false
         });
       }
     });
 
-    // 3️⃣ Eliminar desde Firestore
+    /* ==========================================================
+       🗑️ ELIMINAR NOTA
+    ========================================================== */
     deleteBtn.addEventListener("click", () => {
 
       Swal.fire({
@@ -96,10 +132,8 @@ import Swal from "sweetalert2";
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Sí, eliminar",
-        customClass: {
-          popup: 'minimal-alert'
-        },
-        cancelButtonText: "Cancelar"
+        cancelButtonText: "Cancelar",
+        customClass: { popup: "minimal-alert" }
       }).then(async (result) => {
 
         if (!result.isConfirmed) return;
@@ -111,9 +145,7 @@ import Swal from "sweetalert2";
             icon: "success",
             title: "Eliminada",
             timer: 1500,
-            customClass: {
-              popup: 'minimal-alert'
-            },
+            customClass: { popup: "minimal-alert" },
             showConfirmButton: false
           });
 
@@ -127,9 +159,7 @@ import Swal from "sweetalert2";
             icon: "error",
             title: "No se pudo eliminar",
             timer: 1500,
-            customClass: {
-              popup: 'minimal-alert'
-            },
+            customClass: { popup: "minimal-alert" },
             showConfirmButton: false
           });
         }

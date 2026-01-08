@@ -1,52 +1,41 @@
 /* ======================================================
-   CUSTOM SELECTS (UI) – TU CÓDIGO ORIGINAL PROTEGIDO
+   ACCOUNT & SETTINGS – AUTH (USANDO auth.js)
 ====================================================== */
 
-const customSelects = document.querySelectorAll(".custom-select");
-
-if (customSelects.length > 0) {
-  customSelects.forEach((customSelect) => {
-    const selected = customSelect.querySelector(".selected");
-    const options = customSelect.querySelectorAll(".options li");
-
-    if (!selected || options.length === 0) return;
-
-    selected.addEventListener("click", () => {
-      customSelect.classList.toggle("open");
-    });
-
-    options.forEach((option) => {
-      option.addEventListener("click", () => {
-        selected.textContent = option.textContent;
-        customSelect.classList.remove("open");
-      });
-    });
-  });
-}
-
-/* ======================================================
-   ACCOUNT & SETTINGS – AUTH STATE
-====================================================== */
-
-import { auth, onAuthStateChanged, signOut } from "./firebase.js";
+import { initAuthListener, signOutUser } from "./auth.js";
 import Swal from "sweetalert2";
 
-// Elementos del DOM (CLASE CORRECTA)
+// Elementos del DOM
 const userNameEl = document.querySelector(".settings__user--userName");
 const logoutBtn = document.getElementById("logout-btn");
 const changePassBtn = document.getElementById("change-password-btn");
 
+/* ======================================================
+   ESTADO INICIAL (ANTES DE FIREBASE)
+====================================================== */
+
 if (userNameEl) {
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      // Usuario logeado
+  userNameEl.textContent = "Cargando...";
+}
+
+if (logoutBtn) logoutBtn.disabled = true;
+if (changePassBtn) changePassBtn.disabled = true;
+
+/* ======================================================
+   AUTH STATE (UN SOLO LISTENER – CENTRALIZADO)
+====================================================== */
+
+if (userNameEl) {
+  initAuthListener({
+    onSignedIn: (user) => {
       userNameEl.textContent =
         user.displayName || user.email || "Usuario";
 
       if (logoutBtn) logoutBtn.disabled = false;
       if (changePassBtn) changePassBtn.disabled = false;
-    } else {
-      // Guest
+    },
+
+    onSignedOut: () => {
       userNameEl.textContent = "Guest";
 
       if (logoutBtn) logoutBtn.disabled = true;
@@ -56,7 +45,7 @@ if (userNameEl) {
 }
 
 /* ======================================================
-   LOGOUT CON CONFIRMACIÓN
+   LOGOUT CON SWEETALERT (FLUJO CORRECTO)
 ====================================================== */
 
 if (logoutBtn) {
@@ -69,11 +58,14 @@ if (logoutBtn) {
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sí, cerrar",
+      customClass: {
+          popup: 'minimal-alert'
+      },
       cancelButtonText: "Cancelar",
     });
 
     if (result.isConfirmed) {
-      await signOut(auth);
+      await signOutUser(); // 👈 auth.js es la única salida
       window.location.href = "/";
     }
   });

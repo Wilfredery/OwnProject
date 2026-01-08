@@ -1,12 +1,15 @@
+
 import './lang-auto.js';
 import './header.js';
-// import './auth.js';
+import './auth.js';
 import './login.js';
 import './firebase.js';
 import './auth-ui.js';
 import './register.js';
+import './google.js';
 import './main.js';
 import './menuHamburguesa.js';
+import './theme&lang.js';
 import './search.js';
 import './acc&sett.js';
 import './dark.js';

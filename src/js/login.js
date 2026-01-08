@@ -1,22 +1,17 @@
 // src/js/login.js
 import Swal from "sweetalert2";
-
 import {
-  auth,
-  provider,
-  signInWithPopup,
-  signInWithEmailAndPassword,
-  sendPasswordResetEmail
-} from "./firebase.js";
+  signInWithEmail,
+  sendPasswordReset
+} from "./auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("login-form");
-  const googleBtn = document.getElementById("google-btn");
   const forgotBtn = document.getElementById("forgot-btn");
 
-  /* ===========================
-     LOGIN CON EMAIL Y PASSWORD
-  =========================== */
+  /* ==========================
+     LOGIN EMAIL / PASSWORD
+  ========================== */
   if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -29,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       try {
-        await signInWithEmailAndPassword(auth, email, pass);
+        await signInWithEmail(email, pass);
         window.location.href = "/main";
       } catch (err) {
         let message = "Error al iniciar sesión";
@@ -45,23 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ===========================
-     LOGIN CON GOOGLE
-  =========================== */
-  if (googleBtn) {
-    googleBtn.addEventListener("click", async () => {
-      try {
-        await signInWithPopup(auth, provider);
-        window.location.href = "/main";
-      } catch (err) {
-        Swal.fire("Error", "No se pudo iniciar con Google", "error");
-      }
-    });
-  }
-
-  /* ===========================
-     RECUPERAR CONTRASEÑA
-  =========================== */
+  /* ==========================
+     RESET PASSWORD
+  ========================== */
   if (forgotBtn) {
     forgotBtn.addEventListener("click", async (e) => {
       e.preventDefault();
@@ -77,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!email) return;
 
       try {
-        await sendPasswordResetEmail(auth, email);
+        await sendPasswordReset(email);
         Swal.fire("Listo", "Revisa tu correo", "success");
       } catch (err) {
         Swal.fire("Error", "No se pudo enviar el correo", "error");

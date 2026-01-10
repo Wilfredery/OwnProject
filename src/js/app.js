@@ -15,5 +15,5 @@ import './acc&sett.js';
 import './dark.js';
 import './crear.js';
 import './editar.js';
-// import './password.js';
-// import './olvidar.js';
+import './password.js';import './olvidar.js';
+import './linkconfirm.js';

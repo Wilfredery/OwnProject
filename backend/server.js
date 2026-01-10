@@ -20,6 +20,29 @@ app.use((req, res, next) => {
 });
 
 // Rutas
+app.get('/auth/action', (req, res) => {
+  const mode = req.query.mode;
+  const oobCode = req.query.oobCode;
+
+  if (!mode || !oobCode) {
+    return res.status(400).send('Parámetros inválidos.');
+  }
+
+  // Decide qué vista renderizar según el mode
+  switch (mode) {
+    case 'verifyEmail':
+      // Muestra la página de confirmación
+      return res.render('linkconfirm', { title: 'Confirmar Email', oobCode });
+
+    case 'resetPassword':
+      // Muestra la página para restablecer contraseña
+      return res.render('password', { title: 'Restablecer Contraseña', oobCode });
+
+    default:
+      return res.status(400).send('Acción no soportada.');
+  }
+});
+
 app.get('/main', (req, res) => {
   res.render('index', { title: 'Pagina principal' });
 });

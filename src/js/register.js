@@ -92,14 +92,22 @@ if (form) {
         )
       );
 
+      // ✅ Mensaje + redirección automática
       Swal.fire({
         icon: "success",
         title: "Cuenta creada 🎉",
-        text: "Tu cuenta ha sido creada correctamente",
+        text: "Te enviamos un correo para verificar tu cuenta",
+        timer: 5000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
         customClass: { popup: "minimal-alert" },
-      }).then(() => {
-        window.location.href = "/main";
       });
+
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 5000);
 
       form.reset();
     } catch (error) {

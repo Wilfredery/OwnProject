@@ -1,13 +1,11 @@
 // src/js/login.js
 import Swal from "sweetalert2";
 import {
-  signInWithEmail,
-  sendPasswordReset
+  signInWithEmail
 } from "./auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("login-form");
-  const forgotBtn = document.getElementById("forgot-btn");
 
   /* ==========================
      LOGIN EMAIL / PASSWORD
@@ -36,32 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         Swal.fire("Error", message, "error");
-      }
-    });
-  }
-
-  /* ==========================
-     RESET PASSWORD
-  ========================== */
-  if (forgotBtn) {
-    forgotBtn.addEventListener("click", async (e) => {
-      e.preventDefault();
-
-      const { value: email } = await Swal.fire({
-        title: "Restablecer contraseña",
-        input: "email",
-        inputLabel: "Ingresa tu correo",
-        inputPlaceholder: "correo@email.com",
-        showCancelButton: true,
-      });
-
-      if (!email) return;
-
-      try {
-        await sendPasswordReset(email);
-        Swal.fire("Listo", "Revisa tu correo", "success");
-      } catch (err) {
-        Swal.fire("Error", "No se pudo enviar el correo", "error");
       }
     });
   }

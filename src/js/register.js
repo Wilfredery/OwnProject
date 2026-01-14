@@ -1,6 +1,7 @@
 // src/js/register.js
 import Swal from "sweetalert2";
 import { signUpWithEmail } from "./auth.js";
+import {t} from "./i18n/i18n.js";
 
 // Form
 const form = document.getElementById("register-form");
@@ -25,8 +26,8 @@ if (form) {
     if (!nickname) {
       return Swal.fire({
         icon: "warning",
-        title: "Nickname requerido",
-        text: "Por favor ingresa un nombre de usuario",
+        title: t("requiredNickname"),
+        text: t("enterNickname"),
         customClass: { popup: "minimal-alert" },
       });
     }
@@ -34,8 +35,8 @@ if (form) {
     if (nickname.length < 3) {
       return Swal.fire({
         icon: "warning",
-        title: "Nickname muy corto",
-        text: "Debe tener al menos 3 caracteres",
+        title: t("shortNickname"),
+        text: t("nicknameMinChars"),
         customClass: { popup: "minimal-alert" },
       });
     }
@@ -43,8 +44,8 @@ if (form) {
     if (!email) {
       return Swal.fire({
         icon: "warning",
-        title: "Email requerido",
-        text: "Por favor ingresa tu correo",
+        title: t("require"),
+        text: t("writeEmail"),
         customClass: { popup: "minimal-alert" },
       });
     }
@@ -52,8 +53,8 @@ if (form) {
     if (!validateEmail(email)) {
       return Swal.fire({
         icon: "error",
-        title: "Email inválido",
-        text: "Ingresa un correo válido",
+        title: t("invalidEmail"),
+        text: t("enterValidEmail"),
         customClass: { popup: "minimal-alert" },
       });
     }
@@ -61,8 +62,8 @@ if (form) {
     if (!password) {
       return Swal.fire({
         icon: "warning",
-        title: "Contraseña requerida",
-        text: "Por favor ingresa una contraseña",
+        title: t("requiredPassword"),
+        text: t("enterPassword"),
         customClass: { popup: "minimal-alert" },
       });
     }
@@ -70,8 +71,8 @@ if (form) {
     if (password.length < 6) {
       return Swal.fire({
         icon: "error",
-        title: "Contraseña muy corta",
-        text: "Debe tener al menos 6 caracteres",
+        title: t("shortPassW"),
+        text: t("amountPassW"),
         customClass: { popup: "minimal-alert" },
       });
     }
@@ -95,8 +96,8 @@ if (form) {
       // ✅ Mensaje + redirección automática
       Swal.fire({
         icon: "success",
-        title: "Cuenta creada 🎉",
-        text: "Te enviamos un correo para verificar tu cuenta",
+        title: t("accCreated"),
+        text: t("verifyEmailSent"),
         timer: 5000,
         timerProgressBar: true,
         showConfirmButton: false,
@@ -113,10 +114,10 @@ if (form) {
     } catch (error) {
       console.error(error);
 
-      let message = "Ocurrió un error al registrar";
+      let message = t("errorSignUp");
 
       if (error.code === "auth/email-already-in-use") {
-        message = "Este correo ya está registrado";
+        message = t("AccAlreadyExists");
       }
 
       Swal.fire({

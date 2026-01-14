@@ -1,6 +1,7 @@
 // src/js/google.js
 import Swal from "sweetalert2";
 import { signInWithGoogle } from "./auth.js";
+import {t} from "./i18n/i18n.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const googleBtn = document.getElementById("google-btn");
@@ -12,11 +13,12 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = "/main";
     } catch (err) {
       console.error(err);
-      Swal.fire(
-        "Error",
-        "No se pudo iniciar sesión con Google",
-        "error"
-      );
+      Swal.fire( {
+        title: "Error",
+        text: t("errorGoogleSignIn"),
+        icon: "error",
+        customClass: { popup: "minimal-alert" }
+      });
     }
   });
 });

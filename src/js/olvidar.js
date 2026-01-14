@@ -1,6 +1,7 @@
 // src/js/olvidar.js
 import Swal from "sweetalert2";
 import { auth, sendPasswordResetEmail } from "./firebase.js";
+import { t } from "./i18n/i18n.js";
 
 const form = document.getElementById("forgot-form");
 
@@ -20,8 +21,8 @@ if (form) {
       isSubmitting = false;
       return Swal.fire({
         icon: "warning",
-        title: "Correo requerido",
-        text: "Escribe tu correo electrónico",
+        title: t("requiredEmail"),
+        text: t("writeEmail"),
         customClass: { popup: "minimal-alert" },
       });
     }
@@ -36,17 +37,17 @@ if (form) {
 
       Swal.fire({
         icon: "success",
-        title: "Correo enviado 📩",
-        text: "Revisa tu correo para restablecer tu contraseña. Si no lo ves, revisa la carpeta de spam.",
+        title: t("emailSent"),
+        text: t("checkSpam"),
         customClass: { popup: "minimal-alert" },
       });
 
       form.reset();
     } catch (error) {
-      let msg = "Ocurrió un error, intenta nuevamente";
+      let msg = t("errorForgot");
 
       if (error.code === "auth/user-not-found") {
-        msg = "No existe una cuenta con ese correo";
+        msg = t("noAccount");
       }
 
       Swal.fire({

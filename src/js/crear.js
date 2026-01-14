@@ -2,6 +2,7 @@
 import Swal from "sweetalert2";
 import { db, serverTimestamp, getCurrentUser } from "./auth.js";
 import { collection, addDoc } from "firebase/firestore";
+import {t} from "./i18n/i18n.js";
 
 (async function () {
 
@@ -34,30 +35,9 @@ async function saveNoteToFirestore(title, content) {
       const title = document.getElementById("note-title").value.trim();
       const content = document.getElementById("note-content").value.trim();
 
-      const currentLang = localStorage.getItem("lang") || "es";
-
-      const messages = {
-        es: {
-          missing: "⚠️ Debes completar el título y el contenido.",
-          saved: "📒 Nota guardada correctamente",
-          error: "😞 Hubo un error al guardar.",
-          askNew: "¿Qué deseas hacer ahora?",
-          createAgain: "📝 Crear otra nota",
-          goList: "📋 Ir a la lista"
-        },
-        en: {
-          missing: "⚠️ You must complete the title and content.",
-          saved: "📒 Note saved successfully",
-          error: "😞 An error occurred while saving.",
-          askNew: "What would you like to do next?",
-          createAgain: "📝 Create another note",
-          goList: "📋 Go to list"
-        }
-      };
-
       if (!title || !content) {
         Swal.fire({
-          title: messages[currentLang].missing,
+          title: t("completeFields"),
           icon: "warning",
           position: "top",
           toast: true,
@@ -72,7 +52,7 @@ async function saveNoteToFirestore(title, content) {
 
       if (!success) {
         Swal.fire({
-          title: messages[currentLang].error,
+          title: t("errorSave"),
           icon: "error",
           position: "top",
           toast: true,
@@ -84,7 +64,7 @@ async function saveNoteToFirestore(title, content) {
       }
 
       Swal.fire({
-        title: messages[currentLang].saved,
+        title: t("savedNote"),
         icon: "success",
         position: "top",
         toast: true,
@@ -94,11 +74,11 @@ async function saveNoteToFirestore(title, content) {
       }).then(() => {
 
         Swal.fire({
-          title: messages[currentLang].askNew,
+          title: t("ask"),
           icon: "question",
           showCancelButton: true,
-          confirmButtonText: messages[currentLang].createAgain,
-          cancelButtonText: messages[currentLang].goList,
+          confirmButtonText: t("createAgain"),
+          cancelButtonText: t("goList"),
           reverseButtons: true,
           customClass: { popup: "minimal-alert" },
           allowOutsideClick: false

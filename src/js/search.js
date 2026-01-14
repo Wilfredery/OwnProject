@@ -1,13 +1,7 @@
 import Swal from "sweetalert2";
 import { db, getCurrentUser, onAuthReady } from "./auth.js";
-import {
-  collection,
-  getDocs,
-  doc,
-  deleteDoc,
-  query,
-  where
-} from "firebase/firestore";
+import {collection, getDocs, doc, deleteDoc, query, where} from "firebase/firestore";
+import {t} from "./i18n/i18n.js";
 
 (async function () {
 
@@ -248,12 +242,12 @@ import {
         const id = e.target.dataset.id;
 
         const result = await Swal.fire({
-          title: "¿Editar nota?",
-          text: "Vas a editar esta nota.",
+          title: t("askEditNote"),
+          text: t("textAskEditNote"),
           icon: "question",
           showCancelButton: true,
-          confirmButtonText: "Sí, editar",
-          cancelButtonText: "Cancelar",
+          confirmButtonText: t("confirmEditNote"),
+          cancelButtonText: t("cancelEditNote"),
           customClass: { popup: "minimal-alert" },
           reverseButtons: true
         });
@@ -268,12 +262,12 @@ import {
         const id = e.target.dataset.id;
 
         const result = await Swal.fire({
-          title: "¿Eliminar nota?",
-          text: "Esta acción no se puede deshacer.",
+          title: t("askDelete"),
+          text: t("textAskDelete"),
           icon: "warning",
           showCancelButton: true,
-          confirmButtonText: "Sí, eliminar",
-          cancelButtonText: "Cancelar",
+          confirmButtonText: t("confirmDelete"),
+          cancelButtonText: t("cancelDelete"),
           customClass: { popup: "minimal-alert" },
           reverseButtons: true
         });
@@ -291,7 +285,7 @@ import {
         renderNotes(notes);
 
         Swal.fire({
-          title: "Eliminada",
+          title: t("alreadyDeleted"),
           icon: "success",
           timer: 1200,
           showConfirmButton: false,

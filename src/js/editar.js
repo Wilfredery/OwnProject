@@ -2,6 +2,7 @@
 import Swal from "sweetalert2";
 import { db, onAuthReady } from "./auth.js";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { t } from "./i18n/i18n.js";
 
 (function () {
 
@@ -22,18 +23,18 @@ import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
     /* ==========================================================
        🔐 ESPERAR USUARIO AUTENTICADO
     ========================================================== */
-    const user = await onAuthReady();
+    // const user = await onAuthReady();
 
-    if (!user) {
-      Swal.fire({
-        icon: "warning",
-        title: "Debes iniciar sesión",
-        timer: 1500,
-        showConfirmButton: false
-      });
-      window.location.href = "/login";
-      return;
-    }
+    // if (!user) {
+    //   Swal.fire({
+    //     icon: "warning",
+    //     title: "Debes iniciar sesión",
+    //     timer: 1500,
+    //     showConfirmButton: false
+    //   });
+    //   window.location.href = "/";
+    //   return;
+    // }
 
     /* ==========================================================
        🔥 CARGAR NOTA (Y VALIDAR PROPIETARIO)
@@ -46,7 +47,7 @@ import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
         if (!docSnap.exists()) {
           Swal.fire({
             icon: "error",
-            title: "Nota no encontrada",
+            title: t("notewasntFound"),
             timer: 1500,
             showConfirmButton: false
           });
@@ -59,8 +60,8 @@ import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
         if (data.uid !== user.uid) {
           Swal.fire({
             icon: "error",
-            title: "Acceso denegado",
-            text: "Esta nota no te pertenece",
+            title: t("denied"),
+            text: t("noteNotNote"),
             timer: 1800,
             showConfirmButton: false
           });
@@ -102,7 +103,7 @@ import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 
         Swal.fire({
           icon: "success",
-          title: "Nota actualizada ✔",
+          title: t("updatedNote"),
           timer: 1300,
           position: "top",
           customClass: { popup: "minimal-alert" },
@@ -113,7 +114,7 @@ import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
         console.error("Error actualizando:", error);
         Swal.fire({
           icon: "error",
-          title: "Error actualizando 😞",
+          title: t("updatedError"),
           timer: 1400,
           customClass: { popup: "minimal-alert" },
           showConfirmButton: false
@@ -127,12 +128,12 @@ import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
     deleteBtn.addEventListener("click", () => {
 
       Swal.fire({
-        title: "¿Seguro que deseas eliminar?",
-        text: "Esta acción no se puede deshacer.",
+        title: t("askDelete"),
+        text: t("textAskDelete"),
         icon: "warning",
         showCancelButton: true,
-        confirmButtonText: "Sí, eliminar",
-        cancelButtonText: "Cancelar",
+        confirmButtonText: t("confirmDelete"),
+        cancelButtonText: t("cancelDelete"),
         customClass: { popup: "minimal-alert" }
       }).then(async (result) => {
 
@@ -143,7 +144,7 @@ import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 
           Swal.fire({
             icon: "success",
-            title: "Eliminada",
+            title: t("alreadyDeleted"),
             timer: 1500,
             customClass: { popup: "minimal-alert" },
             showConfirmButton: false
@@ -157,7 +158,7 @@ import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
           console.error("Error eliminando:", error);
           Swal.fire({
             icon: "error",
-            title: "No se pudo eliminar",
+            title: t("errorDelete"),
             timer: 1500,
             customClass: { popup: "minimal-alert" },
             showConfirmButton: false

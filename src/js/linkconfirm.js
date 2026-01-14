@@ -2,6 +2,7 @@
 import Swal from "sweetalert2";
 import { auth } from "./firebase.js";
 import { applyActionCode } from "firebase/auth";
+import {t} from "./i18n/i18n.js";
 
 const confirmTitle = document.querySelector(".confirm__title");
 
@@ -11,8 +12,8 @@ if (confirmTitle) {
   if (!oobCode) {
     Swal.fire({
       icon: "error",
-      title: "Enlace inválido",
-      text: "El enlace de verificación no es válido o ha expirado.",
+      title: t("linkUnvalid"),
+      text: t("textlinkUnvalid"),
       customClass: { popup: "minimal-alert" },
     });
   } else {
@@ -22,8 +23,8 @@ if (confirmTitle) {
 
         Swal.fire({
           icon: "success",
-          title: "Correo verificado ✅",
-          text: "Tu correo ha sido verificado correctamente",
+          title: t("emailVerified"),
+          text: t("textEmailVerified"),
           timer: 4000,
           showConfirmButton: false,
           customClass: { popup: "minimal-alert" },
@@ -38,7 +39,7 @@ if (confirmTitle) {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "El enlace es inválido o ya fue utilizado.",
+          text: t("errorlink"),
           customClass: { popup: "minimal-alert" },
         });
       }

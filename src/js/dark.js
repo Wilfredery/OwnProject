@@ -1,5 +1,6 @@
 // src/js/dark.js
 import Swal from "sweetalert2";
+import {t} from "./i18n/i18n.js";
 
 (function () {
   document.addEventListener('DOMContentLoaded', () => {
@@ -21,21 +22,8 @@ import Swal from "sweetalert2";
 
       toggleBtn.textContent = isDark ? 'Dark 🌙' : 'Light 🌞';
 
-      const currentLang = localStorage.getItem('lang') || 'es';
-
-      const messages = {
-        es: {
-          dark: "Modo oscuro activado 🌙",
-          light: "Modo claro activado 🌞"
-        },
-        en: {
-          dark: "Dark mode enabled 🌙",
-          light: "Light mode enabled 🌞"
-        }
-      };
-
       Swal.fire({
-        title: isDark ? messages[currentLang].dark : messages[currentLang].light,
+        title: isDark ? t("darkmodeEnabled") : t("lightmodeEnabled"),
         toast: true,
         position: "top",
         icon: "success",

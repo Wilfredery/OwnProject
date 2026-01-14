@@ -2,6 +2,7 @@
 import Swal from "sweetalert2";
 import { auth } from "./firebase.js";
 import { confirmPasswordReset } from "firebase/auth";
+import { t } from "./i18n/i18n.js";
 
 const form = document.getElementById("reset-form");
 
@@ -29,8 +30,8 @@ if (form) {
       if (!password || !confirmPassword) {
         return Swal.fire({
           icon: "warning",
-          title: "Campos requeridos",
-          text: "Debes completar ambos campos",
+          title: t("requireFilds"),
+          text: t("fillboth"),
           customClass: { popup: "minimal-alert" },
         });
       }
@@ -38,8 +39,8 @@ if (form) {
       if (password.length < 6) {
         return Swal.fire({
           icon: "error",
-          title: "Contraseña muy corta",
-          text: "Debe tener al menos 6 caracteres",
+          title: t("shortPassW"),
+          text: t("amountPassW"),
           customClass: { popup: "minimal-alert" },
         });
       }
@@ -47,8 +48,8 @@ if (form) {
       if (password !== confirmPassword) {
         return Swal.fire({
           icon: "error",
-          title: "No coinciden",
-          text: "Las contraseñas no coinciden",
+          title: t("notMatch"),
+          text: t("notMatchPassW"),
           customClass: { popup: "minimal-alert" },
         });
       }
@@ -58,8 +59,8 @@ if (form) {
 
         Swal.fire({
           icon: "success",
-          title: "Contraseña actualizada 🔐",
-          text: "Ahora puedes iniciar sesión con tu nueva contraseña",
+          title: t("passUpdated"),
+          text: t("passProcessed"),
           timer: 4000,
           showConfirmButton: false,
           customClass: { popup: "minimal-alert" },
@@ -73,14 +74,14 @@ if (form) {
       } catch (error) {
         console.error(error);
 
-        let message = "No se pudo cambiar la contraseña";
+        let message = t("passWCantBeChanged");
 
         if (error.code === "auth/expired-action-code") {
-          message = "El enlace ha expirado";
+          message = t("linkExpired");
         }
 
         if (error.code === "auth/invalid-action-code") {
-          message = "El enlace no es válido";
+          message = t("linkUnvalid");
         }
 
         Swal.fire({

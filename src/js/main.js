@@ -1,4 +1,4 @@
-import { db } from "./firebase.js";
+import { db } from "./auth.js";
 import { collection, getDocs } from "firebase/firestore";
 
 (async function () {

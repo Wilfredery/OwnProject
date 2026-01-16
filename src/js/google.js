@@ -1,7 +1,7 @@
 // src/js/google.js
 import Swal from "sweetalert2";
 import { signInWithGoogle } from "./auth.js";
-import {t} from "./i18n/i18n.js";
+import {t} from "./i18n/index.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const googleBtn = document.getElementById("google-btn");

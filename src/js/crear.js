@@ -2,7 +2,7 @@
 import Swal from "sweetalert2";
 import { db, serverTimestamp, getCurrentUser } from "./auth.js";
 import { collection, addDoc } from "firebase/firestore";
-import {t} from "./i18n/i18n.js";
+import {t} from "./i18n/index.js";
 
 (async function () {
 

@@ -2,7 +2,7 @@
 import Swal from "sweetalert2";
 import { auth } from "./firebase.js";
 import { confirmPasswordReset } from "firebase/auth";
-import { t } from "./i18n/i18n.js";
+import { t } from "./i18n/index.js";
 
 const form = document.getElementById("reset-form");
 

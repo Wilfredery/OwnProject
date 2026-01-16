@@ -1,23 +1,36 @@
-//Importa el módulo nativo de Node.js path para manejar rutas absolutas/relativas sin importar el sistema operativo.
-const path = require('path');
+// webpack.config.js
+const path = require("path");
 
 module.exports = {
-  mode: 'development', // Cambia a 'production' cuando vayas a producción
-  entry: './src/js/app.js',
+  mode: "development",
+
+  entry: path.resolve(__dirname, "src/js/app.js"),
+
   output: {
-    filename: 'bundle.min.js',
-    path: path.resolve(__dirname, 'public/build/js'),
-    clean: true
+    filename: "bundle.min.js",
+    path: path.resolve(__dirname, "public/build/js"),
+    // ❌ NO clean aquí cuando usas Gulp
   },
-  devtool: 'source-map', // Genera bundle.min.js.map
+
+  devtool: "source-map",
+
   module: {
     rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
-          options: { presets: ['@babel/preset-env'] }
+          loader: "babel-loader",
+          options: {
+            presets: [
+              [
+                "@babel/preset-env",
+                {
+                  targets: "defaults"
+                }
+              ]
+            ]
+          }
         }
       }
     ]

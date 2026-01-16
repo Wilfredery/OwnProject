@@ -2,6 +2,8 @@
 const express = require('express'); //Trae Express: el framework HTTP que maneja rutas, middlewares y respuestas.
 const path = require('path');//Útil para construir rutas de archivos de forma segura entre sistemas (Windows/Linux)
 const app = express();
+// 🔐 Limita el parser de query (evita qs profundo)
+app.set('query parser', 'simple');
 const PORT = process.env.PORT || 3000;
 
 // Configuración de vistas con EJS

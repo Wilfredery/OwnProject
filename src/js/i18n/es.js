@@ -1,5 +1,3 @@
-import { create } from "browser-sync";
-
 export default {
   // ===== GENERAL =====
   account_settings: "Cuenta y ajustes",

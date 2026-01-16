@@ -2,7 +2,7 @@
 import Swal from "sweetalert2";
 import { db, onAuthReady } from "./auth.js";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
-import { t } from "./i18n/i18n.js";
+import { t } from "./i18n/index.js";
 
 (function () {
 

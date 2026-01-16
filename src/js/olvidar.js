@@ -1,7 +1,7 @@
 // src/js/olvidar.js
 import Swal from "sweetalert2";
 import { auth, sendPasswordResetEmail } from "./firebase.js";
-import { t } from "./i18n/i18n.js";
+import { t } from "./i18n/index.js";
 
 const form = document.getElementById("forgot-form");
 

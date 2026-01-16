@@ -1,7 +1,7 @@
 // src/js/register.js
 import Swal from "sweetalert2";
 import { signUpWithEmail } from "./auth.js";
-import {t} from "./i18n/i18n.js";
+import {t} from "./i18n/index.js";
 
 // Form
 const form = document.getElementById("register-form");

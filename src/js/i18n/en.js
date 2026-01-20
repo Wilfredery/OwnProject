@@ -134,8 +134,8 @@ export default {
 
       //validation for editar.js
       notewasntFound: "Note not found",
-      denied: "Access denied",
-      noteNotNote: "This note does not belong to you",
+      //denied: "Access denied",
+      //noteNotNote: "This note does not belong to you",
       updatedNote: "Note updated ✔",
       updatedError: "Error updating 😞",
       askDelete: "Are you sure you want to delete?", //From here down search.js

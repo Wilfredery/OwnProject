@@ -1,10 +1,10 @@
 // src/js/linkconfirm.js
 import Swal from "sweetalert2";
-import { auth } from "./firebase.js";
-import { applyActionCode } from "firebase/auth";
-import {t} from "./i18n/index.js";
+import { confirmEmailWithCode } from "./auth.js";
+import { t } from "./i18n/index.js";
 
 const confirmTitle = document.querySelector(".confirm__title");
+let alreadyHandled = false;
 
 if (confirmTitle) {
   const oobCode = window.__OOB_CODE__;
@@ -14,12 +14,15 @@ if (confirmTitle) {
       icon: "error",
       title: t("linkUnvalid"),
       text: t("textlinkUnvalid"),
-      customClass: { popup: "minimal-alert" },
+      customClass: { popup: "minimal-alert" }
     });
   } else {
     (async () => {
+      if (alreadyHandled) return;
+      alreadyHandled = true;
+
       try {
-        await applyActionCode(auth, oobCode);
+        await confirmEmailWithCode(oobCode);
 
         Swal.fire({
           icon: "success",
@@ -27,20 +30,28 @@ if (confirmTitle) {
           text: t("textEmailVerified"),
           timer: 4000,
           showConfirmButton: false,
-          customClass: { popup: "minimal-alert" },
+          allowOutsideClick: false,
+          customClass: { popup: "minimal-alert" }
         });
 
         setTimeout(() => {
           window.location.href = "/";
         }, 4000);
+
       } catch (error) {
-        console.error(error);
+        let message = t("errorlink");
+
+        if (error.code === "auth/invalid-action-code") {
+          message = t("invalidLink");
+        } else if (error.code === "auth/expired-action-code") {
+          message = t("expiredLink");
+        }
 
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: t("errorlink"),
-          customClass: { popup: "minimal-alert" },
+          text: message,
+          customClass: { popup: "minimal-alert" }
         });
       }
     })();

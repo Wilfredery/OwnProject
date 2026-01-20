@@ -1,18 +1,18 @@
 // src/js/olvidar.js
 import Swal from "sweetalert2";
-import { auth, sendPasswordResetEmail } from "./firebase.js";
+import { sendResetPassword } from "./auth.js";
 import { t } from "./i18n/index.js";
 
 const form = document.getElementById("forgot-form");
 
 if (form) {
   const emailInput = document.getElementById("forgot-email");
-  let isSubmitting = false; // 🔒 evita doble envío
+  let isSubmitting = false;
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    if (isSubmitting) return; // 🛑 bloqueo real
+    if (isSubmitting) return;
     isSubmitting = true;
 
     const email = emailInput.value.trim();
@@ -28,12 +28,7 @@ if (form) {
     }
 
     try {
-      const actionCodeSettings = {
-        url: `${window.location.origin}/password`,
-        handleCodeInApp: true,
-      };
-
-      await sendPasswordResetEmail(auth, email, actionCodeSettings);
+      await sendResetPassword(email);
 
       Swal.fire({
         icon: "success",
@@ -43,6 +38,7 @@ if (form) {
       });
 
       form.reset();
+
     } catch (error) {
       let msg = t("errorForgot");
 
@@ -56,8 +52,9 @@ if (form) {
         text: msg,
         customClass: { popup: "minimal-alert" },
       });
+
     } finally {
-      isSubmitting = false; // 🔓 libera el bloqueo
+      isSubmitting = false;
     }
   });
 }

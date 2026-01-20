@@ -1,5 +1,5 @@
 // src/js/auth-ui.js
-import { initAuthListener } from "./auth.js";
+import { onAuthReady } from "./auth.js";
 
 function showGuestUI() {
   const guest1 = document.getElementById("guest-controls");
@@ -23,15 +23,32 @@ function showUserUI(user) {
   const nameEl = document.getElementById("user-name");
   const photoEl = document.getElementById("user-photo");
 
-  if (nameEl) nameEl.textContent = user.displayName || user.email;
-  if (photoEl) photoEl.src = user.photoURL || "/img/default-avatar.png";
+  if (nameEl) {
+    nameEl.textContent =
+      user.isAnonymous
+        ? "Guest"
+        : user.displayName || user.email;
+  }
+
+  if (photoEl) {
+    photoEl.src = user.photoURL || "/img/default-avatar.png";
+  }
 }
 
-export function initHeaderAuthUI() {
-  initAuthListener({
-    onSignedIn: showUserUI,
-    onSignedOut: showGuestUI,
-  });
+async function initHeaderAuthUI() {
+  try {
+    const user = await onAuthReady(); // 🔐 SIEMPRE devuelve user (anon o real)
+
+    if (user) {
+      showUserUI(user);
+    } else {
+      showGuestUI();
+    }
+
+  } catch (error) {
+    console.error("Auth UI error:", error);
+    showGuestUI();
+  }
 }
 
 document.addEventListener("DOMContentLoaded", initHeaderAuthUI);

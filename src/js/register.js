@@ -1,7 +1,7 @@
 // src/js/register.js
 import Swal from "sweetalert2";
 import { signUpWithEmail } from "./auth.js";
-import {t} from "./i18n/index.js";
+import { t } from "./i18n/index.js";
 
 // Form
 const form = document.getElementById("register-form");
@@ -11,9 +11,12 @@ const nickInput = document.getElementById("register-nick");
 const emailInput = document.getElementById("register-email");
 const passInput = document.getElementById("register-pass");
 
+let isSubmitting = false; // 🔐 Anti doble submit
+
 if (form) {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
 
     const nickname = nickInput.value.trim();
     const email = emailInput.value.trim();
@@ -82,18 +85,22 @@ if (form) {
     ========================== */
 
     try {
+      isSubmitting = true;
+
       const user = await signUpWithEmail(email, password);
 
-      // Guardar nickname adicional (merge)
-      await import("./firebase.js").then(({ db, doc, setDoc }) =>
-        setDoc(
-          doc(db, "users", user.uid),
-          { nickname, provider: "email" },
-          { merge: true }
-        )
+      // Guardar datos extra del usuario (perfil)
+      const { db, doc, setDoc } = await import("./firebase.js");
+
+      await setDoc(
+        doc(db, "users", user.uid),
+        {
+          nickname,
+          provider: "email",
+        },
+        { merge: true }
       );
 
-      // ✅ Mensaje + redirección automática
       Swal.fire({
         icon: "success",
         title: t("accCreated"),
@@ -126,6 +133,8 @@ if (form) {
         text: message,
         customClass: { popup: "minimal-alert" },
       });
+    } finally {
+      isSubmitting = false;
     }
   });
 }

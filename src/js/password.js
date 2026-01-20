@@ -1,7 +1,6 @@
 // src/js/password.js
 import Swal from "sweetalert2";
-import { auth } from "./firebase.js";
-import { confirmPasswordReset } from "firebase/auth";
+import { resetPassword } from "./auth.js";
 import { t } from "./i18n/index.js";
 
 const form = document.getElementById("reset-form");
@@ -14,18 +13,16 @@ if (form) {
   if (!oobCode) {
     Swal.fire({
       icon: "error",
-      title: "Enlace inválido",
-      text: "El enlace para cambiar la contraseña no es válido o expiró.",
+      title: t("linkUnvalid"),
+      text: t("linkExpired"),
       customClass: { popup: "minimal-alert" },
     });
   } else {
-    // 👇 TODO lo demás SOLO corre si hay oobCode
-
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const password = passInput.value;
-      const confirmPassword = confirmInput.value;
+      const password = passInput.value.trim();
+      const confirmPassword = confirmInput.value.trim();
 
       if (!password || !confirmPassword) {
         return Swal.fire({
@@ -55,7 +52,7 @@ if (form) {
       }
 
       try {
-        await confirmPasswordReset(auth, oobCode, password);
+        await resetPassword(oobCode, password);
 
         Swal.fire({
           icon: "success",
@@ -71,6 +68,7 @@ if (form) {
         }, 4000);
 
         form.reset();
+
       } catch (error) {
         console.error(error);
 

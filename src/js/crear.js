@@ -1,34 +1,19 @@
 // src/js/crear.js
 import Swal from "sweetalert2";
-import { db, serverTimestamp, getCurrentUser } from "./auth.js";
+import { db, serverTimestamp, onAuthReady } from "./auth.js";
 import { collection, addDoc } from "firebase/firestore";
-import {t} from "./i18n/index.js";
+import { t } from "./i18n/index.js";
 
-(async function () {
+(function () {
 
-async function saveNoteToFirestore(title, content) {
-  const user = await getCurrentUser(); // ✅ AWAIT AQUÍ
-  if (!user) return false;
-
-  try {
-    await addDoc(collection(db, "notes"), {
-      uid: user.uid,               // 🔐 CLAVE
-      title,
-      content,
-      created_at: serverTimestamp()
-    });
-    return true;
-  } catch (error) {
-    console.error("Error al guardar la nota", error);
-    return false;
-  }
-}
-
-
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", async () => {
 
     const saveBtn = document.getElementById("save-note");
     if (!saveBtn) return;
+
+    // 🔐 UID garantizado (email / Google / anonymous)
+    const user = await onAuthReady();
+    if (!user) return;
 
     saveBtn.addEventListener("click", async () => {
 
@@ -48,9 +33,45 @@ async function saveNoteToFirestore(title, content) {
         return;
       }
 
-      const success = await saveNoteToFirestore(title, content);
+      try {
+        await addDoc(collection(db, "notes"), {
+          uid: user.uid,              // 🔒 owner real
+          title,
+          content,
+          created_at: serverTimestamp()
+        });
 
-      if (!success) {
+        Swal.fire({
+          title: t("savedNote"),
+          icon: "success",
+          position: "top",
+          toast: true,
+          timer: 1600,
+          customClass: { popup: "minimal-alert" },
+          showConfirmButton: false
+        }).then(() => {
+          Swal.fire({
+            title: t("ask"),
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: t("createAgain"),
+            cancelButtonText: t("goList"),
+            reverseButtons: true,
+            customClass: { popup: "minimal-alert" },
+            allowOutsideClick: false
+          }).then(choice => {
+            if (choice.isConfirmed) {
+              document.getElementById("note-title").value = "";
+              document.getElementById("note-content").value = "";
+            } else {
+              window.location.href = "/search";
+            }
+          });
+        });
+
+      } catch (error) {
+        console.error("Error al guardar nota:", error);
+
         Swal.fire({
           title: t("errorSave"),
           icon: "error",
@@ -60,38 +81,7 @@ async function saveNoteToFirestore(title, content) {
           customClass: { popup: "minimal-alert" },
           showConfirmButton: false
         });
-        return;
       }
-
-      Swal.fire({
-        title: t("savedNote"),
-        icon: "success",
-        position: "top",
-        toast: true,
-        timer: 1600,
-        customClass: { popup: "minimal-alert" },
-        showConfirmButton: false
-      }).then(() => {
-
-        Swal.fire({
-          title: t("ask"),
-          icon: "question",
-          showCancelButton: true,
-          confirmButtonText: t("createAgain"),
-          cancelButtonText: t("goList"),
-          reverseButtons: true,
-          customClass: { popup: "minimal-alert" },
-          allowOutsideClick: false
-        }).then(choice => {
-          if (choice.isConfirmed) {
-            document.getElementById("note-title").value = "";
-            document.getElementById("note-content").value = "";
-          } else {
-            window.location.href = "/search";
-          }
-        });
-
-      });
     });
   });
 

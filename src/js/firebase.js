@@ -5,6 +5,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   signOut,
+  signInAnonymously, // ✅ CLAVE
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -20,7 +21,6 @@ import {
   serverTimestamp
 } from "firebase/firestore";
 
-// 🔥 Tu configuración (sin cambios)
 const firebaseConfig = {
   apiKey: "AIzaSyBi1_Q6gYgIbln6G14ogzPXeo0ZDhG3kBM",
   authDomain: "mynotes-c7209.firebaseapp.com",
@@ -30,7 +30,6 @@ const firebaseConfig = {
   appId: "1:1053521212100:web:a8d436f5c6058e7765cf91"
 };
 
-// 🔥 Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 
 // 🔐 Auth
@@ -40,21 +39,23 @@ const provider = new GoogleAuthProvider();
 // 🔥 Firestore
 const db = getFirestore(app);
 
-// 📤 Exportar todo lo que necesitas en auth.js
 export {
   app,
   auth,
   provider,
   db,
-  // Métodos de Auth
+
+  // Auth
   signInWithPopup,
   signOut,
+  signInAnonymously, // ✅ EXPORTADO
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   sendEmailVerification,
   onAuthStateChanged,
-  // Firestore helpers
+
+  // Firestore
   doc,
   setDoc,
   getDoc,

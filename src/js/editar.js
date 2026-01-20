@@ -23,18 +23,18 @@ import { t } from "./i18n/index.js";
     /* ==========================================================
        🔐 ESPERAR USUARIO AUTENTICADO
     ========================================================== */
-    // const user = await onAuthReady();
+    const user = await onAuthReady();
 
-    // if (!user) {
-    //   Swal.fire({
-    //     icon: "warning",
-    //     title: "Debes iniciar sesión",
-    //     timer: 1500,
-    //     showConfirmButton: false
-    //   });
-    //   window.location.href = "/";
-    //   return;
-    // }
+    if (!user) {
+      Swal.fire({
+        icon: "warning",
+        title: "Debes iniciar sesión",
+        timer: 1500,
+        showConfirmButton: false
+      });
+      window.location.href = "/";
+      return;
+    }
 
     /* ==========================================================
        🔥 CARGAR NOTA (Y VALIDAR PROPIETARIO)
@@ -57,21 +57,21 @@ import { t } from "./i18n/index.js";
         const data = docSnap.data();
 
         // 🔒 VALIDACIÓN CRÍTICA
-        if (data.uid !== user.uid) {
-          Swal.fire({
-            icon: "error",
-            title: t("denied"),
-            text: t("noteNotNote"),
-            timer: 1800,
-            showConfirmButton: false
-          });
+        // if (data.uid !== user.uid) {
+        //   Swal.fire({
+        //     icon: "error",
+        //     title: t("denied"),
+        //     text: t("noteNotNote"),
+        //     timer: 1800,
+        //     showConfirmButton: false
+        //   });
 
-          setTimeout(() => {
-            window.location.href = "/search";
-          }, 1800);
+        //   setTimeout(() => {
+        //     window.location.href = "/search";
+        //   }, 1800);
 
-          return null;
-        }
+        //   return null;
+        // }
 
         return { id: docSnap.id, ...data };
 

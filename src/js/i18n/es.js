@@ -71,6 +71,10 @@ export default {
   confirmTitle: "¡Gracias por registrarte!",
   confirmText: "¡Puedes presionar el enlace para registrarte, disfruta de nuestra aplicación!",
 
+  //traduccion botones de account&settings.ejs 
+    logout: "Cerrar sesión",
+    change_password: "Cambiar contraseña",
+
   //Validaciones del login.js
   errorCamposEmpty: "Completa todos los campos",
   errorLoginExist: "Error al iniciar sesión",

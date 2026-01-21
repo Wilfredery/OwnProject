@@ -21,101 +21,106 @@
       color: v.$azul;
     }
   }
-}
 
-/* ===========================
+  /* ===========================
    OPTION BLOCK
-=========================== */
+  =========================== */
+  &__option {
+    &:nth-child(2) {
+      margin-top: 2rem;
+    }
 
-.option {
-  &:nth-child(2) {
-    margin-top: 2rem;
-  }
+    &__label {
+      font-weight: bold;
+      text-transform: uppercase;
+    }
 
-  &__label {
-    font-weight: bold;
-    text-transform: uppercase;
-  }
-}
+    /* ===========================
+    THEME & LANGUAGE SWITCHERS
+    =========================== */
 
-/* ===========================
-   THEME & LANGUAGE SWITCHERS
-=========================== */
+    &--lang-switcher, &--theme-switcher {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 1rem 0 2rem 1rem;
 
-.lang-switcher,
-.theme-switcher {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 1rem 0 2rem 1rem;
+      label {
+        font-weight: 600;
+      }
 
-  label {
-    font-weight: 600;
-  }
+      button {
+        background-color: transparent;
+        border: 1px solid v.$azul;
+        color: v.$azul;
+        padding: 0.3rem 0.8rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
 
-  button {
-    background-color: transparent;
-    border: 1px solid v.$azul;
-    color: v.$azul;
-    padding: 0.3rem 0.8rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-
-    &:hover {
-      background-color: v.$azul;
-      color: v.$blanco;
+        &:hover {
+          background-color: v.$azul;
+          color: v.$blanco;
+        }
+      }
     }
   }
-}
 
-/* ===========================
+  /* ===========================
    SECURITY SECTION
-=========================== */
+  =========================== */
 
-.settings__security {
-  margin-top: 2.5rem;
+  &__security {
+    margin-top: 2.5rem;
 
-  &--subtitle {
-    margin-bottom: 1rem;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
+    display: flex;      // Poner los botones en fila
+    gap: 1rem;          // Separación entre ellos
 
-  &--btn {
-    display: block;
-    width: 100%;
-    margin-bottom: 0.8rem;
-    padding: 0.6rem;
-    border-radius: 8px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease, opacity 0.3s ease;
+    &--btn {
+      display: inline-block; // Ya no block para que estén en fila
+      width: auto;           // Ancho automático
+      flex: 1;               // Que crezcan igual para ocupar espacio disponible
+      margin-bottom: 0;      // Quitar margen para que no haya salto vertical
 
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+      padding: 0.6rem;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease, opacity 0.3s ease;
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
     }
-  }
 
-  &--btnSecondary {
-    background-color: transparent;
-    border: 1px solid v.$azul;
-    color: v.$azul;
+    &--btnSecondary {
+      background-color: transparent;
+      border: 1px solid v.$azul;
+      color: v.$azul;
 
-    &:hover:not(:disabled) {
-      background-color: v.$azul;
-      color: v.$blanco;
+      &:hover:not(:disabled) {
+        background-color: v.$azul;
+        color: v.$blanco;
+      }
     }
-  }
 
-  &--btnDanger {
-    background-color: color.adjust(v.$rojo, $lightness: -5%);
-    color: v.$blanco;
+    &--btnDanger {
+      background-color: transparent;
+      border: 1px solid v.$rojo;
+      color: v.$rojo;
 
-    &:hover:not(:disabled) {
-      background-color: color.adjust(v.$rojo, $lightness: -10%);
+      &:hover:not(:disabled) {
+        background-color: color.adjust(v.$rojo, $lightness: -10%);
+        color: v.$blanco;
+
+      }
     }
   }
 }
+
+
+
+
+

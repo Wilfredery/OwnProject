@@ -10,16 +10,16 @@
   </div>
 
   <!-- Tema -->
-  <div class="option">
-    <div class="theme-switcher">
+  <div class="settings__option">
+    <div class="settings__option--theme-switcher">
       <label for="theme-toggle" data-i18n="theme">Tema:</label>
       <button id="theme-toggle">Light 🌞</button>
     </div>
   </div>
 
   <!-- Idioma -->
-  <div class="option">
-    <div class="lang-switcher">
+  <div class="settings__option">
+    <div class="settings__option--lang-switcher">
       <label for="lang-toggle" data-i18n="language">Idioma:</label>
       <button id="lang-toggle">Español 🇪🇸</button>
     </div>
@@ -27,27 +27,10 @@
 
   <!-- Seguridad -->
   <div class="settings__security">
-    <!-- <h3 class="settings__security--subtitle" data-i18n="security">Seguridad</h3> -->
+  
+    <button type="button" id="change-password-btn" class="settings__security--btn settings__security--btnSecondary" disabled data-i18n="change_password"></button>
 
-    <button
-      type="button"
-      id="change-password-btn"
-      class="settings__security--btn settings__security--btnSecondary"
-      disabled
-      data-i18n="change_password"
-    >
-      Cambiar contraseña
-    </button>
-
-    <button
-      type="button"
-      id="logout-btn"
-      class="settings__security--btn settings__security--btnDanger"
-      disabled
-      data-i18n="logout"
-    >
-      Cerrar sesión
-    </button>
+    <button type="button" id="logout-btn" class="settings__security--btn settings__security--btnDanger" disabled data-i18n="logout"></button>
   </div>
 
 </section>

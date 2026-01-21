@@ -76,6 +76,10 @@ export default {
   confirmTitle: "Thank you for registering!",
   confirmText: "You can click the link to sign up. Enjoy our app!",
 
+  //traduction bottons of account&settings.ejs
+    logout: "Log Out",
+    change_password: "Change Password",
+
     //Validations for login.js
     errorCamposEmpty: "Complete all fields",
     errorLoginExist: "Error logging in",

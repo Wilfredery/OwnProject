@@ -1,8 +1,8 @@
 /* ======================================================
-   ACCOUNT & SETTINGS – AUTH (USANDO auth.js)
+   ACCOUNT & SETTINGS – AUTH (USANDO onAuthReady)
 ====================================================== */
 
-import { initAuthListener, signOutUser } from "./auth.js";
+import { onAuthReady, signOutUser } from "./auth.js";
 import Swal from "sweetalert2";
 
 // Elementos del DOM
@@ -11,41 +11,38 @@ const logoutBtn = document.getElementById("logout-btn");
 const changePassBtn = document.getElementById("change-password-btn");
 
 /* ======================================================
-   ESTADO INICIAL (ANTES DE FIREBASE)
+   ESTADO INICIAL
 ====================================================== */
 
-if (userNameEl) {
-  userNameEl.textContent = "Cargando...";
-}
-
+if (userNameEl) userNameEl.textContent = "Cargando...";
 if (logoutBtn) logoutBtn.disabled = true;
 if (changePassBtn) changePassBtn.disabled = true;
 
 /* ======================================================
-   AUTH STATE (UN SOLO LISTENER – CENTRALIZADO)
+   AUTH READY (UNA SOLA VEZ – LIMPIO)
 ====================================================== */
 
-if (userNameEl) {
-  initAuthListener({
-    onSignedIn: (user) => {
-      userNameEl.textContent =
-        user.displayName || user.email || "Usuario";
+(async function () {
+  if (!userNameEl) return;
 
-      if (logoutBtn) logoutBtn.disabled = false;
-      if (changePassBtn) changePassBtn.disabled = false;
-    },
+  const user = await onAuthReady();
 
-    onSignedOut: () => {
-      userNameEl.textContent = "Guest";
+  // ⛔ No hay usuario válido
+  if (!user) {
+    userNameEl.textContent = "Guest";
+    return;
+  }
 
-      if (logoutBtn) logoutBtn.disabled = true;
-      if (changePassBtn) changePassBtn.disabled = true;
-    }
-  });
-}
+  // ✅ Usuario válido
+  userNameEl.textContent =
+    user.displayName || user.email || "Usuario";
+
+  if (logoutBtn) logoutBtn.disabled = false;
+  if (changePassBtn) changePassBtn.disabled = false;
+})();
 
 /* ======================================================
-   LOGOUT CON SWEETALERT (FLUJO CORRECTO)
+   LOGOUT CON SWEETALERT
 ====================================================== */
 
 if (logoutBtn) {
@@ -58,14 +55,14 @@ if (logoutBtn) {
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sí, cerrar",
-      customClass: {
-          popup: 'minimal-alert'
-      },
       cancelButtonText: "Cancelar",
+      customClass: {
+        popup: "minimal-alert",
+      },
     });
 
     if (result.isConfirmed) {
-      await signOutUser(); // 👈 auth.js es la única salida
+      await signOutUser();
       window.location.href = "/";
     }
   });

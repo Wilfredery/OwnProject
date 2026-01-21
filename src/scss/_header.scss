@@ -7,6 +7,10 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 2rem;
+
+    .hidden {
+        visibility: hidden;
+    }
     .logo {
         color: v.$blanco;
         font-weight: 400;

@@ -1,4 +1,3 @@
-
 import './lang-auto.js';
 import './header.js';
 import './auth.js';

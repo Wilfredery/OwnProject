@@ -6,6 +6,7 @@ const languages = { es, en };
 let currentLang = localStorage.getItem("lang") || "es";
 let currentLangData = languages[currentLang];
 
+
 export function t(key) {
   return currentLangData[key] || key;
 }

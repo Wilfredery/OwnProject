@@ -7,7 +7,6 @@ export default {
   english: "English 🇬🇧",
 
   //HOME
-  create_noteFirst: "Create your first note!",
   create_note: "Create a note!",
   search_notes: "Search your notes!",
   check_notes: "Check the notes you’ve already made!",

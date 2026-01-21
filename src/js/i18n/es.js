@@ -8,7 +8,6 @@ export default {
   footer_text: "Todos los derechos reservados",
 
   // ===== HOME =====
-  create_noteFirst: "¡Crea tu primera nota!",
   create_note: "¡Crea una nota!",
   search_notes: "¡Busca tus notas!",
   check_notes: "¡Revisa las notas que ya has hecho!",

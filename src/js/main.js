@@ -1,34 +1,52 @@
-import { db } from "./auth.js";
-import { collection, getDocs } from "firebase/firestore";
+import { db, onAuthReady } from "./auth.js";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { applyTranslations } from "./i18n/index.js";
 
 (async function () {
 
-  // 🔍 Buscar el botón
-  const createBtn = document.querySelector('.create-btn');
+  /* ==========================================================
+     🔍 BOTÓN CREAR
+  ========================================================== */
+  const createBtn = document.querySelector(".create-btn");
+  if (!createBtn) return;
 
-  // 👉 Si el botón NO existe, salimos sin errores (igual que otros scripts tuyos)
-  if (!createBtn) {
-    // console.warn('⚠️ No hay .create-btn en esta página.');
-    return;
-  }
+  /* ==========================================================
+     🔐 ESPERAR AUTH
+  ========================================================== */
+  const user = await onAuthReady();
+  if (!user) return;
 
-  // 🔥 Cantidad real de notas en Firestore
+  /* ==========================================================
+     🔥 CONTAR NOTAS DEL USUARIO
+  ========================================================== */
   async function getNotesCount() {
     try {
-      const snapshot = await getDocs(collection(db, "notes"));
+      const q = query(
+        collection(db, "notes"),
+        where("uid", "==", user.uid)
+      );
+      const snapshot = await getDocs(q);
       return snapshot.size;
     } catch (err) {
       console.error("Error obteniendo notas:", err);
-      return 0; // fallback seguro
+      return 0;
     }
   }
 
   const notesCount = await getNotesCount();
 
-  // 🔄 Actualizar texto según cantidad de notas
-  createBtn.innerHTML =
+  /* ==========================================================
+     🟦 CAMBIAR SOLO LA KEY DE TRADUCCIÓN (SIN PARPADEO)
+  ========================================================== */
+  const textSpan = createBtn.querySelector(".btn-text");
+
+  const key =
     notesCount === 0
-      ? `<span class="btn-icon">📝</span><span class="btn-text" data-i18n="create_noteFirst"></span>`
-      : `<span class="btn-icon">➕</span><span class="btn-text" data-i18n="create_note"></span>`;
-      applyTranslations(currentLangData);
+      ? createBtn.dataset.emptyText
+      : createBtn.dataset.normalText;
+
+  textSpan.dataset.i18n = key;
+
+  applyTranslations(createBtn);
+
 })();

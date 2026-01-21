@@ -1,15 +1,22 @@
 import Swal from "sweetalert2";
-import { db, getCurrentUser, onAuthReady } from "./auth.js";
-import {collection, getDocs, doc, deleteDoc, query, where} from "firebase/firestore";
-import {t} from "./i18n/index.js";
+import { db, onAuthReady } from "./auth.js";
+import {
+  collection,
+  getDocs,
+  doc,
+  deleteDoc,
+  query,
+  where
+} from "firebase/firestore";
+import { t } from "./i18n/index.js";
 
 (async function () {
 
   /* ==========================================================
-     🔥 CARGAR NOTAS DEL USUARIO ACTUAL (ESPERANDO AUTH)
+     🔥 CARGAR NOTAS DEL USUARIO ACTUAL
   ========================================================== */
   async function loadNotes() {
-    const user = await onAuthReady(); // ⬅️ CLAVE
+    const user = await onAuthReady();
     if (!user) return [];
 
     const notes = [];
@@ -28,7 +35,9 @@ import {t} from "./i18n/index.js";
         id: docSnap.id,
         title: data.title,
         content: data.content,
-        created_at: data.created_at ? data.created_at.toDate() : null
+        created_at: data.created_at
+          ? data.created_at.toDate()
+          : null
       });
     });
 
@@ -60,8 +69,14 @@ import {t} from "./i18n/index.js";
     const searchInput = document.getElementById("search");
     const resultsContainer = document.getElementById("results");
     const paginationContainer = document.getElementById("pagination");
+    const emptyState = document.getElementById("empty-state");
 
-    if (!searchInput || !resultsContainer || !paginationContainer) return;
+    if (
+      !searchInput ||
+      !resultsContainer ||
+      !paginationContainer ||
+      !emptyState
+    ) return;
 
     /* ==========================================================
        🔢 PAGINACIÓN
@@ -72,59 +87,51 @@ import {t} from "./i18n/index.js";
       const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
       if (totalPages <= 1) return;
 
-      const firstBtn = document.createElement("button");
-      firstBtn.textContent = "<<";
-      firstBtn.classList.add("search__pagination--page-btn");
-      firstBtn.disabled = currentPage === 1;
-      firstBtn.addEventListener("click", () => {
-        currentPage = 1;
-        renderNotes(currentNotes);
-      });
-      paginationContainer.appendChild(firstBtn);
+      const createBtn = (text, disabled, onClick) => {
+        const btn = document.createElement("button");
+        btn.textContent = text;
+        btn.classList.add("search__pagination--page-btn");
+        btn.disabled = disabled;
+        btn.addEventListener("click", onClick);
+        return btn;
+      };
 
-      const prevBtn = document.createElement("button");
-      prevBtn.textContent = "<";
-      prevBtn.classList.add("search__pagination--page-btn");
-      prevBtn.disabled = currentPage === 1;
-      prevBtn.addEventListener("click", () => {
-        currentPage--;
-        renderNotes(currentNotes);
-      });
-      paginationContainer.appendChild(prevBtn);
+      paginationContainer.appendChild(
+        createBtn("<<", currentPage === 1, () => {
+          currentPage = 1;
+          renderNotes(currentNotes);
+        })
+      );
+
+      paginationContainer.appendChild(
+        createBtn("<", currentPage === 1, () => {
+          currentPage--;
+          renderNotes(currentNotes);
+        })
+      );
 
       for (let i = 1; i <= totalPages; i++) {
-        const btn = document.createElement("button");
-        btn.textContent = i;
-        btn.classList.add("search__pagination--page-btn");
-        if (i === currentPage) btn.classList.add("active");
-
-        btn.addEventListener("click", () => {
+        const btn = createBtn(i, false, () => {
           currentPage = i;
           renderNotes(currentNotes);
         });
-
+        if (i === currentPage) btn.classList.add("active");
         paginationContainer.appendChild(btn);
       }
 
-      const nextBtn = document.createElement("button");
-      nextBtn.textContent = ">";
-      nextBtn.classList.add("search__pagination--page-btn");
-      nextBtn.disabled = currentPage === totalPages;
-      nextBtn.addEventListener("click", () => {
-        currentPage++;
-        renderNotes(currentNotes);
-      });
-      paginationContainer.appendChild(nextBtn);
+      paginationContainer.appendChild(
+        createBtn(">", currentPage === totalPages, () => {
+          currentPage++;
+          renderNotes(currentNotes);
+        })
+      );
 
-      const lastBtn = document.createElement("button");
-      lastBtn.textContent = ">>";
-      lastBtn.classList.add("search__pagination--page-btn");
-      lastBtn.disabled = currentPage === totalPages;
-      lastBtn.addEventListener("click", () => {
-        currentPage = totalPages;
-        renderNotes(currentNotes);
-      });
-      paginationContainer.appendChild(lastBtn);
+      paginationContainer.appendChild(
+        createBtn(">>", currentPage === totalPages, () => {
+          currentPage = totalPages;
+          renderNotes(currentNotes);
+        })
+      );
     }
 
     /* ==========================================================
@@ -135,11 +142,12 @@ import {t} from "./i18n/index.js";
       currentNotes = list;
 
       if (list.length === 0) {
-        resultsContainer.innerHTML = `<p class="no-results" data-i18n="findlist"></p>`;
+        emptyState.style.display = "block";
         paginationContainer.innerHTML = "";
-        applyTranslations(currentLangData);
         return;
       }
+
+      emptyState.style.display = "none";
 
       const start = (currentPage - 1) * ITEMS_PER_PAGE;
       const end = start + ITEMS_PER_PAGE;
@@ -154,13 +162,15 @@ import {t} from "./i18n/index.js";
             <h3>${note.title}</h3>
             <p>${note.content.substring(0, 60)}...</p>
             <p class="fecha">
-              ${note.created_at
-                ? note.created_at.toLocaleDateString(userLocale) + " " +
-                  note.created_at.toLocaleTimeString(userLocale, {
-                    hour: "2-digit",
-                    minute: "2-digit"
-                  })
-                : ""}
+              ${
+                note.created_at
+                  ? note.created_at.toLocaleDateString(userLocale) + " " +
+                    note.created_at.toLocaleTimeString(userLocale, {
+                      hour: "2-digit",
+                      minute: "2-digit"
+                    })
+                  : ""
+              }
             </p>
           </div>
 
@@ -173,10 +183,10 @@ import {t} from "./i18n/index.js";
         resultsContainer.appendChild(li);
       });
 
-      applyTranslations(currentLangData);
       renderPagination(list.length);
     }
 
+    // 🚀 Primer render
     renderNotes(notes);
 
     /* ==========================================================
@@ -197,13 +207,6 @@ import {t} from "./i18n/index.js";
     /* ==========================================================
        🟦 FILTROS
     ========================================================== */
-    const filterToggle = document.getElementById("filterToggle");
-    const filterPanel = document.getElementById("filterPanel");
-
-    filterToggle.addEventListener("click", () => {
-      filterPanel.classList.toggle("hidden");
-    });
-
     function sortNotes(type) {
       let sorted = [...notes];
 
@@ -215,10 +218,14 @@ import {t} from "./i18n/index.js";
           sorted.sort((a, b) => a.created_at - b.created_at);
           break;
         case "alpha-asc":
-          sorted.sort((a, b) => a.title.localeCompare(b.title, "es", { sensitivity: "base" }));
+          sorted.sort((a, b) =>
+            a.title.localeCompare(b.title, "es", { sensitivity: "base" })
+          );
           break;
         case "alpha-desc":
-          sorted.sort((a, b) => b.title.localeCompare(a.title, "es", { sensitivity: "base" }));
+          sorted.sort((a, b) =>
+            b.title.localeCompare(a.title, "es", { sensitivity: "base" })
+          );
           break;
       }
 
@@ -229,7 +236,6 @@ import {t} from "./i18n/index.js";
     document.querySelectorAll(".search__filter--option").forEach(btn => {
       btn.addEventListener("click", () => {
         sortNotes(btn.dataset.sort);
-        filterPanel.classList.add("hidden");
       });
     });
 
@@ -248,8 +254,7 @@ import {t} from "./i18n/index.js";
           showCancelButton: true,
           confirmButtonText: t("confirmEditNote"),
           cancelButtonText: t("cancelEditNote"),
-          customClass: { popup: "minimal-alert" },
-          reverseButtons: true
+          customClass: { popup: "minimal-alert" }
         });
 
         if (result.isConfirmed) {
@@ -268,8 +273,7 @@ import {t} from "./i18n/index.js";
           showCancelButton: true,
           confirmButtonText: t("confirmDelete"),
           cancelButtonText: t("cancelDelete"),
-          customClass: { popup: "minimal-alert" },
-          reverseButtons: true
+          customClass: { popup: "minimal-alert" }
         });
 
         if (!result.isConfirmed) return;
@@ -278,10 +282,6 @@ import {t} from "./i18n/index.js";
         if (!ok) return;
 
         notes = notes.filter(n => n.id !== id);
-
-        const totalPages = Math.ceil(notes.length / ITEMS_PER_PAGE);
-        if (currentPage > totalPages) currentPage = totalPages;
-
         renderNotes(notes);
 
         Swal.fire({

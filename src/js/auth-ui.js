@@ -36,8 +36,10 @@ function showUserUI(user) {
 }
 
 async function initHeaderAuthUI() {
+  const header = document.getElementById("main-header");
+
   try {
-    const user = await onAuthReady(); // 🔐 SIEMPRE devuelve user (anon o real)
+    const user = await onAuthReady();
 
     if (user) {
       showUserUI(user);
@@ -48,6 +50,9 @@ async function initHeaderAuthUI() {
   } catch (error) {
     console.error("Auth UI error:", error);
     showGuestUI();
+  } finally {
+    // 🔥 AQUÍ se muestra el header
+    if (header) header.classList.remove("hidden");
   }
 }
 

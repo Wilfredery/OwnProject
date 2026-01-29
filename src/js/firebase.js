@@ -10,7 +10,9 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   onAuthStateChanged,
-  sendEmailVerification
+  sendEmailVerification,
+  confirmPasswordReset,   // ✅
+  applyActionCode         // ✅
 } from "firebase/auth";
 
 import {
@@ -54,6 +56,8 @@ export {
   sendPasswordResetEmail,
   sendEmailVerification,
   onAuthStateChanged,
+  confirmPasswordReset,   // ✅
+  applyActionCode,        // ✅
 
   // Firestore
   doc,

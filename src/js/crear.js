@@ -11,10 +11,46 @@ import { t } from "./i18n/index.js";
     const saveBtn = document.getElementById("save-note");
     if (!saveBtn) return;
 
-    // 🔐 UID garantizado (email / Google / anonymous)
-    const user = await onAuthReady();
-    if (!user) return;
+    /* ==========================================================
+       🔐 AUTH (3 ESTADOS)
+    ========================================================== */
+    const authState = await onAuthReady();
+    if (!authState) return;
 
+    // 👤 GUEST → fuera
+    if (authState.role === "guest") {
+      await Swal.fire({
+        icon: "warning",
+        title: t("mustLogin"),
+        timer: 1500,
+        showConfirmButton: false,
+        customClass: { popup: "minimal-alert" }
+      });
+
+      window.location.href = "/";
+      return;
+    }
+
+    // 🟡 NO VERIFICADO → aviso + fuera
+    if (authState.role === "unverified") {
+      await Swal.fire({
+        icon: "info",
+        title: t("titleplsverifyemail"),
+        text: t("plsverifyemail"),
+        confirmButtonText: t("confirmplsverifyemail"),
+        customClass: { popup: "minimal-alert" }
+      });
+
+      window.location.href = "/main";
+      return;
+    }
+
+    // 🟢 VERIFICADO
+    const user = authState.user;
+
+    /* ==========================================================
+       💾 GUARDAR NOTA
+    ========================================================== */
     saveBtn.addEventListener("click", async () => {
 
       const title = document.getElementById("note-title").value.trim();
@@ -35,7 +71,7 @@ import { t } from "./i18n/index.js";
 
       try {
         await addDoc(collection(db, "notes"), {
-          uid: user.uid,              // 🔒 owner real
+          uid: user.uid,          // 🔒 owner real
           title,
           content,
           created_at: serverTimestamp()
@@ -83,6 +119,7 @@ import { t } from "./i18n/index.js";
         });
       }
     });
+
   });
 
 })();

@@ -1,16 +1,26 @@
 export default {
-  //GENERIC / GLOBAL
+  //Acc&sett
   account_settings: "Account & Settings",
   theme: "Theme:",
   language: "Language:",
   spanish: "Spanish 🇪🇸",
   english: "English 🇬🇧",
+  UserNotVerfied: "User not verified(Guest)",
+  guest: "Guest",
+  tittleCloseSession: "Log Out?",
+  textCloseSession: "Your current session will be closed",
+  confirmCloseSession: "Yes, log out",
+  cancerlCloseSession: "Cancel",
+  
 
   //HOME
   create_note: "Create a note!",
   search_notes: "Search your notes!",
   check_notes: "Check the notes you’ve already made!",
-  footer_text: "All rights reserved",
+  footer_text: " All rights reserved",
+  titleplsverifyemail: "Email not verified",
+  plsverifyemail: "Please verify your email to create and search notes.",
+  confirmplsverifyemail: "Understood",
 
   //PAGES
   page_accountSettings: "Account & Settings",
@@ -51,6 +61,7 @@ export default {
   createAcc: "Don't have an account? Create one",
   submitLogin: "Log In",
 
+
   //REGISTER
   registerTitle: "Create Account",
   nameRegister: "Full name",
@@ -85,6 +96,9 @@ export default {
     errorLoginExist: "Error logging in",
     errorUserNotFound: "User does not exist",
     errorLoginPassW: "Incorrect password",
+    tituloEmailNotVerified: "Email not verified",
+    textEmailNotVerified: "This account has not been verified yet. Check your email to activate it. In the meantime, you will enter as a guest user.",
+    confirmEmailNotVerified: "Understood",
 
     //Validations for olvidar.js
       requiredEmail: "Email required",

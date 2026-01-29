@@ -1,11 +1,12 @@
 <%- include('partials/header') %>
 
         <section class="actions">
-            <button class="create-btn" data-normal-text="create_note" onclick="window.location.href='/crear'">
+            <button class="create-btn" data-href="/crear" type="button">
             <span class="btn-icon">📝</span>
             <span class="btn-text" data-i18n="create_note"></span>
             </button>
-            <button class="search-btn" onclick="window.location.href='/search'">🔎<span data-i18n="search_notes"></span></button>
+            <button class="search-btn" data-href="/search" type="button">
+            🔎<span data-i18n="search_notes"></span></button>
         </section>
 
         <section class="recent-notes">

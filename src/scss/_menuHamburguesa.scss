@@ -76,3 +76,8 @@ box-shadow: 0px 7px 14px -1px rgba(0,0,0,0.75);
     transform: translateY(0);
   }
 }
+
+.link--locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -3,25 +3,19 @@ import Swal from "sweetalert2";
 import { signInWithEmail } from "./auth.js";
 import { t } from "./i18n/index.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const loginForm = document.getElementById("login-form");
-  let isSubmitting = false; // 🔐 Anti doble submit
+(function () {
+  document.addEventListener("DOMContentLoaded", () => {
+    const loginForm = document.getElementById("login-form");
+    if (!loginForm) return;
 
-  /* ==========================
-     LOGIN EMAIL / PASSWORD
-  ========================== */
-  if (loginForm) {
+    let isSubmitting = false;
+
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (isSubmitting) return;
 
-      const email = document
-        .getElementById("login-email")
-        .value.trim();
-
-      const pass = document
-        .getElementById("login-pass")
-        .value; // ❌ NO TRIM
+      const email = document.getElementById("login-email")?.value.trim();
+      const pass = document.getElementById("login-pass")?.value;
 
       if (!email || !pass) {
         return Swal.fire({
@@ -35,9 +29,22 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         isSubmitting = true;
 
-        await signInWithEmail(email, pass);
+        // 🔐 Login (auth real)
+        const result = await signInWithEmail(email, pass);
 
-        // ✅ Login exitoso
+        // 🟡 AVISO informativo (NO lógica de permisos)
+        if (!result.isVerified) {
+          await Swal.fire({
+            icon: "info",
+            title: t("tituloEmailNotVerified"),
+            text: t("textEmailNotVerified"),
+            confirmButtonText: t("confirmEmailNotVerified"),
+            customClass: { popup: "minimal-alert" }
+          });
+        }
+
+        // ✅ Redirección única
+        // Los permisos reales se evaluarán en /main con onAuthReady
         window.location.href = "/main";
 
       } catch (err) {
@@ -65,9 +72,10 @@ document.addEventListener("DOMContentLoaded", () => {
           icon: "error",
           customClass: { popup: "minimal-alert" }
         });
+
       } finally {
         isSubmitting = false;
       }
     });
-  }
-});
+  });
+})();

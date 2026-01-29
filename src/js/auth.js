@@ -10,7 +10,8 @@ import {
   sendPasswordResetEmail,
   onAuthStateChanged,
   sendEmailVerification,
-  signInAnonymously,
+  confirmPasswordReset,
+  applyActionCode,
   doc,
   setDoc,
   getDoc,
@@ -18,111 +19,166 @@ import {
 } from "./firebase.js";
 
 /* =========================
+   GUEST LOCAL (NO AUTH)
+========================= */
+const GUEST_KEY = "guest_session";
+
+export function initGuestSession() {
+  if (!localStorage.getItem(GUEST_KEY)) {
+    localStorage.setItem(GUEST_KEY, crypto.randomUUID());
+  }
+  return localStorage.getItem(GUEST_KEY);
+}
+
+export function clearGuestSession() {
+  localStorage.removeItem(GUEST_KEY);
+}
+
+export function getGuestSession() {
+  return localStorage.getItem(GUEST_KEY);
+}
+
+/* =========================
    USER DOCUMENT
 ========================= */
-export async function createOrUpdateUserDoc(user) {
+export async function createOrUpdateUserDoc(user, extra = {}) {
   if (!user) return;
 
   const ref = doc(db, "users", user.uid);
   const snap = await getDoc(ref);
 
-  const data = {
+  const baseData = {
     uid: user.uid,
     email: user.email || null,
-    displayName: user.displayName || "Guest",
+    displayName: user.displayName || "User",
     photoURL: user.photoURL || null,
-    isAnonymous: user.isAnonymous,
+    isAnonymous: user.isAnonymous || false,
     lastSeen: serverTimestamp(),
+    ...extra,
   };
 
   if (snap.exists()) {
-    await setDoc(ref, data, { merge: true });
+    await setDoc(ref, baseData, { merge: true });
   } else {
     await setDoc(ref, {
-      ...data,
+      ...baseData,
       createdAt: serverTimestamp(),
     });
   }
 }
 
 /* =========================
-   AUTH READY (SIEMPRE UID)
+   AUTH READY (3 ESTADOS REAL)
 ========================= */
 export function onAuthReady() {
   return new Promise((resolve) => {
     const unsub = onAuthStateChanged(auth, async (user) => {
-      unsub(); // 🔥 evita dobles ejecuciones
+      unsub();
 
-      // 1️⃣ Si no hay usuario → anónimo
+      /* 👤 GUEST */
       if (!user) {
-        const res = await signInAnonymously(auth);
-        await createOrUpdateUserDoc(res.user);
-        return resolve(res.user);
+        const guestId = initGuestSession();
+        return resolve({
+          role: "guest",
+          guestId,
+          user: null,
+        });
       }
 
-      // 2️⃣ Si es email/password y NO ha verificado correo
-      const providerId = user.providerData[0]?.providerId;
+      /* 🔁 ESTADO REAL */
+      await user.reload();
 
-      if (providerId === "password" && !user.emailVerified) {
-        await signOut(auth);
-        return resolve(null); // ⛔ bloqueado hasta verificar
-      }
+      const isGoogle =
+        user.providerData[0]?.providerId === "google.com";
 
-      // 3️⃣ Usuario válido
       await createOrUpdateUserDoc(user);
-      resolve(user);
+
+      return resolve({
+        role: isGoogle || user.emailVerified
+          ? "verified"
+          : "unverified",
+        user,
+      });
     });
   });
 }
 
-
 /* =========================
    AUTH ACTIONS
 ========================= */
-export async function signUpWithEmail(email, password) {
+
+// 📧 Registro con email
+export async function signUpWithEmail(email, password, nickname) {
   const res = await createUserWithEmailAndPassword(auth, email, password);
+
+  // 🔐 enviar verificación SOLO una vez
   await sendEmailVerification(res.user);
-  await createOrUpdateUserDoc(res.user);
+
+  await createOrUpdateUserDoc(res.user, {
+    nickname,
+    provider: "password",
+    emailVerificationSent: true,
+  });
+
+  clearGuestSession();
   return res.user;
 }
 
+// 🔐 Login con email (NO BLOQUEA)
 export async function signInWithEmail(email, password) {
   const res = await signInWithEmailAndPassword(auth, email, password);
+
+  await res.user.reload();
+
   await createOrUpdateUserDoc(res.user);
-  return res.user;
+  clearGuestSession();
+
+  return {
+    user: res.user,
+    isVerified: res.user.emailVerified,
+  };
 }
 
+// 🔵 Login con Google (verificado automático)
 export async function signInWithGoogle() {
   const res = await signInWithPopup(auth, provider);
+
   await createOrUpdateUserDoc(res.user);
-  return res.user;
+  clearGuestSession();
+
+  return {
+    user: res.user,
+    isVerified: true,
+  };
 }
 
+// 🚪 Logout
 export async function signOutUser() {
   await signOut(auth);
+  initGuestSession();
 }
 
+// 🔁 Password reset
 export async function sendPasswordReset(email) {
-  await sendPasswordResetEmail(auth, email);
+  return sendPasswordResetEmail(auth, email);
 }
 
 export async function resetPassword(oobCode, newPassword) {
   return confirmPasswordReset(auth, oobCode, newPassword);
 }
 
+// ✅ Confirmar email
 export async function confirmEmailWithCode(oobCode) {
-  return applyActionCode(auth, oobCode);
+  await applyActionCode(auth, oobCode);
+
+  if (auth.currentUser) {
+    await auth.currentUser.reload();
+  }
 }
 
-export async function sendResetPassword(email) {
-  const actionCodeSettings = {
-    url: `${window.location.origin}/password`,
-    handleCodeInApp: true,
-  };
-
-  return sendPasswordResetEmail(auth, email, actionCodeSettings);
-}
-
+/* =========================
+   EXPORTS EXTRA
+========================= */
 export {
   db,
   serverTimestamp

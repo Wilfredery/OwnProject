@@ -1,3 +1,4 @@
+// src/js/search.js
 import Swal from "sweetalert2";
 import { db, onAuthReady } from "./auth.js";
 import {
@@ -12,52 +13,90 @@ import { t } from "./i18n/index.js";
 
 (async function () {
 
-  /* ==========================================================
-     🔥 CARGAR NOTAS DEL USUARIO ACTUAL
-  ========================================================== */
-  async function loadNotes() {
-    const user = await onAuthReady();
-    if (!user) return [];
-
-    const notes = [];
-
-    const q = query(
-      collection(db, "notes"),
-      where("uid", "==", user.uid)
-    );
-
-    const querySnapshot = await getDocs(q);
-
-    querySnapshot.forEach(docSnap => {
-      const data = docSnap.data();
-
-      notes.push({
-        id: docSnap.id,
-        title: data.title,
-        content: data.content,
-        created_at: data.created_at
-          ? data.created_at.toDate()
-          : null
-      });
-    });
-
-    return notes;
-  }
-
-  /* ==========================================================
-     🗑️ ELIMINAR NOTA
-  ========================================================== */
-  async function deleteNoteFromFirestore(id) {
-    try {
-      await deleteDoc(doc(db, "notes", id));
-      return true;
-    } catch (error) {
-      console.error("Error eliminando nota:", error);
-      return false;
-    }
-  }
-
   document.addEventListener("DOMContentLoaded", async () => {
+
+    const searchInput = document.getElementById("search");
+    const resultsContainer = document.getElementById("results");
+    const paginationContainer = document.getElementById("pagination");
+    const emptyState = document.getElementById("empty-state");
+
+    // ⛔ No estamos en search.ejs
+    if (
+      !searchInput ||
+      !resultsContainer ||
+      !paginationContainer ||
+      !emptyState
+    ) return;
+
+    /* ==========================================================
+       🔐 AUTH (3 ESTADOS)
+    ========================================================== */
+    const authState = await onAuthReady();
+
+    // 👤 GUEST → fuera
+    if (authState.role === "guest") {
+      window.location.href = "/";
+      return;
+    }
+
+    // 🟡 NO VERIFICADO → aviso + fuera
+    if (authState.role === "unverified") {
+      await Swal.fire({
+        icon: "info",
+        title: t("titleplsverifyemail"),
+        text: t("plsverifyemail"),
+        confirmButtonText: t("confirmplsverifyemail"),
+        customClass: { popup: "minimal-alert" }
+      });
+
+      window.location.href = "/main";
+      return;
+    }
+
+    // 🟢 VERIFICADO
+    const user = authState.user;
+
+    /* ==========================================================
+       🔥 CARGAR NOTAS
+    ========================================================== */
+    async function loadNotes() {
+      const notes = [];
+
+      const q = query(
+        collection(db, "notes"),
+        where("uid", "==", user.uid)
+      );
+
+      const querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach(docSnap => {
+        const data = docSnap.data();
+
+        notes.push({
+          id: docSnap.id,
+          title: data.title,
+          content: data.content,
+          created_at: data.created_at
+            ? data.created_at.toDate()
+            : null
+        });
+      });
+
+      return notes;
+    }
+
+    /* ==========================================================
+       🗑️ ELIMINAR NOTA
+    ========================================================== */
+    async function deleteNoteFromFirestore(id) {
+      try {
+        await deleteDoc(doc(db, "notes", id));
+        return true;
+      } catch (error) {
+        console.error("Error eliminando nota:", error);
+        return false;
+      }
+    }
 
     let notes = await loadNotes();
     let currentNotes = [];
@@ -65,18 +104,6 @@ import { t } from "./i18n/index.js";
 
     const ITEMS_PER_PAGE = 10;
     const userLocale = navigator.language || "es-ES";
-
-    const searchInput = document.getElementById("search");
-    const resultsContainer = document.getElementById("results");
-    const paginationContainer = document.getElementById("pagination");
-    const emptyState = document.getElementById("empty-state");
-
-    if (
-      !searchInput ||
-      !resultsContainer ||
-      !paginationContainer ||
-      !emptyState
-    ) return;
 
     /* ==========================================================
        🔢 PAGINACIÓN
@@ -135,7 +162,7 @@ import { t } from "./i18n/index.js";
     }
 
     /* ==========================================================
-       🟦 RENDERIZAR NOTAS
+       🟦 RENDER NOTAS
     ========================================================== */
     function renderNotes(list) {
       resultsContainer.innerHTML = "";
@@ -151,9 +178,8 @@ import { t } from "./i18n/index.js";
 
       const start = (currentPage - 1) * ITEMS_PER_PAGE;
       const end = start + ITEMS_PER_PAGE;
-      const paginatedNotes = list.slice(start, end);
 
-      paginatedNotes.forEach(note => {
+      list.slice(start, end).forEach(note => {
         const li = document.createElement("li");
         li.classList.add("note-item");
 
@@ -173,7 +199,6 @@ import { t } from "./i18n/index.js";
               }
             </p>
           </div>
-
           <div class="actions">
             <button class="edit-btn" data-id="${note.id}" data-i18n="editar"></button>
             <button class="delete-btn" data-id="${note.id}" data-i18n="eliminar"></button>
@@ -186,11 +211,10 @@ import { t } from "./i18n/index.js";
       renderPagination(list.length);
     }
 
-    // 🚀 Primer render
     renderNotes(notes);
 
     /* ==========================================================
-       🔍 BÚSQUEDA
+       🔍 SEARCH
     ========================================================== */
     searchInput.addEventListener("input", () => {
       const q = searchInput.value.trim().toLowerCase();
@@ -202,41 +226,6 @@ import { t } from "./i18n/index.js";
       );
 
       renderNotes(filtered);
-    });
-
-    /* ==========================================================
-       🟦 FILTROS
-    ========================================================== */
-    function sortNotes(type) {
-      let sorted = [...notes];
-
-      switch (type) {
-        case "date-desc":
-          sorted.sort((a, b) => b.created_at - a.created_at);
-          break;
-        case "date-asc":
-          sorted.sort((a, b) => a.created_at - b.created_at);
-          break;
-        case "alpha-asc":
-          sorted.sort((a, b) =>
-            a.title.localeCompare(b.title, "es", { sensitivity: "base" })
-          );
-          break;
-        case "alpha-desc":
-          sorted.sort((a, b) =>
-            b.title.localeCompare(a.title, "es", { sensitivity: "base" })
-          );
-          break;
-      }
-
-      currentPage = 1;
-      renderNotes(sorted);
-    }
-
-    document.querySelectorAll(".search__filter--option").forEach(btn => {
-      btn.addEventListener("click", () => {
-        sortNotes(btn.dataset.sort);
-      });
     });
 
     /* ==========================================================
@@ -260,7 +249,6 @@ import { t } from "./i18n/index.js";
         if (result.isConfirmed) {
           window.location.href = `/editar/${id}`;
         }
-        return;
       }
 
       if (e.target.classList.contains("delete-btn")) {
@@ -295,4 +283,5 @@ import { t } from "./i18n/index.js";
     });
 
   });
+
 })();

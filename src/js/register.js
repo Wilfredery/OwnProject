@@ -87,19 +87,7 @@ if (form) {
     try {
       isSubmitting = true;
 
-      const user = await signUpWithEmail(email, password);
-
-      // Guardar datos extra del usuario (perfil)
-      const { db, doc, setDoc } = await import("./firebase.js");
-
-      await setDoc(
-        doc(db, "users", user.uid),
-        {
-          nickname,
-          provider: "email",
-        },
-        { merge: true }
-      );
+      await signUpWithEmail(email, password, nickname);
 
       Swal.fire({
         icon: "success",
@@ -118,6 +106,7 @@ if (form) {
       }, 5000);
 
       form.reset();
+
     } catch (error) {
       console.error(error);
 

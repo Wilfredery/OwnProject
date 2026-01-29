@@ -1,9 +1,10 @@
 /* ======================================================
-   ACCOUNT & SETTINGS – AUTH (USANDO onAuthReady)
+   ACCOUNT & SETTINGS – AUTH (3 ESTADOS)
 ====================================================== */
 
 import { onAuthReady, signOutUser } from "./auth.js";
 import Swal from "sweetalert2";
+import { t } from "./i18n/index.js";
 
 // Elementos del DOM
 const userNameEl = document.querySelector(".settings__user--userName");
@@ -14,35 +15,59 @@ const changePassBtn = document.getElementById("change-password-btn");
    ESTADO INICIAL
 ====================================================== */
 
-if (userNameEl) userNameEl.textContent = "Cargando...";
+if (userNameEl) userNameEl.textContent = "...";
 if (logoutBtn) logoutBtn.disabled = true;
 if (changePassBtn) changePassBtn.disabled = true;
 
 /* ======================================================
-   AUTH READY (UNA SOLA VEZ – LIMPIO)
+   AUTH READY
 ====================================================== */
 
 (async function () {
   if (!userNameEl) return;
 
-  const user = await onAuthReady();
+  const authState = await onAuthReady();
 
-  // ⛔ No hay usuario válido
-  if (!user) {
-    userNameEl.textContent = "Guest";
+  // 🔓 LOGOUT SIEMPRE ACTIVO SI HAY SESIÓN
+  if (logoutBtn) logoutBtn.disabled = false;
+
+  /* =========================
+     👤 GUEST
+  ========================= */
+  if (authState.role === "guest") {
+    userNameEl.textContent = t("guest");
     return;
   }
 
-  // ✅ Usuario válido
-  userNameEl.textContent =
-    user.displayName || user.email || "Usuario";
+  const user = authState.user;
 
-  if (logoutBtn) logoutBtn.disabled = false;
-  if (changePassBtn) changePassBtn.disabled = false;
+  // 🔄 sincronizar estado real
+  await user.reload();
+
+  /* =========================
+     🟡 NO VERIFICADO
+  ========================= */
+  if (!user.emailVerified) {
+    userNameEl.textContent = t("UserNotVerfied");
+  } else {
+    /* =========================
+       ✅ VERIFICADO
+    ========================= */
+    userNameEl.textContent =
+      user.displayName || user.email;
+  }
+
+  /* =========================
+     🔒 CAMBIAR CONTRASEÑA
+  ========================= */
+  const isEmailProvider =
+    user.providerData[0]?.providerId === "password";
+
+  changePassBtn.disabled = !(user.emailVerified && isEmailProvider);
 })();
 
 /* ======================================================
-   LOGOUT CON SWEETALERT
+   LOGOUT
 ====================================================== */
 
 if (logoutBtn) {
@@ -50,15 +75,13 @@ if (logoutBtn) {
     if (logoutBtn.disabled) return;
 
     const result = await Swal.fire({
-      title: "¿Cerrar sesión?",
-      text: "Se cerrará tu sesión actual",
+      title: t("tittleCloseSession"),
+      text: t("textCloseSession"),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Sí, cerrar",
-      cancelButtonText: "Cancelar",
-      customClass: {
-        popup: "minimal-alert",
-      },
+      confirmButtonText: t("confirmCloseSession"),
+      cancelButtonText: t("cancerlCloseSession"),
+      customClass: { popup: "minimal-alert" }
     });
 
     if (result.isConfirmed) {

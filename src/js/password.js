@@ -3,51 +3,63 @@ import Swal from "sweetalert2";
 import { resetPassword } from "./auth.js";
 import { t } from "./i18n/index.js";
 
-const form = document.getElementById("reset-form");
+(function () {
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("reset-form");
+    if (!form) return;
 
-if (form) {
-  const passInput = document.getElementById("reset-password");
-  const confirmInput = document.getElementById("reset-password-confirm");
-  const oobCode = window.__OOB_CODE__;
+    const passInput = document.getElementById("reset-password");
+    const confirmInput = document.getElementById("reset-password-confirm");
+    const oobCode = window.__OOB_CODE__;
+    let isSubmitting = false;
 
-  if (!oobCode) {
-    Swal.fire({
-      icon: "error",
-      title: t("linkUnvalid"),
-      text: t("linkExpired"),
-      customClass: { popup: "minimal-alert" },
-    });
-  } else {
+    // ❌ Link inválido o expirado
+    if (!oobCode) {
+      Swal.fire({
+        icon: "error",
+        title: t("linkUnvalid"),
+        text: t("linkExpired"),
+        customClass: { popup: "minimal-alert" }
+      });
+      return;
+    }
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
+
+      if (isSubmitting) return;
+      isSubmitting = true;
 
       const password = passInput.value.trim();
       const confirmPassword = confirmInput.value.trim();
 
       if (!password || !confirmPassword) {
+        isSubmitting = false;
         return Swal.fire({
           icon: "warning",
           title: t("requireFilds"),
           text: t("fillboth"),
-          customClass: { popup: "minimal-alert" },
+          customClass: { popup: "minimal-alert" }
         });
       }
 
       if (password.length < 6) {
+        isSubmitting = false;
         return Swal.fire({
           icon: "error",
           title: t("shortPassW"),
           text: t("amountPassW"),
-          customClass: { popup: "minimal-alert" },
+          customClass: { popup: "minimal-alert" }
         });
       }
 
       if (password !== confirmPassword) {
+        isSubmitting = false;
         return Swal.fire({
           icon: "error",
           title: t("notMatch"),
           text: t("notMatchPassW"),
-          customClass: { popup: "minimal-alert" },
+          customClass: { popup: "minimal-alert" }
         });
       }
 
@@ -60,17 +72,18 @@ if (form) {
           text: t("passProcessed"),
           timer: 4000,
           showConfirmButton: false,
-          customClass: { popup: "minimal-alert" },
+          allowOutsideClick: false,
+          customClass: { popup: "minimal-alert" }
         });
+
+        form.reset();
 
         setTimeout(() => {
           window.location.href = "/";
         }, 4000);
 
-        form.reset();
-
       } catch (error) {
-        console.error(error);
+        console.error("Reset password error:", error);
 
         let message = t("passWCantBeChanged");
 
@@ -86,9 +99,12 @@ if (form) {
           icon: "error",
           title: "Error",
           text: message,
-          customClass: { popup: "minimal-alert" },
+          customClass: { popup: "minimal-alert" }
         });
+
+      } finally {
+        isSubmitting = false;
       }
     });
-  }
-}
+  });
+})();

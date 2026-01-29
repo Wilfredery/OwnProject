@@ -9,8 +9,6 @@ import { t } from "./i18n/index.js";
   document.addEventListener("DOMContentLoaded", async () => {
 
     const noteIdIdentificador = document.getElementById("note-id");
-
-    // ⛔ Si no estamos en editar.ejs
     if (!noteIdIdentificador) return;
 
     const noteId = noteIdIdentificador.value;
@@ -21,23 +19,43 @@ import { t } from "./i18n/index.js";
     const deleteBtn = document.getElementById("delete-note");
 
     /* ==========================================================
-       🔐 ESPERAR USUARIO AUTENTICADO
+       🔐 AUTH (3 ESTADOS)
     ========================================================== */
-    const user = await onAuthReady();
+    const authState = await onAuthReady();
 
-    if (!user) {
-      Swal.fire({
+    // 👤 GUEST → fuera
+    if (authState.role === "guest") {
+      await Swal.fire({
         icon: "warning",
-        title: "Debes iniciar sesión",
+        title: t("mustLogin"),
         timer: 1500,
-        showConfirmButton: false
+        showConfirmButton: false,
+        customClass: { popup: "minimal-alert" }
       });
+
       window.location.href = "/";
       return;
     }
 
+    // 🟡 NO VERIFICADO → aviso + fuera
+    if (authState.role === "unverified") {
+      await Swal.fire({
+        icon: "info",
+        title: t("titleplsverifyemail"),
+        text: t("plsverifyemail"),
+        confirmButtonText: t("confirmplsverifyemail"),
+        customClass: { popup: "minimal-alert" }
+      });
+
+      window.location.href = "/search";
+      return;
+    }
+
+    // 🟢 VERIFICADO
+    const user = authState.user;
+
     /* ==========================================================
-       🔥 CARGAR NOTA (Y VALIDAR PROPIETARIO)
+       🔥 CARGAR NOTA + VALIDAR PROPIETARIO
     ========================================================== */
     async function loadNote() {
       try {
@@ -49,29 +67,31 @@ import { t } from "./i18n/index.js";
             icon: "error",
             title: t("notewasntFound"),
             timer: 1500,
-            showConfirmButton: false
+            showConfirmButton: false,
+            customClass: { popup: "minimal-alert" }
           });
           return null;
         }
 
         const data = docSnap.data();
 
-        // 🔒 VALIDACIÓN CRÍTICA
-        // if (data.uid !== user.uid) {
-        //   Swal.fire({
-        //     icon: "error",
-        //     title: t("denied"),
-        //     text: t("noteNotNote"),
-        //     timer: 1800,
-        //     showConfirmButton: false
-        //   });
+        // 🔒 VALIDACIÓN CRÍTICA DE PROPIETARIO
+        if (data.uid !== user.uid) {
+          Swal.fire({
+            icon: "error",
+            title: t("denied"),
+            text: t("noteNotNote"),
+            timer: 1800,
+            showConfirmButton: false,
+            customClass: { popup: "minimal-alert" }
+          });
 
-        //   setTimeout(() => {
-        //     window.location.href = "/search";
-        //   }, 1800);
+          setTimeout(() => {
+            window.location.href = "/search";
+          }, 1800);
 
-        //   return null;
-        // }
+          return null;
+        }
 
         return { id: docSnap.id, ...data };
 
@@ -81,11 +101,9 @@ import { t } from "./i18n/index.js";
       }
     }
 
-    // 🔥 Cargar nota
     const note = await loadNote();
     if (!note) return;
 
-    // Rellenar inputs
     titleInput.value = note.title;
     contentInput.value = note.content;
 
@@ -125,9 +143,9 @@ import { t } from "./i18n/index.js";
     /* ==========================================================
        🗑️ ELIMINAR NOTA
     ========================================================== */
-    deleteBtn.addEventListener("click", () => {
+    deleteBtn.addEventListener("click", async () => {
 
-      Swal.fire({
+      const result = await Swal.fire({
         title: t("askDelete"),
         text: t("textAskDelete"),
         icon: "warning",
@@ -135,37 +153,35 @@ import { t } from "./i18n/index.js";
         confirmButtonText: t("confirmDelete"),
         cancelButtonText: t("cancelDelete"),
         customClass: { popup: "minimal-alert" }
-      }).then(async (result) => {
-
-        if (!result.isConfirmed) return;
-
-        try {
-          await deleteDoc(doc(db, "notes", noteId));
-
-          Swal.fire({
-            icon: "success",
-            title: t("alreadyDeleted"),
-            timer: 1500,
-            customClass: { popup: "minimal-alert" },
-            showConfirmButton: false
-          });
-
-          setTimeout(() => {
-            window.location.href = "/search";
-          }, 1500);
-
-        } catch (error) {
-          console.error("Error eliminando:", error);
-          Swal.fire({
-            icon: "error",
-            title: t("errorDelete"),
-            timer: 1500,
-            customClass: { popup: "minimal-alert" },
-            showConfirmButton: false
-          });
-        }
       });
 
+      if (!result.isConfirmed) return;
+
+      try {
+        await deleteDoc(doc(db, "notes", noteId));
+
+        Swal.fire({
+          icon: "success",
+          title: t("alreadyDeleted"),
+          timer: 1500,
+          customClass: { popup: "minimal-alert" },
+          showConfirmButton: false
+        });
+
+        setTimeout(() => {
+          window.location.href = "/search";
+        }, 1500);
+
+      } catch (error) {
+        console.error("Error eliminando:", error);
+        Swal.fire({
+          icon: "error",
+          title: t("errorDelete"),
+          timer: 1500,
+          customClass: { popup: "minimal-alert" },
+          showConfirmButton: false
+        });
+      }
     });
 
   });

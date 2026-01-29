@@ -1,16 +1,26 @@
 export default {
-  // ===== GENERAL =====
+  // Acc&Sett
   account_settings: "Cuenta y ajustes",
   theme: "Tema:",
   language: "Idioma:",
   spanish: "Español 🇪🇸",
   english: "Inglés 🇬🇧",
-  footer_text: "Todos los derechos reservados",
+  UserNotVerfied: "Usuario no verificado(Invitado)",
+  guest: "Invitado",
+  tittleCloseSession: "¿Cerrar sesión?",
+  textCloseSession: "Se cerrará tu sesión actual",
+  confirmCloseSession: "Sí, cerrar",
+  cancerlCloseSession: "Cancelar",
+
 
   // ===== HOME =====
   create_note: "¡Crea una nota!",
   search_notes: "¡Busca tus notas!",
   check_notes: "¡Revisa las notas que ya has hecho!",
+  footer_text: " Todos los derechos reservados",
+  titleplsverifyemail: "Correo no verificado",
+  plsverifyemail: "Por favor verifica tu correo para crear y buscar notas.",
+  confirmplsverifyemail: "Entendido",
 
   // ===== NAV / PAGES =====
   page_accountSettings: "Cuenta y ajustes",
@@ -80,6 +90,9 @@ export default {
   errorLoginExist: "Error al iniciar sesión",
   errorUserNotFound: "El usuario no existe",
   errorLoginPassW: "Contraseña incorrecta",
+  tituloEmailNotVerified: "Correo no verificado",
+  textEmailNotVerified: "Esta cuenta aún no ha sido verificada. Revisa tu correo para activarla. Mientras tanto, entrarás como usuario invitado.",
+  confirmEmailNotVerified: "Entendido",
 
   //Validacion del olvidar.js
   requiredEmail: "Correo requerido",

@@ -161,6 +161,9 @@ export default {
       cancelDelete: "Cancel",
       alreadyDeleted: "Deleted",
       errorDelete: "Could not delete",
+      stayHere: "Stay here",
+      loadingTitle: "Loading title...",
+      loadingText: "Loading content...",
 
       //validation linkconfirm.js
       textlinkUnvalid: "The verification link is not valid or has expired.",
@@ -173,5 +176,6 @@ export default {
       textAskEditNote: "You will proceed to edit this note",
       confirmEditNote: "Yes, edit",
       cancelEditNote: "Cancel",
+      loadingNotes: "Checking and loading if notes exist..."
 };
 

@@ -54,16 +54,16 @@ app.get('/account-settings', (req, res) => {
 });
 
 app.get('/search', (req, res) => {
-  res.render('search', { title: 'Search Note' });
+  res.render('search', { title: 'Search Note'});
 });
 
 app.get('/crear', (req, res) => {
-  res.render('crear', { title: 'Create Note' });
+  res.render('crear', { title: 'Create Note'});
 });
 
 app.get("/editar/:id", (req, res) => {
     const noteId = req.params.id;
-    res.render("editar", { noteId });
+    res.render("editar", { noteId, title: "Edit Note" });
 });
 
 app.get('/', (req, res) => {

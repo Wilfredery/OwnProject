@@ -9,18 +9,17 @@ import { t } from "./i18n/index.js";
     if (!form) return;
 
     const emailInput = document.getElementById("forgot-email");
+    const submitBtn = form.querySelector("button[type='submit']");
     let isSubmitting = false;
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-
       if (isSubmitting) return;
-      isSubmitting = true;
 
       const email = emailInput.value.trim();
 
-      if (!email) {
-        isSubmitting = false;
+      // 🔎 Validaciones ANTES de bloquear submit
+      if (!email || !email.includes("@")) {
         return Swal.fire({
           icon: "warning",
           title: t("requiredEmail"),
@@ -30,6 +29,9 @@ import { t } from "./i18n/index.js";
       }
 
       try {
+        isSubmitting = true;
+        if (submitBtn) submitBtn.disabled = true;
+
         await sendPasswordReset(email);
 
         await Swal.fire({
@@ -55,6 +57,7 @@ import { t } from "./i18n/index.js";
 
       } finally {
         isSubmitting = false;
+        if (submitBtn) submitBtn.disabled = false;
       }
     });
   });

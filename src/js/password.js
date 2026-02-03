@@ -10,6 +10,7 @@ import { t } from "./i18n/index.js";
 
     const passInput = document.getElementById("reset-password");
     const confirmInput = document.getElementById("reset-password-confirm");
+    const submitBtn = form.querySelector("button[type='submit']");
     const oobCode = window.__OOB_CODE__;
     let isSubmitting = false;
 
@@ -26,15 +27,13 @@ import { t } from "./i18n/index.js";
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-
       if (isSubmitting) return;
-      isSubmitting = true;
 
       const password = passInput.value.trim();
       const confirmPassword = confirmInput.value.trim();
 
+      // 🔎 Validaciones antes del submit
       if (!password || !confirmPassword) {
-        isSubmitting = false;
         return Swal.fire({
           icon: "warning",
           title: t("requireFilds"),
@@ -44,7 +43,6 @@ import { t } from "./i18n/index.js";
       }
 
       if (password.length < 6) {
-        isSubmitting = false;
         return Swal.fire({
           icon: "error",
           title: t("shortPassW"),
@@ -54,7 +52,6 @@ import { t } from "./i18n/index.js";
       }
 
       if (password !== confirmPassword) {
-        isSubmitting = false;
         return Swal.fire({
           icon: "error",
           title: t("notMatch"),
@@ -64,9 +61,12 @@ import { t } from "./i18n/index.js";
       }
 
       try {
+        isSubmitting = true;
+        if (submitBtn) submitBtn.disabled = true;
+
         await resetPassword(oobCode, password);
 
-        Swal.fire({
+        await Swal.fire({
           icon: "success",
           title: t("passUpdated"),
           text: t("passProcessed"),
@@ -77,10 +77,7 @@ import { t } from "./i18n/index.js";
         });
 
         form.reset();
-
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 4000);
+        window.location.href = "/";
 
       } catch (error) {
         console.error("Reset password error:", error);
@@ -89,9 +86,7 @@ import { t } from "./i18n/index.js";
 
         if (error.code === "auth/expired-action-code") {
           message = t("linkExpired");
-        }
-
-        if (error.code === "auth/invalid-action-code") {
+        } else if (error.code === "auth/invalid-action-code") {
           message = t("linkUnvalid");
         }
 
@@ -104,6 +99,7 @@ import { t } from "./i18n/index.js";
 
       } finally {
         isSubmitting = false;
+        if (submitBtn) submitBtn.disabled = false;
       }
     });
   });

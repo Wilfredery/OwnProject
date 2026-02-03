@@ -3,6 +3,7 @@
 ====================================================== */
 
 import { onAuthReady, signOutUser } from "./auth.js";
+import { getCachedAuthState, resolveAuthState } from "./authState.js";
 import Swal from "sweetalert2";
 import { t } from "./i18n/index.js";
 
@@ -12,7 +13,7 @@ const logoutBtn = document.getElementById("logout-btn");
 const changePassBtn = document.getElementById("change-password-btn");
 
 /* ======================================================
-   ESTADO INICIAL
+   ESTADO INICIAL (NEUTRO)
 ====================================================== */
 
 if (userNameEl) userNameEl.textContent = "...";
@@ -20,16 +21,29 @@ if (logoutBtn) logoutBtn.disabled = true;
 if (changePassBtn) changePassBtn.disabled = true;
 
 /* ======================================================
-   AUTH READY
+   ⚡ UX INMEDIATA (CACHE)
+====================================================== */
+
+const cachedState = getCachedAuthState();
+
+if (cachedState === "verified") {
+  if (logoutBtn) logoutBtn.disabled = false;
+  if (changePassBtn) changePassBtn.disabled = false;
+}
+
+if (cachedState === "unverified") {
+  if (logoutBtn) logoutBtn.disabled = false;
+  if (changePassBtn) changePassBtn.disabled = true;
+}
+
+/* ======================================================
+   🔐 CONFIRMACIÓN REAL (FIREBASE)
 ====================================================== */
 
 (async function () {
   if (!userNameEl) return;
 
   const authState = await onAuthReady();
-
-  // 🔓 LOGOUT SIEMPRE ACTIVO SI HAY SESIÓN
-  if (logoutBtn) logoutBtn.disabled = false;
 
   /* =========================
      👤 GUEST
@@ -41,29 +55,31 @@ if (changePassBtn) changePassBtn.disabled = true;
 
   const user = authState.user;
 
-  // 🔄 sincronizar estado real
+  // 🔄 SIEMPRE sincronizar estado real
   await user.reload();
+
+  // 🔓 Logout siempre activo si hay sesión
+  logoutBtn.disabled = false;
 
   /* =========================
      🟡 NO VERIFICADO
   ========================= */
   if (!user.emailVerified) {
     userNameEl.textContent = t("UserNotVerfied");
-  } else {
-    /* =========================
-       ✅ VERIFICADO
-    ========================= */
-    userNameEl.textContent =
-      user.displayName || user.email;
+    changePassBtn.disabled = true;
+    return;
   }
 
   /* =========================
-     🔒 CAMBIAR CONTRASEÑA
+     ✅ VERIFICADO
   ========================= */
+  userNameEl.textContent =
+    user.displayName || user.email;
+
   const isEmailProvider =
     user.providerData[0]?.providerId === "password";
 
-  changePassBtn.disabled = !(user.emailVerified && isEmailProvider);
+  changePassBtn.disabled = !isEmailProvider;
 })();
 
 /* ======================================================

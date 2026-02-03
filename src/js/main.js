@@ -1,5 +1,6 @@
 // src/js/main.js
 import { db, onAuthReady } from "./auth.js";
+import { getCachedAuthState } from "./authState.js";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { applyTranslations, t } from "./i18n/index.js";
 import Swal from "sweetalert2";
@@ -37,15 +38,28 @@ import Swal from "sweetalert2";
   createBtn.addEventListener("click", guardedClick);
   searchBtn.addEventListener("click", guardedClick);
 
-  // 🔒 bloqueados por defecto
+  // 🔒 bloqueados por defecto (seguridad)
   createBtn.classList.add("btn--locked");
   searchBtn.classList.add("btn--locked");
 
   /* ==========================================================
-     🔐 AUTH READY (USANDO role)
+     ⚡ UX INMEDIATA (CACHE)
+  ========================================================== */
+  const cachedState = getCachedAuthState();
+
+  if (cachedState === "guest" || cachedState === "verified") {
+    isAllowed = true;
+    createBtn.classList.remove("btn--locked");
+    searchBtn.classList.remove("btn--locked");
+  }
+
+  /* ==========================================================
+     🔐 CONFIRMACIÓN REAL (FIREBASE)
   ========================================================== */
   const authState = await onAuthReady();
   if (!authState) return;
+
+  isAllowed = false;
 
   /* =========================
      👤 GUEST → permitido
@@ -61,17 +75,14 @@ import Swal from "sweetalert2";
     isAllowed = true;
   }
 
-  /* =========================
-     🟡 NO VERIFICADO → bloqueado
-  ========================= */
   if (!isAllowed) return;
 
-  // 🔓 desbloquear botones
+  // 🔓 desbloqueo final confirmado
   createBtn.classList.remove("btn--locked");
   searchBtn.classList.remove("btn--locked");
 
   /* ==========================================================
-     🔥 CONTAR NOTAS (solo usuarios reales)
+     🔥 CONTAR NOTAS (solo verificados)
   ========================================================== */
   if (authState.role !== "verified") return;
 

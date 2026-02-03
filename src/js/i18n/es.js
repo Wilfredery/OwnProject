@@ -155,6 +155,9 @@ export default {
   cancelDelete : "Cancelar",
   alreadyDeleted : "La nota ya fue eliminada",
   errorDelete : "No se pudo eliminar la nota",
+  stayHere: "Quedarse aquí",
+  loadingTitle: "Cargando título...",
+  loadingText: "Cargando contenido...",
 
   //validation linkconfirm.js
   textlinkUnvalid: "El enlace de verificación no es válido o ha expirado.",
@@ -167,5 +170,7 @@ export default {
   textAskEditNote: "Procederas a editar esta nota",
   confirmEditNote: "Sí, editar",
   cancelEditNote: "Cancelar",
+  loadingNotes: "Verificando y cargando si existen notas..."
+
   
 };

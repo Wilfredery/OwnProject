@@ -2,32 +2,29 @@
 import { onAuthReady } from "./auth.js";
 
 function showGuestUI() {
-  const guest1 = document.getElementById("guest-controls");
-  const guest2 = document.getElementById("guest-controls-register");
-  const userC = document.getElementById("user-controls");
+  const guestLogin = document.getElementById("guest-controls");
+  const guestRegister = document.getElementById("guest-controls-register");
+  const userControls = document.getElementById("user-controls");
 
-  if (guest1) guest1.style.display = "block";
-  if (guest2) guest2.style.display = "block";
-  if (userC) userC.style.display = "none";
+  if (guestLogin) guestLogin.style.display = "block";
+  if (guestRegister) guestRegister.style.display = "block";
+  if (userControls) userControls.style.display = "none";
 }
 
 function showUserUI(user) {
-  const guest1 = document.getElementById("guest-controls");
-  const guest2 = document.getElementById("guest-controls-register");
-  const userC = document.getElementById("user-controls");
+  const guestLogin = document.getElementById("guest-controls");
+  const guestRegister = document.getElementById("guest-controls-register");
+  const userControls = document.getElementById("user-controls");
 
-  if (guest1) guest1.style.display = "none";
-  if (guest2) guest2.style.display = "none";
-  if (userC) userC.style.display = "flex";
+  if (guestLogin) guestLogin.style.display = "none";
+  if (guestRegister) guestRegister.style.display = "none";
+  if (userControls) userControls.style.display = "flex";
 
   const nameEl = document.getElementById("user-name");
   const photoEl = document.getElementById("user-photo");
 
   if (nameEl) {
-    nameEl.textContent =
-      user.isAnonymous
-        ? "Guest"
-        : user.displayName || user.email;
+    nameEl.textContent = user.displayName || user.email;
   }
 
   if (photoEl) {
@@ -41,7 +38,8 @@ async function initHeaderAuthUI() {
   try {
     const user = await onAuthReady();
 
-    if (user) {
+    // ✅ CLAVE: el guest (anónimo) se trata como NO logueado
+    if (user && !user.isAnonymous) {
       showUserUI(user);
     } else {
       showGuestUI();
@@ -51,7 +49,7 @@ async function initHeaderAuthUI() {
     console.error("Auth UI error:", error);
     showGuestUI();
   } finally {
-    // 🔥 AQUÍ se muestra el header
+    // Mostrar header cuando todo esté listo
     if (header) header.classList.remove("hidden");
   }
 }

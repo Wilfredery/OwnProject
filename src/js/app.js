@@ -1,6 +1,7 @@
 import './lang-auto.js';
 import './header.js';
 import './auth.js';
+import './authState.js';
 import './login.js';
 import './firebase.js';
 import './auth-ui.js';

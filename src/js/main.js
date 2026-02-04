@@ -47,7 +47,8 @@ import Swal from "sweetalert2";
   ========================================================== */
   const cachedState = getCachedAuthState();
 
-  if (cachedState === "guest" || cachedState === "verified") {
+  // 🟢 guest, verified y google(user) → permitido
+  if (cachedState === "guest" || cachedState === "verified" || cachedState === "user") {
     isAllowed = true;
     createBtn.classList.remove("btn--locked");
     searchBtn.classList.remove("btn--locked");
@@ -69,9 +70,9 @@ import Swal from "sweetalert2";
   }
 
   /* =========================
-     🟢 VERIFICADO → permitido
+     🟢 VERIFIED o GOOGLE → permitido
   ========================= */
-  if (authState.role === "verified") {
+  if (authState.role === "verified" || authState.role === "user") {
     isAllowed = true;
   }
 
@@ -82,7 +83,7 @@ import Swal from "sweetalert2";
   searchBtn.classList.remove("btn--locked");
 
   /* ==========================================================
-     🔥 CONTAR NOTAS (solo verificados)
+     🔥 CONTAR NOTAS (solo email verificado)
   ========================================================== */
   if (authState.role !== "verified") return;
 

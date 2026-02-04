@@ -4,40 +4,33 @@ import { onAuthReady } from "./auth.js";
 const CACHE_KEY = "auth_status";
 
 /* =========================
-   LEER CACHE
+   LEER CACHE (FAST PATH)
 ========================= */
 export function getCachedAuthState() {
   return sessionStorage.getItem(CACHE_KEY);
 }
 
 /* =========================
-   LIMPIAR CACHE (logout)
+   LIMPIAR CACHE
 ========================= */
 export function clearAuthCache() {
   sessionStorage.removeItem(CACHE_KEY);
 }
 
 /* =========================
-   ESTADO REAL (Firebase)
+   RESOLVER ESTADO REAL
 ========================= */
 export async function resolveAuthState() {
+
+  // 🔥 FAST PATH
+  const cached = getCachedAuthState();
+  if (cached) {
+    return { role: cached };
+  }
+
+  // 🔐 SLOW PATH (solo si no hay cache)
   const authState = await onAuthReady();
 
-  if (!authState || authState.role === "guest") {
-    sessionStorage.setItem(CACHE_KEY, "guest");
-    return { role: "guest" };
-  }
-
-  const user = authState.user;
-
-  // 🔑 CLAVE
-  await user.reload();
-
-  if (user.emailVerified) {
-    sessionStorage.setItem(CACHE_KEY, "verified");
-    return { role: "user", verified: true, user };
-  }
-
-  sessionStorage.setItem(CACHE_KEY, "unverified");
-  return { role: "user", verified: false, user };
+  sessionStorage.setItem(CACHE_KEY, authState.role);
+  return authState;
 }

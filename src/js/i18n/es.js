@@ -66,7 +66,7 @@ export default {
   submitRegister: "Registrarse",
   backToLogin: "Volver al login",
 
-  forgotTitle: "Recuperar contraseña",
+  forgotTitle: "Recuperar/Cambiar contraseña",
   emailForgot: "Correo electrónico",
   submitForgot: "Enviar enlace",
 

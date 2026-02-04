@@ -3,7 +3,7 @@
 ====================================================== */
 
 import { onAuthReady, signOutUser } from "./auth.js";
-import { getCachedAuthState, resolveAuthState } from "./authState.js";
+import { getCachedAuthState } from "./authState.js";
 import Swal from "sweetalert2";
 import { t } from "./i18n/index.js";
 
@@ -55,16 +55,13 @@ if (cachedState === "unverified") {
 
   const user = authState.user;
 
-  // 🔄 SIEMPRE sincronizar estado real
-  await user.reload();
-
   // 🔓 Logout siempre activo si hay sesión
   logoutBtn.disabled = false;
 
   /* =========================
      🟡 NO VERIFICADO
   ========================= */
-  if (!user.emailVerified) {
+  if (authState.role === "unverified") {
     userNameEl.textContent = t("UserNotVerfied");
     changePassBtn.disabled = true;
     return;
@@ -76,8 +73,10 @@ if (cachedState === "unverified") {
   userNameEl.textContent =
     user.displayName || user.email;
 
-  const isEmailProvider =
-    user.providerData[0]?.providerId === "password";
+  // Solo usuarios con email/password pueden cambiar contraseña
+  const isEmailProvider = user.providerData.some(
+    p => p.providerId === "password"
+  );
 
   changePassBtn.disabled = !isEmailProvider;
 })();
@@ -114,6 +113,6 @@ if (logoutBtn) {
 if (changePassBtn) {
   changePassBtn.addEventListener("click", () => {
     if (changePassBtn.disabled) return;
-    window.location.href = "/forgot-password";
+    window.location.href = "/olvidar";
   });
 }

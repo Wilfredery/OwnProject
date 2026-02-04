@@ -73,7 +73,7 @@ export default {
   createExist: "Never mind, I already have an account",
 
   //FORGOT PASSWORD
-  forgotTitle: "Recover password",
+  forgotTitle: "Recover/Change password",
   emailForgot: "Email",
   submitForgot: "Send link",
 

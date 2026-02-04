@@ -88,8 +88,9 @@ export function onAuthReady() {
       /* 🔁 ESTADO REAL */
       await user.reload();
 
-      const isGoogle =
-        user.providerData[0]?.providerId === "google.com";
+      const isGoogle = user.providerData.some(
+        p => p.providerId === "google.com"
+      );
 
       await createOrUpdateUserDoc(user);
 

@@ -106,6 +106,17 @@
       }
     }
 
+    &--btnTerciary {
+      background-color: transparent;
+      border: 1px solid v.$verde;
+      color: v.$verde;
+
+      &:hover:not(:disabled) {
+        background-color: color.adjust(v.$verde, $lightness: -10%);
+        color: v.$blanco;
+      }
+    }
+
     &--btnDanger {
       background-color: transparent;
       border: 1px solid v.$rojo;

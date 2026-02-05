@@ -84,6 +84,17 @@ export default {
   //traduccion botones de account&settings.ejs 
     logout: "Cerrar sesión",
     change_password: "Cambiar contraseña",
+    migrate_notes: "Migrar notas",
+    noNotesToMigrate: "No hay notas para migrar",
+    alreadyMigrated: "Todas las notas ya están migradas",
+    migrateNotesTitle: "¿Migrar notas?",
+    migrateNotesText: "Esto migrará tus notas del almacenamiento local a tu cuenta en la nube.",
+    confirmMigrate: "Sí, migrar",
+    cancelMigrate: "Cancelar",
+    duplicateTitle: "Título duplicado detectado",
+    overwrite: "Sobrescribir",
+    duplicate: "Duplicar",
+    migrationComplete: "Migración completada",
 
   //Validaciones del login.js
   errorCamposEmpty: "Completa todos los campos",

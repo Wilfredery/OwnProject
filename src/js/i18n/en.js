@@ -90,6 +90,17 @@ export default {
   //traduction bottons of account&settings.ejs
     logout: "Log Out",
     change_password: "Change Password",
+    migrate_notes: "Migrate Notes",
+    noNotesToMigrate: "No notes to migrate",
+    alreadyMigrated: "All notes are already migrated",
+    migrateNotesTitle: "Migrate Notes?",
+    migrateNotesText: "This will migrate your notes from local storage to your account in the cloud.",
+    confirmMigrate: "Yes, migrate",
+    cancelMigrate: "Cancel",
+    duplicateTitle: "Duplicate title detected",
+    overwrite: "Overwrite",
+    duplicate: "Duplicate",
+    migrationComplete: "Migration complete",
 
     //Validations for login.js
     errorCamposEmpty: "Complete all fields",

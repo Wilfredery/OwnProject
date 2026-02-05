@@ -58,13 +58,19 @@ export async function createOrUpdateUserDoc(user, extra = {}) {
   };
 
   if (snap.exists()) {
-    await setDoc(ref, baseData, { merge: true });
+    await setDoc(ref, {
+      displayName: baseData.displayName,
+      photoURL: baseData.photoURL,
+      email: baseData.email
+    }, { merge: true });
   } else {
     await setDoc(ref, {
       ...baseData,
       createdAt: serverTimestamp(),
+      guestMigrationDone: false
     });
   }
+
 }
 
 /* =========================

@@ -43,7 +43,7 @@ migrateBtn && (migrateBtn.disabled = true);
 
 const cachedState = getCachedAuthState();
 
-if (cachedState === "verified") {
+if (cachedState === "verified" || cachedState === "user") {
   logoutBtn.disabled = false;
   changePassBtn.disabled = false;
   migrateBtn.disabled = false;
@@ -121,13 +121,11 @@ changePassBtn?.addEventListener("click", () => {
 });
 
 /* ======================================================
-   🧠 MIGRAR NOTAS GUEST → USUARIO
-   🔒 FLAG EN FIRESTORE
+   🧠 FUNCIÓN CENTRAL DE MIGRACIÓN
+   (reutilizable desde main.js)
 ====================================================== */
 
-migrateBtn?.addEventListener("click", async () => {
-  if (migrateBtn.disabled) return;
-
+window.runGuestMigration = async function () {
   const authState = await onAuthReady();
   if (!authState || authState.role !== "verified") return;
 
@@ -135,9 +133,7 @@ migrateBtn?.addEventListener("click", async () => {
   const userRef = doc(db, "users", user.uid);
   const userSnap = await getDoc(userRef);
 
-  /* ======================
-     📦 YA MIGRADO (FIRESTORE)
-  ====================== */
+  /* 📦 YA MIGRADO */
   if (userSnap.exists() && userSnap.data().guestMigrationDone) {
     return Swal.fire({
       icon: "info",
@@ -149,9 +145,7 @@ migrateBtn?.addEventListener("click", async () => {
   const guestNotes =
     JSON.parse(localStorage.getItem("guestNotes")) || [];
 
-  /* ======================
-     🚫 SIN NOTAS
-  ====================== */
+  /* 🚫 SIN NOTAS */
   if (guestNotes.length === 0) {
     return Swal.fire({
       icon: "info",
@@ -172,22 +166,17 @@ migrateBtn?.addEventListener("click", async () => {
 
   if (!confirm.isConfirmed) return;
 
-  /* ======================
-     NOTAS EXISTENTES USER
-  ====================== */
+  /* NOTAS EXISTENTES */
   const snap = await getDocs(
     query(collection(db, "notes"), where("uid", "==", user.uid))
   );
 
   const usedTitles = new Map();
-
   snap.forEach(d => {
     usedTitles.set(d.data().title.toLowerCase(), d.id);
   });
 
-  /* ======================
-     MIGRACIÓN
-  ====================== */
+  /* MIGRACIÓN */
   for (const note of guestNotes) {
     const baseTitle = note.title;
     const normalized = baseTitle.toLowerCase();
@@ -221,18 +210,14 @@ migrateBtn?.addEventListener("click", async () => {
     usedTitles.set(finalTitle.toLowerCase(), true);
   }
 
-  /* ======================
-     🔐 FLAG DEFINITIVO
-  ====================== */
+  /* 🔐 FLAG DEFINITIVO */
   await setDoc(
     userRef,
     { guestMigrationDone: true },
     { merge: true }
   );
 
-  /* ======================
-     🧹 LIMPIEZA LOCAL
-  ====================== */
+  /* 🧹 LIMPIEZA */
   localStorage.removeItem("guestNotes");
   localStorage.removeItem("migratedGuestNoteIds");
 
@@ -241,4 +226,10 @@ migrateBtn?.addEventListener("click", async () => {
     title: t("migrationComplete"),
     customClass: { popup: "minimal-alert" }
   });
-});
+};
+
+/* ======================================================
+   BOTÓN SETTINGS → USA LA MISMA FUNCIÓN
+====================================================== */
+
+migrateBtn?.addEventListener("click", window.runGuestMigration);

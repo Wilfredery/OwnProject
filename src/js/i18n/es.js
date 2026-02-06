@@ -95,6 +95,10 @@ export default {
     overwrite: "Sobrescribir",
     duplicate: "Duplicar",
     migrationComplete: "Migración completada",
+    firstMigrateNotesTitle: "Hola. Gracias por verificar y bienvenido!",
+    firstMigrateNotesText: "¡Veo que tienes notas como invitado, así que déjame preguntarte algo!",
+    firstConfirmMigrateNotes: "Si, cual es la pregunta?",
+    firstCancelMigrateNotes: "No, gracias",
 
   //Validaciones del login.js
   errorCamposEmpty: "Completa todos los campos",

@@ -1,22 +1,18 @@
 // src/js/main.js
 import { db, onAuthReady } from "./auth.js";
 import { getCachedAuthState } from "./authState.js";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
 import { applyTranslations, t } from "./i18n/index.js";
 import Swal from "sweetalert2";
 
 (async function () {
 
-  // ⛔ No estamos en main.ejs
   const createBtn = document.querySelector(".create-btn");
   const searchBtn = document.querySelector(".search-btn");
   if (!createBtn || !searchBtn) return;
 
-  let isAllowed = false; // 🔐 control central
+  let isAllowed = false;
 
-  /* ==========================================================
-     CLICK PROTEGIDO
-  ========================================================== */
   function guardedClick(e) {
     e.preventDefault();
 
@@ -38,53 +34,69 @@ import Swal from "sweetalert2";
   createBtn.addEventListener("click", guardedClick);
   searchBtn.addEventListener("click", guardedClick);
 
-  // 🔒 bloqueados por defecto (seguridad)
   createBtn.classList.add("btn--locked");
   searchBtn.classList.add("btn--locked");
 
-  /* ==========================================================
-     ⚡ UX INMEDIATA (CACHE)
-  ========================================================== */
-  const cachedState = getCachedAuthState();
+  /* ======================================================
+     ⚡ CACHE
+  ====================================================== */
 
-  // 🟢 guest, verified y google(user) → permitido
+  const cachedState = getCachedAuthState();
   if (cachedState === "guest" || cachedState === "verified" || cachedState === "user") {
     isAllowed = true;
     createBtn.classList.remove("btn--locked");
     searchBtn.classList.remove("btn--locked");
   }
 
-  /* ==========================================================
-     🔐 CONFIRMACIÓN REAL (FIREBASE)
-  ========================================================== */
+  /* ======================================================
+     🔐 FIREBASE REAL
+  ====================================================== */
+
   const authState = await onAuthReady();
   if (!authState) return;
 
-  isAllowed = false;
-
-  /* =========================
-     👤 GUEST → permitido
-  ========================= */
-  if (authState.role === "guest") {
-    isAllowed = true;
-  }
-
-  /* =========================
-     🟢 VERIFIED o GOOGLE → permitido
-  ========================= */
-  if (authState.role === "verified" || authState.role === "user") {
-    isAllowed = true;
-  }
+  isAllowed = authState.role === "guest" ||
+              authState.role === "verified" ||
+              authState.role === "user";
 
   if (!isAllowed) return;
 
-  // 🔓 desbloqueo final confirmado
   createBtn.classList.remove("btn--locked");
   searchBtn.classList.remove("btn--locked");
 
-  /* ==========================================================
-     🔥 CONTAR NOTAS (solo email verificado)
-  ========================================================== */
+  /* ======================================================
+     💡 UX MIGRACIÓN AUTOMÁTICA (UNA SOLA VEZ)
+  ====================================================== */
+
+  if (authState.role === "verified") {
+    const userRef = doc(db, "users", authState.user.uid);
+    const snap = await getDoc(userRef);
+
+    const alreadyMigrated = snap.exists() && snap.data().guestMigrationDone;
+    const guestNotes =
+      JSON.parse(localStorage.getItem("guestNotes")) || [];
+
+    if (!alreadyMigrated && guestNotes.length > 0 && window.runGuestMigration) {
+      const res = await Swal.fire({
+        title: t("firstMigrateNotesTitle"),
+        text: t("firstMigrateNotesText"),
+        icon: "success",
+        showCancelButton: true,
+        confirmButtonText: t("firstConfirmMigrateNotes"),
+        cancelButtonText: t("firstCancelMigrateNotes"),
+        customClass: { popup: "minimal-alert" }
+      });
+
+      if (res.isConfirmed) {
+        await window.runGuestMigration();
+      }
+    }
+  }
+
+  /* ======================================================
+     🔥 CONTAR NOTAS
+  ====================================================== */
+
   if (authState.role !== "verified") return;
 
   const q = query(

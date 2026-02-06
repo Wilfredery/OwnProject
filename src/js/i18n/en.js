@@ -101,6 +101,10 @@ export default {
     overwrite: "Overwrite",
     duplicate: "Duplicate",
     migrationComplete: "Migration complete",
+    firstMigrateNotesTitle: "Hey. Thank you for verified and welcome!.",
+    firstMigrateNotesText: "I see that you have notes as a guest so let me ask you something!",
+    firstConfirmMigrateNotes: "Yes, what's the question?",
+    firstCancelMigrateNotes: "No, thanks",
 
     //Validations for login.js
     errorCamposEmpty: "Complete all fields",

@@ -2,8 +2,7 @@
 import { db, onAuthReady } from "./auth.js";
 import { getCachedAuthState } from "./authState.js";
 import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
-import { applyTranslations, t } from "./i18n/index.js";
-import Swal from "sweetalert2";
+import { applyTranslations } from "./i18n/index.js";
 
 (async function () {
 
@@ -15,17 +14,7 @@ import Swal from "sweetalert2";
 
   function guardedClick(e) {
     e.preventDefault();
-
-    if (!isAllowed) {
-      Swal.fire({
-        icon: "info",
-        title: t("titleplsverifyemail"),
-        text: t("plsverifyemail"),
-        confirmButtonText: t("confirmplsverifyemail"),
-        customClass: { popup: "minimal-alert" }
-      });
-      return;
-    }
+    if (!isAllowed) return;
 
     const href = e.currentTarget.dataset.href;
     if (href) window.location.href = href;
@@ -55,9 +44,10 @@ import Swal from "sweetalert2";
   const authState = await onAuthReady();
   if (!authState) return;
 
-  isAllowed = authState.role === "guest" ||
-              authState.role === "verified" ||
-              authState.role === "user";
+  isAllowed =
+    authState.role === "guest" ||
+    authState.role === "verified" ||
+    authState.role === "user";
 
   if (!isAllowed) return;
 
@@ -65,31 +55,22 @@ import Swal from "sweetalert2";
   searchBtn.classList.remove("btn--locked");
 
   /* ======================================================
-     💡 UX MIGRACIÓN AUTOMÁTICA (UNA SOLA VEZ)
+     💡 MIGRACIÓN AUTOMÁTICA (SIN SWEETALERT AQUÍ)
   ====================================================== */
 
-  if (authState.role === "verified") {
+  if (authState.role === "verified" && window.runGuestMigration) {
     const userRef = doc(db, "users", authState.user.uid);
     const snap = await getDoc(userRef);
 
-    const alreadyMigrated = snap.exists() && snap.data().guestMigrationDone;
+    const alreadyMigrated =
+      snap.exists() && snap.data().guestMigrationDone;
+
     const guestNotes =
       JSON.parse(localStorage.getItem("guestNotes")) || [];
 
-    if (!alreadyMigrated && guestNotes.length > 0 && window.runGuestMigration) {
-      const res = await Swal.fire({
-        title: t("firstMigrateNotesTitle"),
-        text: t("firstMigrateNotesText"),
-        icon: "success",
-        showCancelButton: true,
-        confirmButtonText: t("firstConfirmMigrateNotes"),
-        cancelButtonText: t("firstCancelMigrateNotes"),
-        customClass: { popup: "minimal-alert" }
-      });
-
-      if (res.isConfirmed) {
-        await window.runGuestMigration();
-      }
+    if (!alreadyMigrated && guestNotes.length > 0) {
+      // 👉 TODA la UX vive en acc&sett.js
+      await window.runGuestMigration();
     }
   }
 

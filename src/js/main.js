@@ -1,10 +1,21 @@
 // src/js/main.js
 import { db, onAuthReady } from "./auth.js";
 import { getCachedAuthState } from "./authState.js";
-import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
+  getDoc
+} from "firebase/firestore";
 import { applyTranslations } from "./i18n/index.js";
 
 (async function () {
+
+  /* ======================================================
+     🔘 BOTONES CREATE / SEARCH
+  ====================================================== */
 
   const createBtn = document.querySelector(".create-btn");
   const searchBtn = document.querySelector(".search-btn");
@@ -31,7 +42,7 @@ import { applyTranslations } from "./i18n/index.js";
   ====================================================== */
 
   const cachedState = getCachedAuthState();
-  if (cachedState === "guest" || cachedState === "verified" || cachedState === "user") {
+  if (["guest", "verified", "user"].includes(cachedState)) {
     isAllowed = true;
     createBtn.classList.remove("btn--locked");
     searchBtn.classList.remove("btn--locked");
@@ -44,18 +55,77 @@ import { applyTranslations } from "./i18n/index.js";
   const authState = await onAuthReady();
   if (!authState) return;
 
-  isAllowed =
-    authState.role === "guest" ||
-    authState.role === "verified" ||
-    authState.role === "user";
-
+  isAllowed = ["guest", "verified", "user"].includes(authState.role);
   if (!isAllowed) return;
 
   createBtn.classList.remove("btn--locked");
   searchBtn.classList.remove("btn--locked");
 
   /* ======================================================
-     💡 MIGRACIÓN AUTOMÁTICA (SIN SWEETALERT AQUÍ)
+     🧭 GUÍA DINÁMICA (BEM CORRECTO)
+  ====================================================== */
+
+  const steps = document.querySelectorAll(".guide-content__step");
+  const nextBtn = document.querySelector(".guide-content__nav-btn.next");
+  const prevBtn = document.querySelector(".guide-content__nav-btn.prev");
+
+  if (steps.length && nextBtn && prevBtn) {
+    let current = 0;
+
+    function updateGuide() {
+      steps.forEach((step, i) => {
+        step.classList.toggle(
+          "guide-content__step--active",
+          i === current
+        );
+      });
+    }
+
+    nextBtn.addEventListener("click", () => {
+      current = (current + 1) % steps.length;
+      updateGuide();
+    });
+
+    prevBtn.addEventListener("click", () => {
+      current = (current - 1 + steps.length) % steps.length;
+      updateGuide();
+    });
+
+    updateGuide();
+  }
+
+  /* ======================================================
+     🔍 ZOOM DE IMAGEN (picture + webp)
+  ====================================================== */
+
+  const mediaItems = document.querySelectorAll(".guide-content__media");
+
+  if (mediaItems.length) {
+    const overlay = document.createElement("div");
+    overlay.className = "img-overlay";
+    document.body.appendChild(overlay);
+
+    const zoomImg = document.createElement("img");
+    zoomImg.className = "img-overlay__img";
+    overlay.appendChild(zoomImg);
+
+    mediaItems.forEach(picture => {
+      const img = picture.querySelector("img");
+
+      picture.addEventListener("click", () => {
+        zoomImg.src = img.currentSrc || img.src;
+        overlay.classList.add("is-visible");
+      });
+    });
+
+    overlay.addEventListener("click", () => {
+      overlay.classList.remove("is-visible");
+      zoomImg.src = "";
+    });
+  }
+
+  /* ======================================================
+     💡 MIGRACIÓN AUTOMÁTICA
   ====================================================== */
 
   if (authState.role === "verified" && window.runGuestMigration) {
@@ -69,7 +139,6 @@ import { applyTranslations } from "./i18n/index.js";
       JSON.parse(localStorage.getItem("guestNotes")) || [];
 
     if (!alreadyMigrated && guestNotes.length > 0) {
-      // 👉 TODA la UX vive en acc&sett.js
       await window.runGuestMigration();
     }
   }

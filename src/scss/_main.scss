@@ -1,75 +1,176 @@
 @use 'variables' as v;
-@use 'mixins'as m;
+@use 'mixins' as m;
 @use 'sass:color';
 
-.notes-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.5rem;
-}
+/* ======================================================
+   ACCIONES
+====================================================== */
 
 .actions {
-  display: flex;
-  justify-content: space-between;
-  margin: 2rem;
+  display: grid;
+  justify-items: center;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 4rem;
 
-  .create-btn, .search-btn {
+  .create-btn,
+  .search-btn {
     @include m.boton(v.$blanco, v.$fuente-principal);
     border: 1px solid v.$azul;
     border-radius: 5%;
-    margin: 0 2rem;
     text-transform: uppercase;
+
     &:hover {
       background-color: color.adjust(v.$azul, $lightness: -10%);
       color: v.$blanco;
       cursor: pointer;
-      -webkit-box-shadow: 1px 3px 11px 1px rgba(0,0,0,0.82); 
-      box-shadow: 1px 3px 11px 1px rgba(0,0,0,0.82);
+      box-shadow: 1px 3px 11px 1px rgba(0, 0, 0, 0.82);
     }
   }
 }
 
-    .btn--locked {
-      opacity: 0.5;
-      
+.btn--locked {
+  opacity: 0.5;
 
-      &:hover {
-        background-color: inherit;
-        color: inherit;
-        box-shadow: none;
-        cursor: not-allowed;
-      }
-    }
+  &:hover {
+    background-color: inherit;
+    color: inherit;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+}
 
 .shadowbox {
-  -webkit-box-shadow: 0px 0px 14px -1px rgba(0,0,0,0.75); 
-  box-shadow: 0px 0px 14px -1px rgba(0,0,0,0.75);
-  // margin: 0 2rem 0rem 2rem;
-  // padding: 1rem;
+  box-shadow: 0 0 14px -1px rgba(0, 0, 0, 0.75);
   @include m.contenedor;
 }
 
-.recent-notes{
-  
-  &__title{
-    text-align: center;
-    margin: 3rem 0;
+.recent-notes__title {
+  text-align: center;
+  margin: 3rem 0;
+}
+
+/* ======================================================
+   🧭 GUÍA (BEM CORRECTO)
+====================================================== */
+
+.guide-content {
+  max-width: 800px;
+  margin: 2rem auto;
+  text-align: center;
+  position: relative;
+  border-radius: 1rem;
+
+  /* ===== STEP ===== */
+  &__step {
+    display: none;
+
+    &--active {
+      display: block;
+    }
+  }
+
+  &__title {
+    margin-bottom: 1rem;
+    min-height: 2.5rem;
+  }
+
+  /* 🖼️ MEDIA ESTABLE */
+  &__media {
+    width: 100%;
+    max-width: 700px;
+    height: 400px;
+    margin: 0 auto;
+    border-radius: 1rem;
+    cursor: zoom-in;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: v.$blanco;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+      display: block;
+    }
+
+    &:hover img {
+      transform: scale(1.03);
+    }
+  }
+
+  &__text {
+    margin-top: 1.2rem;
+    min-height: 4.5rem;
+  }
+
+  /* ===== NAV ===== */
+  &__nav {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+
+    &-btn {
+      pointer-events: auto;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid v.$azul;
+      background-color: v.$blanco;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &-icon {
+        width: 22px;
+        height: 22px;
+      }
+
+      &:hover {
+        background: v.$azul;
+        color: v.$blanco;
+      }
+
+      &.prev {
+        transform: translateX(-60%);
+      }
+
+      &.next {
+        transform: translateX(60%);
+      }
+    }
   }
 }
 
-.guide {
+/* ======================================================
+   🔍 ZOOM IMAGEN
+====================================================== */
 
-  &__title{
-    text-align: center;
-    margin: 3rem 0;
+.img-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+
+  &.is-visible {
+    display: flex;
   }
 
-  &__title--subtitle{
-    margin: 3rem 0;
+  &__img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 1rem;
+    cursor: zoom-out;
   }
 }
-
-
-
-
-

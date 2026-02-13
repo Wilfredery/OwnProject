@@ -15,8 +15,9 @@ export default {
 
   // ===== HOME =====
   create_note: "¡Crea una nota!",
+  titleCreate_note: "¡Crea tus notas en cualquier momento solo haciendo clic en el botón de abajo!👇",
   search_notes: "¡Busca tus notas!",
-  check_notes: "¡Revisa las notas que ya has hecho!",
+  check_notes: "¡Revisa las notas que ya has hecho aquí abajo!👇",
   footer_text: " Todos los derechos reservados",
   titleplsverifyemail: "Correo no verificado",
   plsverifyemail: "Por favor verifica tu correo para crear y buscar notas.",

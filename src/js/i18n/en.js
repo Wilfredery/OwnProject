@@ -15,8 +15,9 @@ export default {
 
   //HOME
   create_note: "Create a note!",
+  titleCreate_note: "Create your notes anytime just by clicking the button below!👇",
   search_notes: "Search your notes!",
-  check_notes: "Check the notes you’ve already made!",
+  check_notes: "Check the notes you’ve already made down bellow!👇",
   footer_text: " All rights reserved",
   titleplsverifyemail: "Email not verified",
   plsverifyemail: "Please verify your email to create and search notes.",

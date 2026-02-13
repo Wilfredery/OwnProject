@@ -44,11 +44,6 @@ body.dark {
     }
   }
 
-  .shadowbox {
-    background-color: v.$gris-oscuro;
-    color: v.$blanco;
-  }
-
   .footer {
     background-color: v.$azul-oscuro;
     color: v.$gris-claro;
@@ -182,6 +177,32 @@ body.dark {
       }
     }
   }  //fin confirmar contraseña
+
+  //main index
+  .guide-content {
+
+    &__media {
+      background-color: v.$azul-oscuro;
+    }
+
+    &__nav {
+
+      &-btn {
+        background-color: v.$azul-oscuro;
+
+        &-icon {
+          color: v.$blanco;
+
+          &:hover {
+          color: v.$negro;
+          }
+        }
+        &:hover {
+          background-color: v.$azul;
+        }
+      }
+    }
+  }
 
   //Inicio del search.scss
   .search {

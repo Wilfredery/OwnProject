@@ -1,42 +1,131 @@
 <%- include('partials/header') %>
 
-        <section class="actions">
-            <button class="create-btn" data-href="/crear" type="button">
-            <span class="btn-icon">📝</span>
-            <span class="btn-text" data-i18n="create_note"></span>
-            </button>
-            <button class="search-btn" data-href="/search" type="button">
-            🔎<span data-i18n="search_notes"></span></button>
-        </section>
+<section class="actions">
+  <h2 class="recent-notes__title" data-i18n="titleCreate_note"></h2>
+  <h2 class="recent-notes__title" data-i18n="check_notes"></h2>
+</section>
 
-        <section class="recent-notes">
-            <h2 class="recent-notes__title" data-i18n="check_notes"></h2>
-                <div class="notes-grid">
-                    <article class="note">
-                        <div class="note-img"></div>
-                        <p class="note-title">Nombre del título</p>
-                    </article>
-                    <!-- más artículos -->
-                </div>
-        </section>
+<section class="actions">
+  <button class="create-btn" data-href="/crear" type="button">
+    <span class="btn-icon">📝</span>
+    <span class="btn-text" data-i18n="create_note"></span>
+  </button>
 
+  <button class="search-btn" data-href="/search" type="button">
+    🔎 <span data-i18n="search_notes"></span>
+  </button>
+</section>
 
-        <section class="guide">
-            <h3 class="guide__title" data-i18n="askguide"></h3>
-                <div class="guide-content">
-                        <h4 class="guide__title--subtitle">Menu Hamburguesa</h4>
-                        <p>Gracias al menu hamburguesa puedes proceder en dirigirte a las diferentes ubicaciones de la pagina.</p>
+<div class="guide-content shadowbox">
 
-                        <h4 class="guide__title--subtitle">Titulo</h4>
-                        <P>El titulo de la pagina esta diseño para que al momento de darle click al mismo se pueda dirigir a la pagina principal por si te encuentras en otro parte.</P>
+  <!-- STEP 1 -->
+  <article class="guide-content__step guide-content__step--active">
+    <h4 class="guide-content__title">Menú Hamburguesa</h4>
 
+    <picture class="guide-content__media">
+      <source srcset="/build/img/menu-hamburguesa.webp" type="image/webp">
+      <img src="/build/img/menu-hamburguesa.png" alt="Menú" loading="lazy">
+    </picture>
 
+    <p class="guide-content__text">
+      Gracias al menú hamburguesa puedes navegar por las diferentes secciones de la página.
+    </p>
+  </article>
 
-                        <!-- <div class="guide-nav">
-                            <button class="prev">←</button>
-                            <button class="next">→</button>
-                        </div> -->
-                </div>
-        </section>
+  <!-- STEP 2 -->
+  <article class="guide-content__step">
+    <h4 class="guide-content__title">Título / Logo</h4>
+
+    <picture class="guide-content__media">
+      <source srcset="/build/img/logoInfo.webp" type="image/webp">
+      <img src="/build/img/logoInfo.png" alt="Logo" loading="lazy">
+    </picture>
+
+    <p class="guide-content__text">
+      Al hacer click en el título puedes volver a la página principal.
+    </p>
+  </article>
+
+  <!-- STEP 3 -->
+  <article class="guide-content__step">
+    <h4 class="guide-content__title">Botones del Main</h4>
+
+    <picture class="guide-content__media">
+      <source srcset="/build/img/mainButton.webp" type="image/webp">
+      <img src="/build/img/mainButton.png" alt="Main buttons" loading="lazy">
+    </picture>
+
+    <p class="guide-content__text">
+      Desde aquí puedes crear o buscar notas rápidamente.
+    </p>
+  </article>
+
+  <!-- STEP 4 -->
+  <article class="guide-content__step">
+    <h4 class="guide-content__title">Search</h4>
+
+    <picture class="guide-content__media">
+      <source srcset="/build/img/search.webp" type="image/webp">
+      <img src="/build/img/search.png" alt="Search button" loading="lazy">
+    </picture>
+
+    <p class="guide-content__text">
+      Aquí puedes revisar tus notas ya creadas, ordenarlas por fecha o título,
+      editarlas y eliminarlas si lo deseas.
+    </p>
+  </article>
+
+  <!-- STEP 5 -->
+  <article class="guide-content__step">
+    <h4 class="guide-content__title">Ajustes y Cuenta</h4>
+
+    <picture class="guide-content__media">
+      <source srcset="/build/img/acc&Sett.webp" type="image/webp">
+      <img src="/build/img/acc&Sett.png" alt="Account and Settings" loading="lazy">
+    </picture>
+
+    <p class="guide-content__text">
+      Desde aquí puedes acceder a las configuraciones de tu cuenta.
+    </p>
+  </article>
+
+  <!-- NAV -->
+  <div class="guide-content__nav">
+    <button class="guide-content__nav-btn prev" aria-label="Anterior">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="guide-content__nav-btn-icon"
+      >
+        <path d="M21 12h-12" />
+        <path d="M13 16l-4 -4l4 -4" />
+        <path d="M12 3a9 9 0 1 0 0 18" />
+      </svg>
+    </button>
+
+    <button class="guide-content__nav-btn next" aria-label="Siguiente">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="guide-content__nav-btn-icon"
+      >
+        <path d="M3 12h12" />
+        <path d="M11 8l4 4l-4 4" />
+        <path d="M12 21a9 9 0 0 0 0 -18" />
+      </svg>
+    </button>
+  </div>
+
+</div>
 
 <%- include('partials/footer') %>

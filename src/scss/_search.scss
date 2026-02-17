@@ -82,7 +82,8 @@
       .actions {
         display: flex;
         flex-direction: column;
-        gap: .6rem;
+        margin: 1rem 0;
+        gap: 3rem;
 
         button {
           font-size: 1.3rem;

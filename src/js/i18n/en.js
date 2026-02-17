@@ -23,6 +23,18 @@ export default {
   plsverifyemail: "Please verify your email to create and search notes.",
   confirmplsverifyemail: "Understood",
 
+  // guide images of home
+  menuHamburguesa: "Hamburger menu",
+  menuHamburguesaTexto: "From the hamburger menu you can navigate through all the sections of the application, such as searching for notes, creating new notes or accessing your account and settings.",
+  logoInfo: "Logo",
+  logoInfoTexto: "By clicking on the logo of the application, you will quickly return to the main page from any section.",
+  mainButton: "Main page buttons",
+  mainButtonTexto: "These buttons allow you to create a new note or search among your existing notes quickly and easily.",
+  search: "Search notes",
+  searchTexto: "In this section you can search your notes, sort them by date or title, edit them or delete them as you need.",
+  accsett: "Account and Settings",
+  accsettTexto: "Here you can manage your account, change important settings like language or theme, and perform actions related to your session.",
+
   //PAGES
   page_accountSettings: "Account & Settings",
   page_searchNotes: "Search Notes",

@@ -9,9 +9,37 @@ import {
   doc,
   getDoc
 } from "firebase/firestore";
-import { applyTranslations } from "./i18n/index.js";
+import { applyTranslations, getLang } from "./i18n/index.js";
 
 (async function () {
+
+  applyTranslations();
+
+  /* ======================================================
+     🌍 GUÍA – IMÁGENES POR IDIOMA (ES / EN)
+  ====================================================== */
+
+  function updateGuideImages() {
+    const lang = getLang(); // idioma real del sistema i18n
+    const mediaItems = document.querySelectorAll(".guide-content__media");
+
+    mediaItems.forEach(picture => {
+      const baseName = picture.dataset.img;
+      if (!baseName) return;
+
+      const source = picture.querySelector("source");
+      const img = picture.querySelector("img");
+
+      if (source) {
+        source.srcset = `/build/img/${baseName}-${lang}.webp`;
+      }
+      if (img) {
+        img.src = `/build/img/${baseName}-${lang}.png`;
+      }
+    });
+  }
+
+  updateGuideImages(); // 🔥 al cargar la página
 
   /* ======================================================
      🔘 BOTONES CREATE / SEARCH
@@ -157,13 +185,28 @@ import { applyTranslations } from "./i18n/index.js";
   const snapshot = await getDocs(q);
   const notesCount = snapshot.size;
 
-  const textSpan = createBtn.querySelector(".btn-text");
-  const key =
-    notesCount === 0
-      ? createBtn.dataset.emptyText
-      : createBtn.dataset.normalText;
+  /* ======================================================
+     🌍 i18n – PROTECCIÓN
+  ====================================================== */
 
-  textSpan.dataset.i18n = key;
-  applyTranslations(createBtn);
+  const textSpan = createBtn.querySelector(".btn-text");
+
+  if (textSpan) {
+    const key =
+      notesCount === 0
+        ? createBtn.dataset.emptyText
+        : createBtn.dataset.normalText;
+
+    if (key) {
+      textSpan.dataset.i18n = key;
+      applyTranslations(createBtn);
+    }
+  }
+
+  /* ======================================================
+     🔁 EXPONER PARA lang-auto.js
+  ====================================================== */
+
+  window.updateGuideImages = updateGuideImages;
 
 })();

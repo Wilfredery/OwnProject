@@ -20,6 +20,11 @@ import { t } from "./i18n/index.js";
     const paginationContainer = document.getElementById("pagination");
     const emptyState = document.getElementById("empty-state");
 
+    /* 🟦 FILTROS */
+    const filterToggle = document.getElementById("filterToggle");
+    const filterPanel = document.getElementById("filterPanel");
+    const filterOptions = document.querySelectorAll(".search__filter--option");
+
     if (!searchInput || !resultsContainer || !paginationContainer || !emptyState) return;
 
     let notes = [];
@@ -86,6 +91,7 @@ import { t } from "./i18n/index.js";
         }
       });
 
+      initFilters();
       return;
     }
 
@@ -162,8 +168,10 @@ import { t } from "./i18n/index.js";
       }
     });
 
+    initFilters();
+
     /* ==========================================================
-       🧠 UI (UNA SOLA VEZ)
+       🧠 UI
     ========================================================== */
     function initUI({ onEdit, onDelete }) {
 
@@ -180,7 +188,6 @@ import { t } from "./i18n/index.js";
       });
 
       resultsContainer.addEventListener("click", async e => {
-
         if (e.target.classList.contains("edit-btn")) {
           await onEdit(e.target.dataset.id);
         }
@@ -189,6 +196,44 @@ import { t } from "./i18n/index.js";
           await onDelete(e.target.dataset.id);
         }
       });
+    }
+
+    /* ==========================================================
+       🔽 FILTROS
+    ========================================================== */
+    function initFilters() {
+      if (!filterToggle || !filterPanel) return;
+
+      filterToggle.addEventListener("click", () => {
+        filterPanel.classList.toggle("hidden");
+      });
+
+      filterOptions.forEach(btn => {
+        btn.addEventListener("click", () => {
+          sortNotes(btn.dataset.sort);
+          filterPanel.classList.add("hidden");
+        });
+      });
+    }
+
+    function sortNotes(type) {
+      switch (type) {
+        case "date-desc":
+          notes.sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
+          break;
+        case "date-asc":
+          notes.sort((a, b) => (a.created_at || 0) - (b.created_at || 0));
+          break;
+        case "alpha-asc":
+          notes.sort((a, b) => a.title.localeCompare(b.title));
+          break;
+        case "alpha-desc":
+          notes.sort((a, b) => b.title.localeCompare(a.title));
+          break;
+      }
+
+      currentPage = 1;
+      renderNotes(notes);
     }
 
     /* ==========================================================

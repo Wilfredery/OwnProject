@@ -49,6 +49,11 @@
   margin: 3rem 0;
 }
 
+.guideTitle {
+  text-align: center;
+  margin: 3rem 0;
+}
+
 /* ======================================================
    🧭 GUÍA (BEM CORRECTO)
 ====================================================== */
@@ -172,5 +177,13 @@
     max-height: 90%;
     border-radius: 1rem;
     cursor: zoom-out;
+
+    // 🔥 Mejora la nitidez
+    image-rendering: auto;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+
+    // Evita reescalado raro
+    object-fit: contain;
   }
 }

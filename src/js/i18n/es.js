@@ -23,6 +23,18 @@ export default {
   plsverifyemail: "Por favor verifica tu correo para crear y buscar notas.",
   confirmplsverifyemail: "Entendido",
 
+  // guia de imagenes del home
+  menuHamburguesa: "Menú Hamburguesa",
+  menuHamburguesaTexto: "Desde el menú hamburguesa puedes navegar por todas las secciones de la aplicación, como buscar notas, crear nuevas notas o acceder a tu cuenta y ajustes.",
+  logoInfo: "Logo",
+  logoInfoTexto: "Al hacer clic al logo de la aplicación, volverás rápidamente a la página principal desde cualquier sección.",
+  mainButton: "Botones de la pagina principal",
+  mainButtonTexto: "Estos botones te permiten crear una nueva nota o buscar entre tus notas existentes de forma rápida y sencilla.",
+  search: "Buscar notas",
+  searchTexto: "En esta sección puedes buscar tus notas, ordenarlas por fecha o por título, editarlas o eliminarlas según lo necesites.",
+  accsett: "Ajustes y Cuenta",
+  accsettTexto: "Aquí puedes gestionar tu cuenta, cambiar configuraciones importantes como el idioma o el tema, y realizar acciones relacionadas con tu sesión.",
+
   // ===== NAV / PAGES =====
   page_accountSettings: "Cuenta y ajustes",
   page_searchNotes: "Buscar notas",

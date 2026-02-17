@@ -1,10 +1,11 @@
 import Swal from "sweetalert2";
-import { setLang, applyTranslations } from "./i18n/index.js";
+import { setLang, getLang, applyTranslations } from "./i18n/index.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const langBtn = document.getElementById("lang-toggle");
+  if (!langBtn) return;
 
-  // Observador para contenido dinámico
+  /* 🔄 Observador solo para nodos nuevos */
   const observer = new MutationObserver(mutations => {
     mutations.forEach(m => {
       m.addedNodes.forEach(node => {
@@ -20,33 +21,39 @@ document.addEventListener("DOMContentLoaded", () => {
     subtree: true
   });
 
-  if (langBtn) {
-    langBtn.addEventListener("click", () => {
-      const current = localStorage.getItem("lang") || "es";
-      const newLang = current === "es" ? "en" : "es";
-
-      setLang(newLang);
-
-      langBtn.textContent =
-        newLang === "es" ? "Español 🇪🇸" : "English 🇬🇧";
-
-      Swal.fire({
-        title: newLang === "es"
-          ? "Idioma actualizado"
-          : "Language updated",
-        toast: true,
-        position: "top",
-        icon: "success",
-        showConfirmButton: false,
-        timer: 1600,
-        timerProgressBar: true,
-        customClass: {
-          popup: "minimal-alert"
-        }
-      });
-    });
+  /* 🧠 Sincroniza el botón con el idioma real */
+  function syncLangButton() {
+    const lang = getLang();
+    langBtn.textContent =
+      lang === "es" ? "Español 🇪🇸" : "English 🇬🇧";
   }
 
-  // Idioma inicial
+  /* 🌍 Estado inicial */
   applyTranslations();
+  syncLangButton();
+
+  /* 🔁 Toggle REAL */
+  langBtn.addEventListener("click", () => {
+    const current = getLang();          // ✅ estado real
+    const newLang = current === "es" ? "en" : "es";
+
+    setLang(newLang);                  // 🔥 cambia idioma global
+    window.updateGuideImages?.();     // 🖼️ cambia imágenes del guide
+    syncLangButton();                  // 🔄 refleja estado
+
+    Swal.fire({
+      title: newLang === "es"
+        ? "Idioma actualizado"
+        : "Language updated",
+      toast: true,
+      position: "top",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 1600,
+      timerProgressBar: true,
+      customClass: {
+        popup: "minimal-alert"
+      }
+    });
+  });
 });

@@ -1,3 +1,4 @@
+//i18n/index.js
 import es from "./es.js";
 import en from "./en.js";
 
@@ -6,16 +7,22 @@ const languages = { es, en };
 let currentLang = localStorage.getItem("lang") || "es";
 let currentLangData = languages[currentLang];
 
-
 export function t(key) {
   return currentLangData[key] || key;
 }
 
+export function getLang() {
+  return currentLang;
+}
+
 export function setLang(lang) {
+  if (!languages[lang]) return;
+
   currentLang = lang;
-  localStorage.setItem("lang", lang);
   currentLangData = languages[lang];
-  applyTranslations();
+  localStorage.setItem("lang", lang);
+
+  applyTranslations(); // ✅ aquí SÍ va
 }
 
 export function applyTranslations(root = document) {

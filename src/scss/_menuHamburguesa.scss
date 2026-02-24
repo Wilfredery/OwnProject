@@ -1,67 +1,101 @@
 @use 'variables' as v;
+@use 'mixins' as m;
 @use 'sass:color';
 
 .menu-container {
-    position: relative;
-    top: 50%; // debajo del header
-    right: 1rem;
+  position: relative;
+  margin-top: 1rem;
+  margin-left: auto;
+
+  @include m.tablet {
     margin-top: 1.5rem;
-
-    .menu-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 4rem; // ícono un poco más grande
-        color: v.$negro;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 8px;
-
-        &:hover {
-          color: color.adjust(v.$blanco, $lightness: -20%);
-        }
+    right: 1rem;
   }
 
+  /* ===========================
+     BOTÓN
+  =========================== */
+  .menu-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 3.2rem; // 📱 mobile
+    color: v.$negro;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem;
+
+    @include m.tablet {
+      font-size: 4rem;
+      padding: 0.8rem;
+    }
+
+    &:hover {
+      color: color.adjust(v.$blanco, $lightness: -20%);
+    }
+  }
+  /* ===========================
+    DROPDOWN
+  =========================== */
   .dropdown-menu {
     display: none;
     position: absolute;
     right: 0;
-    top: 100%; // justo debajo del botón
-    min-width: 32rem;
+    top: 100%;
+    width: 700%;
     background-color: v.$blanco;
     border: 1px solid v.$gris-oscuro;
     border-radius: 1rem;
-    -webkit-box-shadow: 0px 7px 14px -1px rgba(0,0,0,0.75); 
-box-shadow: 0px 7px 14px -1px rgba(0,0,0,0.75);
+    box-shadow: 0px 7px 14px -1px rgba(0,0,0,0.75);
     z-index: 1000;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+
+    /* ✅ FIX SOLO MÓVIL (NO rompe estilos) */
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+
     opacity: 0;
     transform: translateY(-10px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+
+    @include m.tablet {
+      width: 100%;
+      min-width: 32rem;
+
+      /* ⛔ Tablet/Desktop quedan igual */
+      max-height: none;
+      overflow: visible;
+    }
 
     ul {
       list-style: none;
-      margin: 1rem;
+      margin: 0;
       padding: 1rem;
 
       li {
-        a, button {
+        a,
+        button {
           display: block;
           width: 100%;
           text-align: left;
-          padding: 2rem 1.6rem;
+          padding: 2rem 1.2rem; // 📱 mobile
           background: none;
           border: none;
           cursor: pointer;
           color: v.$negro;
           text-decoration: none;
-          font-size: 1.7rem;
-          
+          font-size: 1.5rem;
           text-transform: uppercase;
+          border-radius: 0.8rem;
+          transition: background-color 0.2s ease, color 0.2s ease;
+
+          @include m.tablet {
+            font-size: 1.7rem;
+            padding: 2rem 1.6rem;
+          }
 
           &:hover {
             background: v.$azul;
-            border-radius: 1rem;
             color: v.$blanco;
             font-weight: 800;
           }
@@ -70,6 +104,9 @@ box-shadow: 0px 7px 14px -1px rgba(0,0,0,0.75);
     }
   }
 
+  /* ===========================
+     ESTADO ABIERTO
+  =========================== */
   &.open .dropdown-menu {
     display: block;
     opacity: 1;
@@ -77,7 +114,11 @@ box-shadow: 0px 7px 14px -1px rgba(0,0,0,0.75);
   }
 }
 
+/* ===========================
+   LINKS BLOQUEADOS
+=========================== */
 .link--locked {
   opacity: 0.5;
   cursor: not-allowed;
+  pointer-events: none;
 }

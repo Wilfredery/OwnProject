@@ -7,25 +7,42 @@
 =========================== */
 
 .settings {
+  /* Mobile first */
+  @include m.contenedor-sm;
+
+  @include m.tablet {
+    @include m.contenedor-md;
+    margin-bottom: -5rem;
+  }
+
+  @include m.desktop {
+    @include m.contenedor;
+  }
+
   &__h2 {
     text-align: center;
+    margin-bottom: 1.5rem;
+    @include m.texto-fluido(2.2rem, 3rem);
   }
 
   &__user {
     text-align: center;
-    margin: 1.5rem 0;
+    margin: 1.5rem 0 2.5rem;
 
     &--userName {
       font-weight: 600;
-      font-size: 2rem;
       color: v.$azul;
+      @include m.texto-fluido(1.8rem, 2.2rem);
     }
   }
 
   /* ===========================
-   OPTION BLOCK
+     OPTION BLOCK
   =========================== */
+
   &__option {
+    margin-bottom: 2rem;
+
     &:nth-child(2) {
       margin-top: 2rem;
     }
@@ -33,65 +50,99 @@
     &__label {
       font-weight: bold;
       text-transform: uppercase;
+      font-size: 1.4rem;
+      display: block;
+      margin-bottom: 0.5rem;
     }
 
     /* ===========================
-    THEME & LANGUAGE SWITCHERS
+       THEME & LANGUAGE SWITCHERS
     =========================== */
 
-    &--lang-switcher, &--theme-switcher {
+    &--lang-switcher,
+    &--theme-switcher {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.8rem;
       margin: 1rem 0 2rem 1rem;
+
+      @include m.tablet {
+        gap: 1rem;
+      }
 
       label {
         font-weight: 600;
+        font-size: 1.4rem;
       }
 
       button {
         background-color: transparent;
         border: 1px solid v.$azul;
         color: v.$azul;
-        padding: 0.3rem 0.8rem;
-        border-radius: 8px;
+        padding: 0.4rem 1rem;
+        border-radius: 0.8rem;
         cursor: pointer;
-        transition: background-color 0.3s ease;
+        font-weight: 600;
+        transition: background-color 0.25s ease,
+                    color 0.25s ease,
+                    transform 0.2s ease;
 
         &:hover {
           background-color: v.$azul;
           color: v.$blanco;
+          transform: translateY(-1px);
+        }
+
+        &:active {
+          transform: translateY(0);
         }
       }
     }
   }
 
   /* ===========================
-   SECURITY SECTION
+     SECURITY SECTION
   =========================== */
 
   &__security {
-    margin-top: 2.5rem;
+    margin-top: 3rem;
+    padding: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 
-    display: flex;      // Poner los botones en fila
-    gap: 1rem;          // Separación entre ellos
+    @include m.tablet {
+      flex-direction: row;
+      padding: 2.5rem 0;
+    }
+
+    @include m.desktop {
+      padding: 3rem 0;
+    }
 
     &--btn {
-      display: inline-block; // Ya no block para que estén en fila
-      width: auto;           // Ancho automático
-      flex: 1;               // Que crezcan igual para ocupar espacio disponible
-      margin-bottom: 0;      // Quitar margen para que no haya salto vertical
-
-      padding: 0.6rem;
-      border-radius: 8px;
+      flex: 1;
+      padding: 1rem;
+      margin: 1rem 1rem;
+      border-radius: 0.8rem;
       border: none;
       font-weight: 600;
+      font-size: 2rem;
       cursor: pointer;
-      transition: background-color 0.3s ease, opacity 0.3s ease;
+      transition: background-color 0.3s ease,
+                  color 0.3s ease,
+                  opacity 0.3s ease;
 
       &:disabled {
         opacity: 0.5;
         cursor: not-allowed;
+      }
+
+      @include m.tablet {
+        font-size: 2.2rem;
+        margin: 0 0;
+        width: 100%;
       }
     }
 
@@ -125,13 +176,7 @@
       &:hover:not(:disabled) {
         background-color: color.adjust(v.$rojo, $lightness: -10%);
         color: v.$blanco;
-
       }
     }
   }
 }
-
-
-
-
-

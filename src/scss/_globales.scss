@@ -1,33 +1,59 @@
 @use 'variables' as v;
+@use 'mixins' as m;
 
 html {
-    font-size: 62.5%;
-    box-sizing: border-box;
-    height: 100%;
+  font-size: 62.5%; // 1rem = 10px
+  box-sizing: border-box;
+  height: 100%;
 }
-*, *:before, *:after {
-    box-sizing: inherit;
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
 }
+
 body {
-    font-family: v.$fuente_principal;
+  font-family: v.$fuente_principal;
+  font-size: 1.6rem; // mobile primero
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: v.$blanco;
+  line-height: 1.6;
+
+  @include m.tablet {
+    font-size: 1.7rem;
+  }
+
+  @include m.desktop {
     font-size: 1.8rem;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; // altura total de la pantalla
-    background-color: v.$blanco;
+  }
 }
+
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
+
 img {
-    width: 100%;
-    height: auto;
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 main {
-  flex: 1; // ocupa el espacio restante entre header y footer
+  flex: 1; // empuja el footer hacia abajo
 }
 
+/* SweetAlert base */
 .swal2-popup {
+  font-size: 1.6rem !important;
+
+  @include m.tablet {
+    font-size: 1.8rem !important;
+  }
+
+  @include m.desktop {
     font-size: 2rem !important;
+  }
 }

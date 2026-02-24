@@ -1,23 +1,45 @@
 @use 'variables' as v;
 @use 'sass:color';
-
+@use 'mixins' as m;
 
 .header {
-    background-color: v.$azul;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 2rem;
+  background-color: v.$azul;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4rem;
+  
+  @include m.tablet {
+    margin-top: -2rem;
+    
+  }
+  
+  .hidden {
+    visibility: hidden;
+  }
 
-    .hidden {
-        visibility: hidden;
+  &__logo {
+    color: v.$blanco;
+    font-weight: 400;
+    font-size: 2rem;
+    margin-left: 0;
+
+    @include m.tablet {
+      font-size: 2.2rem;
+      margin-left: 1rem;
     }
-    .logo {
-        color: v.$blanco;
-        font-weight: 400;
-        margin-left: 1rem;
+
+    @include m.desktop {
+      font-size: 2.5rem;
     }
-    .spanTitulo {
-        color: v.$negro;
-        font-weight: 900;
-    }
+  }
+  
+  &__titulo {
+    color: v.$blanco;
+  }
+
+  &__spanTitulo {
+    color: v.$negro;
+    font-weight: 900;
+  }
 }

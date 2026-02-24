@@ -8,22 +8,40 @@
 
 .actions {
   display: grid;
+  grid-template-columns: 1fr; // 📱 mobile
+  row-gap: 1.5rem;
   justify-items: center;
-  grid-template-columns: repeat(2, 1fr);
-  column-gap: 4rem;
+
+  @include m.tablet {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 4rem;
+    row-gap: 0;
+  }
 
   .create-btn,
   .search-btn {
+    width: 100%;
+    max-width: 30rem;
+    @include m.tablet {
+      max-width: none
+    }
+    @include m.desktop {
+      max-width: none
+    }
+    @include m.xl_desktop {
+      max-width: none
+    }
+
     @include m.boton(v.$blanco, v.$fuente-principal);
     border: 1px solid v.$azul;
-    border-radius: 5%;
+    border-radius: 0.8rem;
     text-transform: uppercase;
 
     &:hover {
       background-color: color.adjust(v.$azul, $lightness: -10%);
       color: v.$blanco;
       cursor: pointer;
-      box-shadow: 1px 3px 11px 1px rgba(0, 0, 0, 0.82);
+      box-shadow: 1px 3px 11px rgba(0, 0, 0, 0.35);
     }
   }
 }
@@ -39,31 +57,40 @@
   }
 }
 
+/* ======================================================
+   CONTENEDORES / TITULOS
+====================================================== */
+
 .shadowbox {
   box-shadow: 0 0 14px -1px rgba(0, 0, 0, 0.75);
-  @include m.contenedor;
+  @include m.contenedor-sm;
+
+  @include m.tablet {
+    @include m.contenedor;
+  }
 }
 
-.recent-notes__title {
-  text-align: center;
-  margin: 3rem 0;
-}
-
+.recent-notes__title,
 .guideTitle {
   text-align: center;
-  margin: 3rem 0;
+  margin: 2rem 0;
 }
 
 /* ======================================================
-   🧭 GUÍA (BEM CORRECTO)
+   🧭 GUÍA
 ====================================================== */
 
 .guide-content {
-  max-width: 800px;
+  max-width: 85%;
   margin: 2rem auto;
   text-align: center;
   position: relative;
   border-radius: 1rem;
+  padding: 1rem 1rem;
+
+  @include m.tablet {
+    max-width: 95%;
+  }
 
   /* ===== STEP ===== */
   &__step {
@@ -75,15 +102,15 @@
   }
 
   &__title {
+    font-size: 2rem;
     margin-bottom: 1rem;
     min-height: 2.5rem;
   }
 
-  /* 🖼️ MEDIA ESTABLE */
+  /* 🖼️ MEDIA */
   &__media {
     width: 100%;
-    max-width: 700px;
-    height: 400px;
+    height: 240px; // 📱 mobile
     margin: 0 auto;
     border-radius: 1rem;
     cursor: zoom-in;
@@ -92,6 +119,11 @@
     align-items: center;
     justify-content: center;
     background: v.$blanco;
+
+    @include m.tablet {
+      height: 400px;
+      max-width: 700px;
+    }
 
     img {
       width: 100%;
@@ -107,6 +139,7 @@
   }
 
   &__text {
+    font-size: 2rem;
     margin-top: 1.2rem;
     min-height: 4.5rem;
   }
@@ -124,8 +157,8 @@
 
     &-btn {
       pointer-events: auto;
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       border: 1px solid v.$azul;
       background-color: v.$blanco;
@@ -134,9 +167,19 @@
       align-items: center;
       justify-content: center;
 
+      @include m.tablet {
+        width: 44px;
+        height: 44px;
+      }
+
       &-icon {
-        width: 22px;
-        height: 22px;
+        width: 20px;
+        height: 20px;
+
+        @include m.tablet {
+          width: 22px;
+          height: 22px;
+        }
       }
 
       &:hover {
@@ -145,11 +188,19 @@
       }
 
       &.prev {
-        transform: translateX(-60%);
+        transform: translateX(-40%);
+
+        @include m.tablet {
+          transform: translateX(-60%);
+        }
       }
 
       &.next {
-        transform: translateX(60%);
+        transform: translateX(40%);
+
+        @include m.tablet {
+          transform: translateX(60%);
+        }
       }
     }
   }
@@ -177,13 +228,10 @@
     max-height: 90%;
     border-radius: 1rem;
     cursor: zoom-out;
+    object-fit: contain;
 
-    // 🔥 Mejora la nitidez
     image-rendering: auto;
     backface-visibility: hidden;
     transform: translateZ(0);
-
-    // Evita reescalado raro
-    object-fit: contain;
   }
 }

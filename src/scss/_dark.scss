@@ -2,59 +2,53 @@
 @use 'sass:color';
 
 /* ===========================
-   Tema Oscuro
-   =========================== */
+   TEMA OSCURO
+=========================== */
+
 body.dark {
   background-color: v.$azul-oscuro;
   color: v.$blanco;
 
-  //SweetAlert
+  /* ===========================
+     SWEETALERT
+  =========================== */
+
   .minimal-alert {
-    color: v.$azul;
     background-color: v.$azul-oscuro;
-    border: .1rem solid v.$azul;
+    color: v.$azul;
+    border: 0.1rem solid v.$azul;
+    border-radius: 1.4rem !important;
+    padding: 1.2rem 1.8rem !important;
+    backdrop-filter: blur(8px);
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem;
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.08),
+      0 6px 24px rgba(0, 0, 0, 0.06) !important;
   }
 
-//SweetAlert
+  /* ===========================
+     SHADOW BOX
+  =========================== */
 
   .shadowbox {
-  -webkit-box-shadow: 0px 0px 10px 0px #3B82F6; 
-  box-shadow: 0px 0px 10px 0px #3B82F6;
+    box-shadow: 0 0 10px #3b82f6;
   }
+
+  /* ===========================
+     HEADER
+  =========================== */
 
   .header {
     background-color: v.$azul-oscuro;
-    border-bottom: 1px solid v.$azul;
-  }
+    border-bottom: 0.1rem solid v.$azul;
 
-  .logo, .spanTitulo {
-    color: v.$blanco;
-  }
+    &__titulo {
+      color: v.$azul;
+    }
 
-  .actions {
-    .create-btn, .search-btn {
-      background-color: v.$gris-oscuro;
-      border: .1rem solid v.$azul;
+    &__spanTitulo {
       color: v.$blanco;
-
-      &:hover {
-        background-color: v.$azul;
-        color: v.$blanco;
-      }
-    }
-  }
-
-  .footer {
-    background-color: v.$azul-oscuro;
-    color: v.$gris-claro;
-    border-top: .1rem solid v.$azul;
-
-    &__texto {
-      color: v.$gris-claro;
-    }
-
-    &__year {
-      color: v.$gris-claro;
     }
   }
 
@@ -66,145 +60,152 @@ body.dark {
     }
   }
 
+  /* ===========================
+     ACTIONS
+  =========================== */
+
+  .actions {
+    .create-btn,
+    .search-btn {
+      background-color: v.$gris-oscuro;
+      border: 0.1rem solid v.$azul;
+      color: v.$blanco;
+
+      &:hover {
+        background-color: v.$azul;
+      }
+    }
+  }
+
+  /* ===========================
+     DROPDOWN
+  =========================== */
+
   .dropdown-menu {
     background-color: v.$gris-oscuro;
-    border: .1rem solid v.$azul;
+    border: 0.1rem solid v.$azul;
 
     ul {
       li{
-        a {
+        a, button {
           color: v.$blanco;
-
           &:hover {
-            background: v.$azul;
-            color: v.$blanco;
+            color: v.$negro;
+            background-color: v.$azul;
           }
         }
       }
     }
   }
 
+  /* ===========================
+     FOOTER
+  =========================== */
+
   .footer {
-    .linkdln {
-      a {
-        color: v.$blanco;
+    background-color: v.$azul-oscuro;
+    color: v.$gris-claro;
+    border-top: 0.1rem solid v.$azul;
 
-        &:hover {
-          color: v.$azul;
-        }
-      }
-    }
-  }
-
-  //Inicio register
-  .register {
-
-    &__form {
-      &--input {
-        background-color: v.$gris-oscuro;
-        color: v.$blanco;
-        border: .1rem solid v.$azul;
-      }
-
+    &__texto,
+    &__year {
+      color: v.$gris-claro;
     }
 
-    &__options {
-      &--google {
-        background-color: v.$gris-oscuro;
-        border: .1rem solid v.$azul;
+    .linkdln a {
+      color: v.$blanco;
+
+      &:hover {
         color: v.$azul;
-
-        &:hover {
-          background-color: v.$azul;
-          color: v.$blanco;
-        }
       }
     }
   }
 
-  //Fin register
+  /* ===========================
+     AUTH (REGISTER / LOGIN)
+  =========================== */
 
-  //Inicio login
-
+  .register,
   .login {
-
-    &__form {
-      &--input {
-        background-color: v.$gris-oscuro;
-        color: v.$blanco;
-        border: .1rem solid v.$azul;
-      }
-
+    &__form--input {
+      background-color: v.$azul-oscuro;
+      color: v.$blanco;
+      border: 0.1rem solid v.$azul;
     }
-    &__options {
-      &--google {
-        background-color: v.$gris-oscuro;
-        border: .1rem solid v.$azul;
-        color: v.$azul;
 
-        &:hover {
-          background-color: v.$azul;
-          color: v.$blanco;
-        }
+    &__form--submit {
+      &:hover {
+        color: v.$negro;
+      }
+    }
+
+    &__options--google {
+      background-color: v.$gris-oscuro;
+      border: 0.1rem solid v.$azul;
+      color: v.$azul;
+
+      &:hover {
+        background-color: v.$azul;
+        color: v.$blanco;
       }
     }
   }
 
-  //Fin login
+  /* ===========================
+     PASSWORD FLOWS
+  =========================== */
 
-  //Olvidar contraseña
-
-  .forgot {
-    &__form {
-      &--input {
-        background-color: v.$azul-oscuro;
-        color: v.$blanco;
-        border: .1rem solid v.$azul;
-      }
-    }
-  }
-
-  //Fin olvidar contraseña
-
-  //inicio confirmar contraseña
-
+  .forgot,
   .reset {
-    &__form {
-      &--input {
-        background-color: v.$azul-oscuro;
-        color: v.$blanco;
-        border: .1rem solid v.$azul;
+    &__form--input {
+      background-color: v.$azul-oscuro;
+      color: v.$blanco;
+      border: 0.1rem solid v.$azul;
+    }
+
+    &__form--submit {
+      &:hover {
+        color: v.$negro;
       }
     }
-  }  //fin confirmar contraseña
+  }
 
-  //main index
+  /* ===========================
+     MAIN / GUIDE
+  =========================== */
+
+  .create-btn,.search-btn {
+    &:hover {
+      color: v.$negro;
+    }
+  }
+
   .guide-content {
-
     &__media {
       background-color: v.$azul-oscuro;
     }
 
-    &__nav {
+    &__nav-btn {
+      background-color: v.$azul-oscuro;
 
-      &-btn {
-        background-color: v.$azul-oscuro;
+      &:hover {
+        background-color: v.$azul;
+      }
 
-        &-icon {
-          color: v.$blanco;
+      &-icon {
+        color: v.$blanco;
 
-          &:hover {
-          color: v.$negro;
-          }
-        }
         &:hover {
-          background-color: v.$azul;
+          color: v.$negro;
         }
       }
     }
   }
 
-  //Inicio del search.scss
+  /* ===========================
+     SEARCH
+  =========================== */
+
   .search {
     &__titulo {
       color: v.$blanco;
@@ -212,181 +213,115 @@ body.dark {
 
     &__input {
       background-color: v.$azul-oscuro;
-      border: .2rem solid v.$azul;
+      border: 0.2rem solid v.$azul;
       color: v.$blanco;
 
       &::placeholder {
-        color: v.$negro;
+        color: v.$blanco;
       }
     }
 
-    //Inicio de filtrosearch
-
-    &__filter--btn {
-      background-color: v.$azul-oscuro;
-      border: .1rem solid v.$azul;
+    &__filter--btn,
+    &__filter--option {
+      background-color: v.$gris-oscuro;
+      border: 0.1rem solid v.$azul;
       color: v.$blanco;
 
       &:hover {
         background-color: v.$azul;
-        color: v.$blanco;
       }
     }
+
     &__filter--panel {
       background-color: color.adjust(v.$azul-oscuro, $lightness: 10%);
-      border: .1rem solid v.$azul;
+      border: 0.1rem solid v.$azul;
     }
 
-    &__filter--option {
-      background: v.$gris-oscuro;
-      color: v.$blanco;
-      border: .1rem solid v.$azul;
+    &__results .note-item {
+      background-color: v.$gris-oscuro;
+      border-color: color.adjust(v.$azul, $lightness: -10%);
+      box-shadow: none;
 
       &:hover {
-        background-color: v.$azul;
+        box-shadow: 2px 4px 17px 3px v.$negro;
+      }
+
+      h3 {
         color: v.$blanco;
+      }
+
+      p {
+        color: color.adjust(v.$blanco, $lightness: -40%);
       }
     }
 
-    //fin de filtrosearch
+    &__pagination--page-btn {
+      background-color: v.$azul-oscuro;
+      border: 0.1rem solid v.$azul;
+      color: v.$blanco;
 
-    //INICIO LISTADO DEL SEARCH.SCSS
-    &__results {
-
-      .note-item {
-        background: v.$gris-oscuro;
-        border-color: color.adjust(v.$azul, $lightness: -10%);
-        box-shadow: none;
-
-        &:hover {
-          -webkit-box-shadow: 2px 4px 17px 3px v.$negro; 
-          box-shadow: 2px 4px 17px 3px v.$negro;
-        }
-
-        .info {
-          h3 {
-            color: v.$blanco;
-          }
-          p {
-            color: color.adjust(v.$blanco, $lightness: -40%);
-          }
-        }
-
-        .actions {
-
-          .edit-btn {
-            background: v.$azul;
-          }
-
-          .delete-btn {
-            background: #ff6b6b;
-          }
-        }
-      }
-    }
-    //FIN LISTADO DEL SEARCH.SCSS
-
-
-    //Inicio pagination
-    &__pagination {
-      &--page-btn {
-        background-color: v.$azul-oscuro;
-        border: .1rem solid v.$azul;
-        color: v.$blanco;
-
-        &.active {
-          background: #3085d6;
-        color: white;
+      &.active {
+        background-color: #3085d6;
         border-color: #3085d6;
-        }
-            /* 🔴 AGREGA ESTO */
-        &:disabled {
-          opacity: 0.35;
-          cursor: not-allowed;
-          pointer-events: none;
-        }
+      }
+
+      &:disabled {
+        opacity: 0.35;
+        pointer-events: none;
       }
     }
   }
-  //Fin del search.scss
 
+  /* ===========================
+     CREAR / EDITAR
+  =========================== */
 
-
-
-  //INICIO _CREAR.SCSS
   .crear {
     &__titulo {
       color: v.$blanco;
     }
 
-    &__inputTitulo, &__inputContenido {
+    &__inputTitulo,
+    &__inputContenido {
       background-color: v.$gris-oscuro;
       color: v.$blanco;
-      border: .1rem solid v.$azul;
+      border: 0.1rem solid v.$azul;
     }
   }
 
-  //FIN _CREAR.SCSS
+  .editar {
 
-  //INICIO EDITAR.SCSS
-.editar {
-  color: v.$blanco;
-
-  .editar__titulo {
+    &__titulo,&__contenidoForm, &__tituloForm{ 
     color: v.$blanco;
-  }
+    }
 
-  .editar__input,
-  .editar__textarea {
-    background: transparent;
-    border-color: color.adjust(v.$gris-oscuro, $lightness: 10%);
-    color: v.$blanco;
+    &__input,
+    &__textarea {
+      background-color: transparent;
+      border-color: color.adjust(v.$gris-oscuro, $lightness: 10%);
+      color: v.$blanco;
 
-    &:focus {
-      border-color: v.$azul;
+      &:focus {
+        border-color: v.$azul;
+      }
+    }
+
+    &__delete-btn {
+      background-color: #ff6b6b;
     }
   }
 
-  .editar__delete-btn {
-    background: #ff6b6b;
-  }
-}
+  /* ===========================
+     SWITCHERS
+  =========================== */
 
-
-  //FIN EDITAR.SCSS
-
-
-  //Inicio boton  de ajuste
-  .lang-switcher, .theme-switcher {
-  body.dark & button {
+  .lang-switcher button,
+  .theme-switcher button {
     border-color: v.$azul;
     color: v.$blanco;
 
     &:hover {
       background-color: v.$azul;
-      color: v.$blanco;
     }
   }
 }
-
-.minimal-alert {
-  border-radius: 14px !important;
-  padding: 12px 18px !important;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(0,0,0,0.05);
-  font-family: 'Inter', sans-serif;
-  font-size: 1.5rem;
-  box-shadow: 
-    0 2px 8px rgba(0,0,0,0.08),
-    0 6px 24px rgba(0,0,0,0.06) !important;
-}
-
-.minimal-alert {
-  border: 1px solid rgba(255,255,255,0.08);
-}
-  //fin boton de ajuste
-}
-
-
-
-

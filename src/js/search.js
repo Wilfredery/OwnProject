@@ -65,11 +65,11 @@ import { t } from "./i18n/index.js";
       initUI({
         onEdit: async id => {
           const result = await Swal.fire({
-            title: t("askEdit"),
+            title: t("askEditNote"),
             icon: "question",
             showCancelButton: true,
-            confirmButtonText: t("confirmEdit"),
-            cancelButtonText: t("cancelEdit"),
+            confirmButtonText: t("confirmEditNote"),
+            cancelButtonText: t("cancelEditNote"),
             customClass: { popup: "minimal-alert" }
           });
 
@@ -281,7 +281,14 @@ import { t } from "./i18n/index.js";
             <h3>${note.title}</h3>
             <p>${note.content.substring(0, 60)}...</p>
             <p class="fecha">
-              ${note.created_at ? note.created_at.toLocaleDateString(userLocale) : ""}
+              ${
+                note.created_at
+                  ? `${note.created_at.toLocaleDateString(userLocale)} · ${note.created_at.toLocaleTimeString(userLocale, {
+                      hour: "2-digit",
+                      minute: "2-digit"
+                    })}`
+                  : ""
+              }
             </p>
           </div>
           <div class="actions">

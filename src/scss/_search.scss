@@ -173,11 +173,17 @@
 
     &--btn {
       padding: .8rem 1.2rem;
-      background: v.$blanco;
+      background-color:  v.$blanco;
       border: .1rem solid v.$azul;
       border-radius: .6rem;
       font-weight: 600;
       cursor: pointer;
+
+      &:hover {
+        background: color.adjust(v.$azul, $lightness: -10%);
+        color: v.$blanco;
+        font-weight: 800;
+      }
     }
 
     .hidden {
@@ -210,6 +216,7 @@
 
       &:hover {
         background: color.adjust(v.$azul, $lightness: -10%);
+        color: v.$blanco;
       }
     }
   }

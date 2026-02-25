@@ -15,27 +15,30 @@ fs.readdirSync(inputDir).forEach(file => {
 
   const inputPath = path.join(inputDir, file);
   const name = path.parse(file).name;
-  const outputOriginal = path.join(outputDir, file);
-  const outputWebp = path.join(outputDir, `${name}.webp`);
 
-  // ✅ Copiar original (fallback)
-  fs.copyFileSync(inputPath, outputOriginal);
+  // Fallback original
+  fs.copyFileSync(inputPath, path.join(outputDir, file));
 
-  // ✅ WebP de ALTA calidad (optimizado para UI)
+  // WebP calidad PRO
   sharp(inputPath)
     .resize({
-      width: 1600,              // 🔥 evita imágenes gigantes
+      width: 2000,              // 👈 más detalle (retina ready)
       withoutEnlargement: true
     })
-    .webp({
-      quality: 90,              // 🔥 gran mejora visual
-      effort: 6,                // mejor compresión
-      smartSubsample: true      // ideal para texto y bordes
+    .sharpen({
+      sigma: 1.1,
+      m1: 0.5,
+      m2: 0.5
     })
-    .toFile(outputWebp)
+    .webp({
+      quality: 92,              // 🔥 ultra nítido
+      effort: 6,
+      smartSubsample: false     // 🔥 evita blur en texto/UI
+    })
+    .toFile(path.join(outputDir, `${name}.webp`))
     .catch(err => {
       console.error(`❌ Error procesando ${file}:`, err);
     });
 });
 
-console.log('✅ Imágenes procesadas con Sharp (alta calidad)');
+console.log('✨ Imágenes procesadas con Sharp (ULTRA quality)');

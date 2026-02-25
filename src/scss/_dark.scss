@@ -228,6 +228,7 @@ body.dark {
       color: v.$blanco;
 
       &:hover {
+        color: v.$negro;
         background-color: v.$azul;
       }
     }

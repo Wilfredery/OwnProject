@@ -32,7 +32,11 @@
     &--userName {
       font-weight: 600;
       color: v.$azul;
-      @include m.texto-fluido(1.8rem, 2.2rem);
+      font-size: 2rem;
+      
+      @include m.tablet {
+        font-size: 2.3rem;
+      }
     }
   }
 
@@ -73,10 +77,15 @@
 
       label {
         font-weight: 600;
-        font-size: 1.4rem;
+        font-size: 2rem;
+
+        @include m.tablet {
+          font-size: 2.2rem;
+        }
       }
 
       button {
+        font-size: 2rem;
         background-color: transparent;
         border: 1px solid v.$azul;
         color: v.$azul;
@@ -96,6 +105,10 @@
 
         &:active {
           transform: translateY(0);
+        }
+
+        @include m.tablet {
+          font-size: 2.2rem;        
         }
       }
     }

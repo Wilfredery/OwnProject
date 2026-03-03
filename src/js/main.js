@@ -16,12 +16,34 @@ import { applyTranslations, getLang } from "./i18n/index.js";
   applyTranslations();
 
   /* ======================================================
-     🌍 GUÍA – IMÁGENES POR IDIOMA (ES / EN)
+     🌍 GUÍA – IMÁGENES POR IDIOMA (ES / EN) CON VITE_IMG_PATH Y PRECARGA EN MEMORIA
   ====================================================== */
+  const IMG_PATH = import.meta.env.VITE_IMG_PATH || "/build/img/";
+  const preloadedImages = { es: {}, en: {} };
+  const mediaItems = document.querySelectorAll(".guide-content__media");
+
+  function preloadImages() {  
+    ["es", "en"].forEach(lang => {
+      mediaItems.forEach(picture => {
+        const baseName = picture.dataset.img;
+        if (!baseName) return;
+
+        // precargar webp
+        const webp = new Image();
+        webp.src = `${IMG_PATH}${baseName}-${lang}.webp`;
+        preloadedImages[lang][`${baseName}-webp`] = webp;
+
+        // precargar png
+        const png = new Image();
+        png.src = `${IMG_PATH}${baseName}-${lang}.png`;
+        preloadedImages[lang][`${baseName}-png`] = png;
+      });
+    });
+  }
 
   function updateGuideImages() {
     const lang = getLang(); // idioma real del sistema i18n
-    const mediaItems = document.querySelectorAll(".guide-content__media");
+    
 
     mediaItems.forEach(picture => {
       const baseName = picture.dataset.img;
@@ -30,21 +52,21 @@ import { applyTranslations, getLang } from "./i18n/index.js";
       const source = picture.querySelector("source");
       const img = picture.querySelector("img");
 
-      if (source) {
-        source.srcset = `/build/img/${baseName}-${lang}.webp`;
+      if (source && preloadedImages[lang][`${baseName}-webp`]) {
+        source.srcset = preloadedImages[lang][`${baseName}-webp`].src;
       }
-      if (img) {
-        img.src = `/build/img/${baseName}-${lang}.png`;
+      if (img && preloadedImages[lang][`${baseName}-png`]) {
+        img.src = preloadedImages[lang][`${baseName}-png`].src;
       }
     });
   }
 
+  preloadImages();
   updateGuideImages(); // 🔥 al cargar la página
 
   /* ======================================================
      🔘 BOTONES CREATE / SEARCH
   ====================================================== */
-
   const createBtn = document.querySelector(".create-btn");
   const searchBtn = document.querySelector(".search-btn");
   if (!createBtn || !searchBtn) return;
@@ -54,7 +76,6 @@ import { applyTranslations, getLang } from "./i18n/index.js";
   function guardedClick(e) {
     e.preventDefault();
     if (!isAllowed) return;
-
     const href = e.currentTarget.dataset.href;
     if (href) window.location.href = href;
   }
@@ -68,7 +89,6 @@ import { applyTranslations, getLang } from "./i18n/index.js";
   /* ======================================================
      ⚡ CACHE
   ====================================================== */
-
   const cachedState = getCachedAuthState();
   if (["guest", "verified", "user"].includes(cachedState)) {
     isAllowed = true;
@@ -79,7 +99,6 @@ import { applyTranslations, getLang } from "./i18n/index.js";
   /* ======================================================
      🔐 FIREBASE REAL
   ====================================================== */
-
   const authState = await onAuthReady();
   if (!authState) return;
 
@@ -92,7 +111,6 @@ import { applyTranslations, getLang } from "./i18n/index.js";
   /* ======================================================
      🧭 GUÍA DINÁMICA (BEM CORRECTO)
   ====================================================== */
-
   const steps = document.querySelectorAll(".guide-content__step");
   const nextBtn = document.querySelector(".guide-content__nav-btn.next");
   const prevBtn = document.querySelector(".guide-content__nav-btn.prev");
@@ -125,9 +143,6 @@ import { applyTranslations, getLang } from "./i18n/index.js";
   /* ======================================================
      🔍 ZOOM DE IMAGEN (picture + webp)
   ====================================================== */
-
-  const mediaItems = document.querySelectorAll(".guide-content__media");
-
   if (mediaItems.length) {
     const overlay = document.createElement("div");
     overlay.className = "img-overlay";
@@ -151,30 +166,51 @@ import { applyTranslations, getLang } from "./i18n/index.js";
       zoomImg.src = "";
     });
   }
-
   /* ======================================================
-     💡 MIGRACIÓN AUTOMÁTICA
+    💡 MIGRACIÓN AUTOMÁTICA (CONTROL TOTAL INTELIGENTE)
   ====================================================== */
+  if (authState.role === "verified") {
 
-  if (authState.role === "verified" && window.runGuestMigration) {
     const userRef = doc(db, "users", authState.user.uid);
-    const snap = await getDoc(userRef);
+    const userSnap = await getDoc(userRef);
 
     const alreadyMigrated =
-      snap.exists() && snap.data().guestMigrationDone;
+      userSnap.exists() &&
+      userSnap.data().guestMigrationDone === true;
 
+    // 🚀 Si ya fue migrado oficialmente → no hacer nada
+    if (alreadyMigrated) return;
+
+    // 🔎 Revisar si ya tiene notas en Firestore
+    const existingNotesSnap = await getDocs(
+      query(collection(db, "notes"), where("uid", "==", authState.user.uid))
+    );
+
+    // 🚀 Si ya tiene notas en su cuenta → marcar como migrado y no preguntar más
+    if (!existingNotesSnap.empty) {
+      await setDoc(
+        userRef,
+        { guestMigrationDone: true },
+        { merge: true }
+      );
+      return;
+    }
+
+    // 📦 Revisar notas guest
     const guestNotes =
       JSON.parse(localStorage.getItem("guestNotes")) || [];
 
-    if (!alreadyMigrated && guestNotes.length > 0) {
-      await window.runGuestMigration();
+    if (guestNotes.length === 0) {
+      return;
     }
+
+    // 🚀 Ejecutar migración
+    await window.runGuestMigration();
   }
 
   /* ======================================================
      🔥 CONTAR NOTAS
   ====================================================== */
-
   if (authState.role !== "verified") return;
 
   const q = query(
@@ -188,7 +224,6 @@ import { applyTranslations, getLang } from "./i18n/index.js";
   /* ======================================================
      🌍 i18n – PROTECCIÓN
   ====================================================== */
-
   const textSpan = createBtn.querySelector(".btn-text");
 
   if (textSpan) {
@@ -206,7 +241,6 @@ import { applyTranslations, getLang } from "./i18n/index.js";
   /* ======================================================
      🔁 EXPONER PARA lang-auto.js
   ====================================================== */
-
   window.updateGuideImages = updateGuideImages;
 
 })();

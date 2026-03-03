@@ -14,14 +14,20 @@ import { t } from "./i18n/index.js";
       e.preventDefault();
       if (isSubmitting) return;
 
-      const email = document.getElementById("login-email")?.value.trim();
-      const pass = document.getElementById("login-pass")?.value;
+      const emailEl = document.getElementById("login-email");
+      const passEl = document.getElementById("login-pass");
 
+      const email = emailEl?.value.trim();
+      const pass = passEl?.value;
+
+      /* ==========================================================
+         ❌ VALIDACIÓN BÁSICA
+      ========================================================== */
       if (!email || !pass) {
         return Swal.fire({
-          title: "Error",
-          text: t("errorCamposEmpty"),
           icon: "warning",
+          title: t("error"),
+          text: t("errorCamposEmpty"),
           customClass: { popup: "minimal-alert" }
         });
       }
@@ -29,10 +35,14 @@ import { t } from "./i18n/index.js";
       try {
         isSubmitting = true;
 
-        // 🔐 Login (auth real)
+        /* ==========================================================
+           🔐 LOGIN REAL
+        ========================================================== */
         const result = await signInWithEmail(email, pass);
 
-        // 🟡 AVISO informativo (NO lógica de permisos)
+        /* ==========================================================
+           🟡 EMAIL NO VERIFICADO (SOLO UX)
+        ========================================================== */
         if (!result.isVerified) {
           await Swal.fire({
             icon: "info",
@@ -43,16 +53,18 @@ import { t } from "./i18n/index.js";
           });
         }
 
-        // ✅ Redirección única
-        // Los permisos reales se evaluarán en /main con onAuthReady
-        window.location.href = "/main";
+        /* ==========================================================
+           ✅ REDIRECCIÓN ÚNICA
+           (los permisos reales se validan en /main)
+        ========================================================== */
+        window.location.replace("/");
 
       } catch (err) {
-        console.error(err);
+        console.error("Login error:", err);
 
         let message = t("errorLoginExist");
 
-        switch (err.code) {
+        switch (err?.code) {
           case "auth/user-not-found":
             message = t("errorUserNotFound");
             break;
@@ -67,9 +79,9 @@ import { t } from "./i18n/index.js";
         }
 
         Swal.fire({
-          title: "Error",
-          text: message,
           icon: "error",
+          title: t("error"),
+          text: message,
           customClass: { popup: "minimal-alert" }
         });
 

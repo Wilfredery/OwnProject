@@ -129,8 +129,13 @@ export default {
       writeEmail: "Please enter your email address",
       emailSent: "Email sent 📩",
       checkSpam: "Check your email to reset your password. If you don't see it, check the spam folder.",
+      retrySpam: `Check your inbox before trying again. You can request again in`,
       errorForgot: "An error occurred, please try again",
       noAccount: "There is no account with that email",
+      titleSecurity: "For security",
+      textSecurity: "You have requested several resets recently. Please try again later. Sorry for the inconvenience.",
+      manyRequests: "Too many requests detected. Please try again in a few minutes.",
+
 
    //validation for password.js & register.js
       requireFilds: "Required fields",
@@ -168,6 +173,11 @@ export default {
       ask: "What would you like to do now?",
       createAgain: "📝 Create another note",
       goList: "📋 Go to the list",
+      titleNoteDuplicate: "⚠Duplicate note",
+      textNoteDuplicate: "A note with the same title already exists.<br><br>Do you want to save it anyway?",
+      checkDuplicate: "Check existing note",
+      duplicateConfirm: "Yes, save",
+      duplicateCancel: "No, cancel",
 
       //dark.js
       darkmodeEnabled: "Dark mode enabled 🌙",

@@ -1,26 +1,29 @@
 // src/js/header.js
 
-// Menú hamburguesa
 export function initHeaderMenu() {
-    const btn = document.querySelector(".menu-btn");
-    const menu = document.querySelector(".dropdown-menu");
+  const btn = document.querySelector(".menu-btn");
+  const menu = document.querySelector(".dropdown-menu");
 
-    if (!btn || !menu) return;
+  if (!btn || !menu) return;
 
-    btn.addEventListener("click", () => {
-        menu.classList.toggle("open");
-    });
+  // Toggle menú
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation(); // 👈 clave
+    menu.classList.toggle("open");
+  });
 
-    // Cerrar si el usuario hace click afuera
-    document.addEventListener("click", (e) => {
-        if (!menu.contains(e.target) && !btn.contains(e.target)) {
-            menu.classList.remove("open");
-        }
-    });
+  // Evitar que clicks dentro del menú lo cierren
+  menu.addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
+
+  // Cerrar al hacer click fuera
+  document.addEventListener("click", () => {
+    menu.classList.remove("open");
+  });
 }
 
-// Inicializar todo
+// Init
 document.addEventListener("DOMContentLoaded", () => {
-    // initTheme();
-    initHeaderMenu();
+  initHeaderMenu();
 });

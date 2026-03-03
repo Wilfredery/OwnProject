@@ -78,7 +78,16 @@ if (cachedState === "unverified" || cachedState === "guest") {
   }
 
   const user = authState.user;
-  userNameEl.textContent = user.displayName || user.email;
+
+  // 🔥 AQUÍ ESTÁ EL CAMBIO IMPORTANTE
+  const userRef = doc(db, "users", user.uid);
+  const userSnap = await getDoc(userRef);
+
+  if (userSnap.exists() && userSnap.data().nickname) {
+    userNameEl.textContent = userSnap.data().nickname;
+  } else {
+    userNameEl.textContent = user.displayName || user.email;
+  }
 
   const isEmailProvider = user.providerData.some(
     p => p.providerId === "password"
@@ -107,7 +116,7 @@ logoutBtn?.addEventListener("click", async () => {
 
   if (result.isConfirmed) {
     await signOutUser();
-    window.location.href = "/";
+    window.location.href = "/login";
   }
 });
 
@@ -122,8 +131,9 @@ changePassBtn?.addEventListener("click", () => {
 
 /* ======================================================
    🧠 FUNCIÓN CENTRAL DE MIGRACIÓN
-   (reutilizable desde main.js)
 ====================================================== */
+
+window.__guestMigrationDoneInSession = false;
 
 window.runGuestMigration = async function () {
   const authState = await onAuthReady();
@@ -133,8 +143,8 @@ window.runGuestMigration = async function () {
   const userRef = doc(db, "users", user.uid);
   const userSnap = await getDoc(userRef);
 
-  /* 📦 YA MIGRADO */
   if (userSnap.exists() && userSnap.data().guestMigrationDone) {
+    window.__guestMigrationDoneInSession = true;
     return Swal.fire({
       icon: "info",
       title: t("alreadyMigrated"),
@@ -145,8 +155,8 @@ window.runGuestMigration = async function () {
   const guestNotes =
     JSON.parse(localStorage.getItem("guestNotes")) || [];
 
-  /* 🚫 SIN NOTAS */
   if (guestNotes.length === 0) {
+    window.__guestMigrationDoneInSession = true;
     return Swal.fire({
       icon: "info",
       title: t("noNotesToMigrate"),
@@ -164,9 +174,11 @@ window.runGuestMigration = async function () {
     customClass: { popup: "minimal-alert" }
   });
 
-  if (!confirm.isConfirmed) return;
+  if (!confirm.isConfirmed) {
+    window.__guestMigrationDoneInSession = true;
+    return;
+  }
 
-  /* NOTAS EXISTENTES */
   const snap = await getDocs(
     query(collection(db, "notes"), where("uid", "==", user.uid))
   );
@@ -176,7 +188,6 @@ window.runGuestMigration = async function () {
     usedTitles.set(d.data().title.toLowerCase(), d.id);
   });
 
-  /* MIGRACIÓN */
   for (const note of guestNotes) {
     const baseTitle = note.title;
     const normalized = baseTitle.toLowerCase();
@@ -188,48 +199,51 @@ window.runGuestMigration = async function () {
         text: `"${baseTitle}"`,
         icon: "warning",
         showCancelButton: true,
+        showDenyButton: true,
         confirmButtonText: t("overwrite"),
-        cancelButtonText: t("duplicate"),
+        denyButtonText: t("duplicate"),
+        cancelButtonText: t("duplicateCancel"),
         customClass: { popup: "minimal-alert" }
       });
 
       if (decision.isConfirmed) {
-        await deleteDoc(doc(db, "notes", usedTitles.get(normalized)));
+        const existingId = usedTitles.get(normalized);
+        if (existingId) {
+          await deleteDoc(doc(db, "notes", existingId));
+        }
       } else {
         finalTitle = `${baseTitle} (copy)`;
       }
     }
 
-    await addDoc(collection(db, "notes"), {
+    const newDoc = await addDoc(collection(db, "notes"), {
       uid: user.uid,
       title: finalTitle,
       content: note.content,
       created_at: new Date()
     });
 
-    usedTitles.set(finalTitle.toLowerCase(), true);
+    usedTitles.set(finalTitle.toLowerCase(), newDoc.id);
   }
 
-  /* 🔐 FLAG DEFINITIVO */
   await setDoc(
     userRef,
     { guestMigrationDone: true },
     { merge: true }
   );
 
-  /* 🧹 LIMPIEZA */
   localStorage.removeItem("guestNotes");
   localStorage.removeItem("migratedGuestNoteIds");
 
-  Swal.fire({
+  window.__guestMigrationDoneInSession = true;
+
+  await Swal.fire({
     icon: "success",
     title: t("migrationComplete"),
     customClass: { popup: "minimal-alert" }
   });
-};
 
-/* ======================================================
-   BOTÓN SETTINGS → USA LA MISMA FUNCIÓN
-====================================================== */
+  return;
+};
 
 migrateBtn?.addEventListener("click", window.runGuestMigration);

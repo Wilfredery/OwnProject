@@ -25,12 +25,15 @@ export async function resolveAuthState() {
   // 🔥 FAST PATH
   const cached = getCachedAuthState();
   if (cached) {
-    return { role: cached };
+    return { role: cached, formCache: true };
   }
 
-  // 🔐 SLOW PATH (solo si no hay cache)
+  // 🔐 SLOW PATH (Firebase)
   const authState = await onAuthReady();
 
-  sessionStorage.setItem(CACHE_KEY, authState.role);
-  return authState;
+  setCachedAuthState(authState.role);
+  return {
+    ...authState,
+    fromCache: false
+  };
 }

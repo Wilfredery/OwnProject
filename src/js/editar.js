@@ -19,15 +19,18 @@ import { t } from "./i18n/index.js";
     const saveBtn = form.querySelector("button[type='submit']");
 
     /* ==========================================================
-       ⏳ ESTADO INICIAL: CARGANDO
+       ⏳ ESTADO INICIAL
     ========================================================== */
+    function setLoadingState(isLoading) {
+      titleInput.disabled = isLoading;
+      contentInput.disabled = isLoading;
+      saveBtn.disabled = isLoading;
+      deleteBtn.disabled = isLoading;
+    }
+
     titleInput.placeholder = t("loadingTitle");
     contentInput.placeholder = t("loadingText");
-
-    titleInput.disabled = true;
-    contentInput.disabled = true;
-    saveBtn.disabled = true;
-    deleteBtn.disabled = true;
+    setLoadingState(true);
 
     /* ==========================================================
        🔐 AUTH
@@ -35,9 +38,9 @@ import { t } from "./i18n/index.js";
     const authState = await onAuthReady();
     if (!authState) return;
 
-    const isGuest = authState.role === "guest";
-    const isUnverified = authState.role === "unverified";
-    const user = authState.user;
+    const { role, user } = authState;
+    const isGuest = role === "guest";
+    const isUnverified = role === "unverified";
 
     if (isUnverified) {
       await Swal.fire({
@@ -64,22 +67,13 @@ import { t } from "./i18n/index.js";
       if (!snap.exists()) return null;
 
       const data = snap.data();
-
-      if (data.uid !== user.uid) {
-        await Swal.fire({
-          icon: "error",
-          title: t("denied"),
-          timer: 1500,
-          showConfirmButton: false,
-          customClass: { popup: "minimal-alert" }
-        });
-        return null;
-      }
+      if (data.uid !== user.uid) return null;
 
       return { id: snap.id, ...data };
     }
 
     const note = await loadNote();
+
     if (!note) {
       await Swal.fire({
         icon: "error",
@@ -93,18 +87,14 @@ import { t } from "./i18n/index.js";
     }
 
     /* ==========================================================
-       ✅ NOTA CARGADA → HABILITAR FORM
+       ✅ NOTA LISTA
     ========================================================== */
     titleInput.value = note.title;
     contentInput.value = note.content;
 
     titleInput.placeholder = "";
     contentInput.placeholder = "";
-
-    titleInput.disabled = false;
-    contentInput.disabled = false;
-    saveBtn.disabled = false;
-    deleteBtn.disabled = false;
+    setLoadingState(false);
 
     /* ==========================================================
        ✏️ UPDATE
@@ -114,6 +104,19 @@ import { t } from "./i18n/index.js";
 
       const title = titleInput.value.trim();
       const content = contentInput.value.trim();
+
+      if (!title) {
+        Swal.fire({
+          icon: "warning",
+          title: t("titleRequired"),
+          timer: 1400,
+          showConfirmButton: false,
+          customClass: { popup: "minimal-alert" }
+        });
+        return;
+      }
+
+      setLoadingState(true);
 
       try {
         if (isGuest) {
@@ -149,6 +152,8 @@ import { t } from "./i18n/index.js";
           showConfirmButton: false,
           customClass: { popup: "minimal-alert" }
         });
+      } finally {
+        setLoadingState(false);
       }
     });
 
@@ -168,6 +173,8 @@ import { t } from "./i18n/index.js";
       });
 
       if (!result.isConfirmed) return;
+
+      setLoadingState(true);
 
       try {
         if (isGuest) {
@@ -199,6 +206,7 @@ import { t } from "./i18n/index.js";
           showConfirmButton: false,
           customClass: { popup: "minimal-alert" }
         });
+        setLoadingState(false);
       }
     });
 

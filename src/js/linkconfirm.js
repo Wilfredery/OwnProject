@@ -13,6 +13,9 @@ import { t } from "./i18n/index.js";
 
   const oobCode = window.__OOB_CODE__;
 
+  /* ==========================================================
+     ❌ LINK INVÁLIDO
+  ========================================================== */
   if (!oobCode) {
     Swal.fire({
       icon: "error",
@@ -23,6 +26,9 @@ import { t } from "./i18n/index.js";
     return;
   }
 
+  /* ==========================================================
+     🔐 CONFIRMACIÓN ÚNICA (ANTI DOBLE EJECUCIÓN)
+  ========================================================== */
   (async () => {
     if (alreadyHandled) return;
     alreadyHandled = true;
@@ -30,26 +36,26 @@ import { t } from "./i18n/index.js";
     try {
       await confirmEmailWithCode(oobCode);
 
-      Swal.fire({
+      await Swal.fire({
         icon: "success",
         title: t("emailVerified"),
         text: t("textEmailVerified"),
-        timer: 4000,
+        timer: 3500,
         showConfirmButton: false,
         allowOutsideClick: false,
         customClass: { popup: "minimal-alert" }
       });
 
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 4000);
+      window.location.replace("/login"); // 🔥 evita volver con "atrás"
 
     } catch (error) {
+      console.error("Confirm email error:", error);
+
       let message = t("errorlink");
 
-      if (error.code === "auth/invalid-action-code") {
+      if (error?.code === "auth/invalid-action-code") {
         message = t("invalidLink");
-      } else if (error.code === "auth/expired-action-code") {
+      } else if (error?.code === "auth/expired-action-code") {
         message = t("expiredLink");
       }
 

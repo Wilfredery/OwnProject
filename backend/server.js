@@ -1,52 +1,72 @@
 // backend/server.js
-const express = require('express'); //Trae Express: el framework HTTP que maneja rutas, middlewares y respuestas.
-const path = require('path');//Útil para construir rutas de archivos de forma segura entre sistemas (Windows/Linux)
+
+// 🔐 Cargar variables de entorno (siempre primero)
+import 'dotenv/config';
+
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Necesario en ES Modules para simular __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
+
 // 🔐 Limita el parser de query (evita qs profundo)
 app.set('query parser', 'simple');
-const PORT = process.env.PORT || 3000;
 
-// Configuración de vistas con EJS
-//Le dices a Express que uses EJS y dónde están los archivos .ejs
+// 🌍 Variables de entorno
+const PORT = process.env.PORT || 3000;
+const APP_NAME = process.env.APP_NAME || 'Mi Proyecto';
+const NODE_ENV = process.env.NODE_ENV || 'development';
+
+// 🎨 Configuración de vistas con EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '../views'));
 
+// 📁 Archivos públicos
 const publicPath = path.resolve(process.cwd(), 'public');
-
 app.use(express.static(publicPath));
 
-// Variables globales disponibles en todas las vistas
+// 🌐 Variables globales disponibles en todas las vistas
 app.use((req, res, next) => {
-  res.locals.title = 'Mi Proyecto'; // valor por defecto
+  res.locals.title = APP_NAME;
   res.locals.year = new Date().getFullYear();
+  res.locals.env = NODE_ENV;
   next();
 });
 
-// Rutas
+// =====================
+// 📌 Rutas
+// =====================
+
 app.get('/auth/action', (req, res) => {
-  const mode = req.query.mode;
-  const oobCode = req.query.oobCode;
+  const { mode, oobCode } = req.query;
 
   if (!mode || !oobCode) {
     return res.status(400).send('Parámetros inválidos.');
   }
 
-  // Decide qué vista renderizar según el mode
   switch (mode) {
     case 'verifyEmail':
-      // Muestra la página de confirmación
-      return res.render('linkconfirm', { title: 'Confirmar Email', oobCode });
+      return res.render('linkconfirm', {
+        title: 'Confirmar Email',
+        oobCode
+      });
 
     case 'resetPassword':
-      // Muestra la página para restablecer contraseña
-      return res.render('password', { title: 'Restablecer Contraseña', oobCode });
+      return res.render('password', {
+        title: 'Restablecer Contraseña',
+        oobCode
+      });
 
     default:
       return res.status(400).send('Acción no soportada.');
   }
 });
 
-app.get('/main', (req, res) => {
+app.get('/', (req, res) => {
   res.render('index', { title: 'Pagina principal' });
 });
 
@@ -55,19 +75,19 @@ app.get('/account-settings', (req, res) => {
 });
 
 app.get('/search', (req, res) => {
-  res.render('search', { title: 'Search Note'});
+  res.render('search', { title: 'Search Note' });
 });
 
 app.get('/crear', (req, res) => {
-  res.render('crear', { title: 'Create Note'});
+  res.render('crear', { title: 'Create Note' });
 });
 
-app.get("/editar/:id", (req, res) => {
-    const noteId = req.params.id;
-    res.render("editar", { noteId, title: "Edit Note" });
+app.get('/editar/:id', (req, res) => {
+  const noteId = req.params.id;
+  res.render('editar', { noteId, title: 'Edit Note' });
 });
 
-app.get('/', (req, res) => {
+app.get('/login', (req, res) => {
   res.render('login', { title: 'Login' });
 });
 
@@ -87,8 +107,14 @@ app.get('/password', (req, res) => {
   res.render('password', { title: 'Reset Password' });
 });
 
-// Servidor
-//Permite que el puerto sea configurable por variables de entorno (útil en hosting).
+// =====================
+// 🚀 Servidor
+// =====================
 app.listen(PORT, () => {
-  console.log(`Servidor Express en http://localhost:${PORT}`);
+  const url =
+    NODE_ENV === 'production'
+      ? 'Producción'
+      : `http://localhost:${PORT}`;
+
+  console.log(`🚀 Servidor corriendo en ${url}`);
 });

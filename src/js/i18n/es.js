@@ -123,8 +123,14 @@ export default {
   writeEmail: "Escribe tu correo electrónico",
   emailSent: "Correo enviado 📩",
   checkSpam: "Revisa tu correo para restablecer tu contraseña. Si no lo ves, revisa la carpeta de spam.",
+  retrySpam:`Revisa tu bandeja antes de intentar nuevamente. Puedes volver a solicitar en`,
   errorForgot: "Ocurrió un error, intenta nuevamente",
   noAccount: "No existe una cuenta con ese correo",
+  titleSecurity: "Por seguridad",
+  textSecurity: "Has solicitado varios restablecimientos recientemente. Por favor intenta nuevamente más tarde. Disculpa los inconvenientes.",
+  manyRequests: "Demasiadas solicitudes detectadas. Intenta nuevamente en unos minutos.",
+
+
 
   //validacion del password.js, register.js
   requireFilds: "Campos requeridos",
@@ -155,13 +161,18 @@ export default {
   //Validacion de google.js
   errorGoogleSignIn: "No se pudo iniciar sesión con Google",
 
-  //validacion de nota.js
+  //validacion de crear.js
   completeFields : "Debes de completar el título y el contenido",
   errorSave : "Hubo un error al guardar la nota",
   savedNote : "Nota guardada correctamente",
   ask : "¿Qué deseas hacer ahora?",
   createAgain : "📝 Crear otra nota",
   goList : "📋 Ir a la lista",
+  titleNoteDuplicate: "⚠ Nota duplicada",
+  textNoteDuplicate: "Ya existe una nota con este mismo título. ¿Deseas guardarla igualmente?<br><br>",
+  checkDuplicate: "Ver nota existente",
+  duplicateConfirm: "Sí, guardar",
+  duplicateCancel: "No, cancelar",
 
   //dark.js
   darkmodeEnabled: "Modo oscuro activado 🌙",

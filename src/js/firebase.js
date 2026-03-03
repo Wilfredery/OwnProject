@@ -5,14 +5,14 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   signOut,
-  signInAnonymously, // ✅ CLAVE
+  signInAnonymously,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   onAuthStateChanged,
   sendEmailVerification,
-  confirmPasswordReset,   // ✅
-  applyActionCode         // ✅
+  confirmPasswordReset,
+  applyActionCode
 } from "firebase/auth";
 
 import {
@@ -24,19 +24,29 @@ import {
 } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBi1_Q6gYgIbln6G14ogzPXeo0ZDhG3kBM",
-  authDomain: "mynotes-c7209.firebaseapp.com",
-  projectId: "mynotes-c7209",
-  storageBucket: "mynotes-c7209.firebasestorage.app",
-  messagingSenderId: "1053521212100",
-  appId: "1:1053521212100:web:a8d436f5c6058e7765cf91"
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID
 };
 
+console.log("🔥 Firebase ENV CHECK", {
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+});
 const app = initializeApp(firebaseConfig);
 
 // 🔐 Auth
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+provider.addScope("email");
+provider.addScope("profile");
+provider.setCustomParameters({
+  prompt: "select_account"
+});
 
 // 🔥 Firestore
 const db = getFirestore(app);
@@ -50,14 +60,14 @@ export {
   // Auth
   signInWithPopup,
   signOut,
-  signInAnonymously, // ✅ EXPORTADO
+  signInAnonymously,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   sendEmailVerification,
   onAuthStateChanged,
-  confirmPasswordReset,   // ✅
-  applyActionCode,        // ✅
+  confirmPasswordReset,
+  applyActionCode,
 
   // Firestore
   doc,

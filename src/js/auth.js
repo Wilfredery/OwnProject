@@ -49,7 +49,7 @@ export async function createOrUpdateUserDoc(user, extra = {}) {
 
   const baseData = {
     uid: user.uid,
-    email: user.email || null,
+    email: extra.email || user.email || null,
     displayName: user.displayName || "User",
     photoURL: user.photoURL || null,
     isAnonymous: user.isAnonymous || false,
@@ -58,19 +58,23 @@ export async function createOrUpdateUserDoc(user, extra = {}) {
   };
 
   if (snap.exists()) {
-    await setDoc(ref, {
-      displayName: baseData.displayName,
-      photoURL: baseData.photoURL,
-      email: baseData.email
-    }, { merge: true });
+    await setDoc(
+      ref,
+      {
+        displayName: baseData.displayName,
+        photoURL: baseData.photoURL,
+        email: baseData.email,
+        lastSeen: serverTimestamp(), // ✅ se actualiza siempre
+      },
+      { merge: true }
+    );
   } else {
     await setDoc(ref, {
       ...baseData,
       createdAt: serverTimestamp(),
-      guestMigrationDone: false
+      guestMigrationDone: false,
     });
   }
-
 }
 
 /* =========================
@@ -90,9 +94,6 @@ export function onAuthReady() {
           user: null,
         });
       }
-
-      /* 🔁 ESTADO REAL */
-      await user.reload();
 
       const isGoogle = user.providerData.some(
         p => p.providerId === "google.com"
@@ -118,11 +119,12 @@ export function onAuthReady() {
 export async function signUpWithEmail(email, password, nickname) {
   const res = await createUserWithEmailAndPassword(auth, email, password);
 
-  // 🔐 enviar verificación SOLO una vez
+  // 🔐 enviar verificación
   await sendEmailVerification(res.user);
 
   await createOrUpdateUserDoc(res.user, {
     nickname,
+    email,
     provider: "password",
     emailVerificationSent: true,
   });
@@ -131,10 +133,11 @@ export async function signUpWithEmail(email, password, nickname) {
   return res.user;
 }
 
-// 🔐 Login con email (NO BLOQUEA)
+// 🔐 Login con email
 export async function signInWithEmail(email, password) {
   const res = await signInWithEmailAndPassword(auth, email, password);
 
+  // ✅ aquí SÍ es válido reload
   await res.user.reload();
 
   await createOrUpdateUserDoc(res.user);
@@ -146,17 +149,11 @@ export async function signInWithEmail(email, password) {
   };
 }
 
-// 🔵 Login con Google (verificado automático)
+// 🔵 Login con Google
 export async function signInWithGoogle() {
   const res = await signInWithPopup(auth, provider);
-
-  await createOrUpdateUserDoc(res.user);
-  clearGuestSession();
-
-  return {
-    user: res.user,
-    isVerified: true,
-  };
+  await res.user.reload(); // 🔥 fuerza actualización completa
+  return res; //Devuelve todo el resultado para más flexibilidad (email en tokenResponse, etc)
 }
 
 // 🚪 Logout

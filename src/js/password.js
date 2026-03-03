@@ -32,41 +32,48 @@ import { t } from "./i18n/index.js";
       const password = passInput.value.trim();
       const confirmPassword = confirmInput.value.trim();
 
-      // 🔎 Validaciones antes del submit
+      // 🔎 Validaciones ANTES de bloquear submit
       if (!password || !confirmPassword) {
-        return Swal.fire({
+        Swal.fire({
           icon: "warning",
           title: t("requireFilds"),
           text: t("fillboth"),
           customClass: { popup: "minimal-alert" }
         });
+        passInput.focus();
+        return;
       }
 
       if (password.length < 6) {
-        return Swal.fire({
+        Swal.fire({
           icon: "error",
           title: t("shortPassW"),
           text: t("amountPassW"),
           customClass: { popup: "minimal-alert" }
         });
+        passInput.focus();
+        return;
       }
 
       if (password !== confirmPassword) {
-        return Swal.fire({
+        Swal.fire({
           icon: "error",
           title: t("notMatch"),
           text: t("notMatchPassW"),
           customClass: { popup: "minimal-alert" }
         });
+        confirmInput.focus();
+        return;
       }
 
       try {
         isSubmitting = true;
         if (submitBtn) submitBtn.disabled = true;
 
+        // 🔐 Reset password
         await resetPassword(oobCode, password);
 
-        await Swal.fire({
+        Swal.fire({
           icon: "success",
           title: t("passUpdated"),
           text: t("passProcessed"),
@@ -77,7 +84,7 @@ import { t } from "./i18n/index.js";
         });
 
         form.reset();
-        window.location.href = "/";
+        window.location.href = "/login";
 
       } catch (error) {
         console.error("Reset password error:", error);

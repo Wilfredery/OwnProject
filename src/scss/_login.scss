@@ -13,12 +13,8 @@
     margin-bottom: 1.6rem;
 
     @include m.tablet {
-      font-size: 2.7rem;
-      margin-bottom: 1.8rem;
-    }
-
-    @include m.desktop {
       font-size: 2.4rem;
+      margin-bottom: 1.8rem;
     }
   }
 
@@ -44,11 +40,7 @@
       font-size: 2rem;
 
       @include m.tablet {
-        font-size: 2.5rem;
-      }
-
-      @include m.desktop {
-        font-size: 2.2rem;
+        font-size: 2.3rem;
       }
     }
 
@@ -64,12 +56,8 @@
       }
 
       @include m.tablet {
-        font-size: 2.5rem;
+        font-size: 2.3rem;
         padding: 1.2rem;
-      }
-
-      @include m.desktop {
-        font-size: 2.2rem;
       }
     }
 
@@ -90,11 +78,6 @@
         font-size: 2.2rem;
         justify-content: center;
         align-items: center;
-      }
-      
-      @include m.desktop {
-
-        font-size: 2.4rem;
       }
 
       &:hover {
@@ -144,10 +127,6 @@
         font-size: 2.5rem;
       }
 
-      @include m.desktop {
-        font-size: 2.2rem;
-      }
-
       &:hover {
         background: v.$gris-claro;
         border-color: v.$gris-claro;
@@ -181,11 +160,7 @@
       text-align: center;
 
       @include m.tablet {
-        font-size: 2.5rem;
-      }
-
-      @include m.desktop {
-        font-size: 2.2rem;
+        font-size: 2.4rem;
       }
 
       &:hover {

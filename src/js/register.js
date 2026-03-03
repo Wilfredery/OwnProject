@@ -1,6 +1,6 @@
 // src/js/register.js
 import Swal from "sweetalert2";
-import { signUpWithEmail } from "./auth.js";
+import { signUpWithEmail, signOutUser } from "./auth.js";
 import { t } from "./i18n/index.js";
 
 // Form
@@ -23,71 +23,23 @@ if (form) {
     const password = passInput.value;
 
     /* ==========================
-       VALIDACIONES
+       VALIDACIONES - PRIMER ERROR
     ========================== */
-
-    if (!nickname) {
-      return Swal.fire({
-        icon: "warning",
-        title: t("requiredNickname"),
-        text: t("enterNickname"),
-        customClass: { popup: "minimal-alert" },
-      });
-    }
-
-    if (nickname.length < 3) {
-      return Swal.fire({
-        icon: "warning",
-        title: t("shortNickname"),
-        text: t("nicknameMinChars"),
-        customClass: { popup: "minimal-alert" },
-      });
-    }
-
-    if (!email) {
-      return Swal.fire({
-        icon: "warning",
-        title: t("require"),
-        text: t("writeEmail"),
-        customClass: { popup: "minimal-alert" },
-      });
-    }
-
-    if (!validateEmail(email)) {
-      return Swal.fire({
-        icon: "error",
-        title: t("invalidEmail"),
-        text: t("enterValidEmail"),
-        customClass: { popup: "minimal-alert" },
-      });
-    }
-
-    if (!password) {
-      return Swal.fire({
-        icon: "warning",
-        title: t("requiredPassword"),
-        text: t("enterPassword"),
-        customClass: { popup: "minimal-alert" },
-      });
-    }
-
-    if (password.length < 6) {
-      return Swal.fire({
-        icon: "error",
-        title: t("shortPassW"),
-        text: t("amountPassW"),
-        customClass: { popup: "minimal-alert" },
-      });
-    }
+    if (!nickname) return showError(nickInput, t("requiredNickname"), t("enterNickname"));
+    if (nickname.length < 3) return showError(nickInput, t("shortNickname"), t("nicknameMinChars"));
+    if (!email) return showError(emailInput, t("require"), t("writeEmail"));
+    if (!validateEmail(email)) return showError(emailInput, t("invalidEmail"), t("enterValidEmail"));
+    if (!password) return showError(passInput, t("requiredPassword"), t("enterPassword"));
+    if (password.length < 6) return showError(passInput, t("shortPassW"), t("amountPassW"));
 
     /* ==========================
-       REGISTRO
+       BLOQUEAR SUBMIT Y REGISTRO
     ========================== */
+    isSubmitting = true;
 
     try {
-      isSubmitting = true;
-
       await signUpWithEmail(email, password, nickname);
+      await signOutUser();  // 🔐 Logout inmediato para evitar sesión activa
 
       Swal.fire({
         icon: "success",
@@ -98,37 +50,46 @@ if (form) {
         showConfirmButton: false,
         allowOutsideClick: false,
         allowEscapeKey: false,
-        customClass: { popup: "minimal-alert" },
+        customClass: { popup: "minimal-alert" }
       });
 
+      // Reset y redirección después de 5s
       setTimeout(() => {
-        window.location.href = "/";
+        form.reset();
+        window.location.href = "/login";
       }, 5000);
-
-      form.reset();
 
     } catch (error) {
       console.error(error);
-
       let message = t("errorSignUp");
-
-      if (error.code === "auth/email-already-in-use") {
-        message = t("AccAlreadyExists");
-      }
+      if (error.code === "auth/email-already-in-use") message = t("AccAlreadyExists");
 
       Swal.fire({
         icon: "error",
         title: "Error",
         text: message,
-        customClass: { popup: "minimal-alert" },
+        customClass: { popup: "minimal-alert" }
       });
+
     } finally {
       isSubmitting = false;
     }
   });
 }
 
-// Validar email
+/* ==========================
+   FUNCIONES AUXILIARES
+========================== */
+function showError(input, title, text) {
+  Swal.fire({
+    icon: "warning",
+    title,
+    text,
+    customClass: { popup: "minimal-alert" }
+  });
+  input.focus();
+}
+
 function validateEmail(email) {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(email);

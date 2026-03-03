@@ -1,7 +1,13 @@
 // src/js/crear.js
 import Swal from "sweetalert2";
 import { db, serverTimestamp, onAuthReady } from "./auth.js";
-import { collection, addDoc } from "firebase/firestore";
+import { 
+  collection, 
+  addDoc, 
+  query, 
+  where, 
+  getDocs 
+} from "firebase/firestore";
 import { t } from "./i18n/index.js";
 
 (function () {
@@ -11,11 +17,8 @@ import { t } from "./i18n/index.js";
     const saveBtn = document.getElementById("save-note");
     if (!saveBtn) return;
 
-    let isSaving = false; // 🔒 bloqueo anti-duplicado
+    let isSaving = false;
 
-    /* ==========================================================
-       🔐 DETECTAR ESTADO DE AUTH
-    ========================================================== */
     const authState = await onAuthReady();
 
     /* ==========================================================
@@ -25,7 +28,6 @@ import { t } from "./i18n/index.js";
 
       saveBtn.addEventListener("click", async (e) => {
         e.preventDefault();
-
         if (isSaving) return;
         isSaving = true;
 
@@ -51,6 +53,35 @@ import { t } from "./i18n/index.js";
 
         try {
           const notes = JSON.parse(localStorage.getItem("guestNotes")) || [];
+
+          // 🔎 Buscar duplicado (case-insensitive)
+          const duplicatedNote = notes.find(
+            n => n.title.toLowerCase() === title.toLowerCase()
+          );
+
+          if (duplicatedNote) {
+            const confirmDuplicate = await Swal.fire({
+              title: t("titleNoteDuplicate"), 
+              html: `
+                <a href="/editar/${duplicatedNote.id}" 
+                   style="color:#3085d6;text-decoration:underline;">
+                    ${t("checkDuplicate")}
+                </a> <p>${t("textNoteDuplicate")}</p>
+              `,
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: t("duplicateConfirm"),
+              cancelButtonText: t("duplicateCancel"),
+              reverseButtons: true,
+              allowOutsideClick: false,
+              customClass: { popup: "minimal-alert" }
+            });
+
+            if (!confirmDuplicate.isConfirmed) {
+              isSaving = false;
+              return;
+            }
+          }
 
           notes.push({
             id: crypto.randomUUID(),
@@ -111,7 +142,7 @@ import { t } from "./i18n/index.js";
         customClass: { popup: "minimal-alert" }
       });
 
-      window.location.href = "/main";
+      window.location.href = "/";
       return;
     }
 
@@ -122,7 +153,6 @@ import { t } from "./i18n/index.js";
 
     saveBtn.addEventListener("click", async (e) => {
       e.preventDefault();
-
       if (isSaving) return;
       isSaving = true;
 
@@ -147,9 +177,48 @@ import { t } from "./i18n/index.js";
       }
 
       try {
+
+        // 🔎 Buscar duplicado en Firestore (case-insensitive)
+        const q = query(
+          collection(db, "notes"),
+          where("uid", "==", user.uid),
+          where("title_lower", "==", title.toLowerCase())
+        );
+
+        const snapshot = await getDocs(q);
+
+        if (!snapshot.empty) {
+          const duplicatedDoc = snapshot.docs[0];
+
+          const confirmDuplicate = await Swal.fire({
+            title: t("titleNoteDuplicate"),
+            html: `
+              <a href="/editar/${duplicatedDoc.id}" 
+                 style="color:#3085d6;text-decoration:underline;">
+                  ${t("checkDuplicate")}
+              </a><br><br>
+              <p>${t("textNoteDuplicate")}</p>
+            `,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: t("duplicateConfirm"),
+            cancelButtonText: t("duplicateCancel"),
+            reverseButtons: true,
+            allowOutsideClick: false,
+            customClass: { popup: "minimal-alert" }
+          });
+
+          if (!confirmDuplicate.isConfirmed) {
+            isSaving = false;
+            return;
+          }
+        }
+
+        // 💾 Guardar nota con campo normalizado
         await addDoc(collection(db, "notes"), {
           uid: user.uid,
           title,
+          title_lower: title.toLowerCase(),
           content,
           created_at: serverTimestamp()
         });

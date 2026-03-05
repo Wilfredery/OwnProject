@@ -1,19 +1,48 @@
-// src/js/menuhamburguesa.js
+/**
+ * ============================================================
+ *  HAMBURGER MENU MODULE
+ * ============================================================
+ *
+ * Controls:
+ * - Mobile hamburger open/close behavior
+ * - Role-based menu UI rendering
+ * - Protected navigation links
+ * - Instant UX via cached auth state
+ * - Real validation via Firebase
+ *
+ * Security Model:
+ * - UI locking is client-side only
+ * - Real access control must be validated server-side
+ *
+ * Design Goals:
+ * - Prevent unverified users from accessing restricted routes
+ * - Avoid UI flicker using cached auth state
+ * - Provide clear feedback using SweetAlert
+ *
+ * ============================================================
+ */
+
 import Swal from "sweetalert2";
 import { onAuthReady } from "./auth.js";
 import { getCachedAuthState } from "./authState.js";
 import { t } from "./i18n/index.js";
 
 (function () {
+
   document.addEventListener("DOMContentLoaded", async () => {
+
     const menuBtn = document.querySelector(".menu-btn");
     const menuContainer = document.querySelector(".menu-container");
 
     if (!menuBtn || !menuContainer) return;
 
     /* ===============================
-       ABRIR / CERRAR MENÚ
+       MENU TOGGLE BEHAVIOR
+       - Stops propagation to prevent
+         immediate closing
+       - Closes when clicking outside
     =============================== */
+
     menuBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       menuContainer.classList.toggle("open");
@@ -26,8 +55,11 @@ import { t } from "./i18n/index.js";
     });
 
     /* ===============================
-       UI SEGÚN ROL
+       ROLE-BASED UI SWITCHING
+       - guest controls visible for guests
+       - user controls visible for logged users
     =============================== */
+
     function showGuestMenuUI() {
       const guest1 = document.getElementById("guest-controls");
       const guest2 = document.getElementById("guest-controls-register");
@@ -49,14 +81,26 @@ import { t } from "./i18n/index.js";
     }
 
     /* ===============================
-       🔗 LINKS PROTEGIDOS
+       🔗 PROTECTED LINKS SYSTEM
+       - Blocks /search and /crear
+       - Removes href dynamically
+       - Shows verification alert
     =============================== */
+
     const blockedLinks = document.querySelectorAll(
       '.dropdown-menu a[href="/search"], .dropdown-menu a[href="/crear"]'
     );
 
+    /**
+     * Locks restricted links:
+     * - Removes href
+     * - Stores original href in data attribute
+     * - Adds locked class
+     * - Injects alert behavior
+     */
     function lockLinks() {
       blockedLinks.forEach((link) => {
+
         if (link.dataset.locked) return;
 
         link.dataset.locked = "true";
@@ -81,8 +125,12 @@ import { t } from "./i18n/index.js";
       });
     }
 
+    /**
+     * Restores original href and unlocks links.
+     */
     function unlockLinks() {
       blockedLinks.forEach((link) => {
+
         if (!link.dataset.href) return;
 
         link.setAttribute("href", link.dataset.href);
@@ -92,8 +140,11 @@ import { t } from "./i18n/index.js";
     }
 
     /* ===============================
-       ⚡ UX INMEDIATA (CACHE)
+       ⚡ INSTANT UX VIA CACHE
+       - Prevents flicker
+       - Applies restrictions immediately
     =============================== */
+
     const cachedState = getCachedAuthState();
 
     if (cachedState === "unverified") {
@@ -101,24 +152,35 @@ import { t } from "./i18n/index.js";
     }
 
     /* ===============================
-       🔐 CONFIRMACIÓN REAL (FIREBASE)
+       🔐 REAL AUTH VALIDATION (FIREBASE)
+       - Authoritative role check
+       - Syncs email verification status
     =============================== */
+
     const authState = await onAuthReady();
 
-    // 👤 GUEST
+    /* 👤 GUEST USER */
     if (authState.role === "guest") {
       showGuestMenuUI();
       unlockLinks();
       return;
     }
 
-    // 👤 USUARIO LOGEADO
+    /* 👤 AUTHENTICATED USER */
     const user = authState.user;
     showUserMenuUI();
 
-    // 🔄 sincronizar estado real
+    /**
+     * Force refresh of emailVerified state
+     * to ensure accurate validation.
+     */
     await user.reload();
 
+    /**
+     * Access allowed if:
+     * - Email verified
+     * - OR authenticated via Google
+     */
     const isAllowed =
       user.emailVerified ||
       user.providerData[0]?.providerId === "google.com";
@@ -128,5 +190,7 @@ import { t } from "./i18n/index.js";
     } else {
       lockLinks();
     }
+
   });
+
 })();

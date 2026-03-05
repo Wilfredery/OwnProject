@@ -1,33 +1,33 @@
 // webpack.config.cjs
 const path = require("path");
 const webpack = require("webpack");
-require("dotenv").config();
+require("dotenv").config(); // Load environment variables from .env
 
 module.exports = {
-  mode: "development",
+  mode: "development", // Set Webpack mode to development
 
-  // 🔴 IMPORTANTE: usa ruta relativa con "./"
-  entry: "./src/js/app.js",
+  // 🔴 IMPORTANT: Use relative path for entry
+  entry: "./src/js/app.js", // Entry point for JS bundling
 
   output: {
-    filename: "bundle.min.js",
-    path: path.resolve(__dirname, "public/build/js"),
-    clean: true, // 🧼 limpia builds viejos
+    filename: "bundle.min.js", // Output filename
+    path: path.resolve(__dirname, "public/build/js"), // Output directory
+    clean: true, // 🧼 Clean old builds before generating new ones
   },
 
-  devtool: "source-map",
+  devtool: "source-map", // Generate source maps for easier debugging
 
   module: {
     rules: [
       {
-        test: /\.js$/,
-        exclude: /node_modules/,
+        test: /\.js$/, // Apply this rule to .js files
+        exclude: /node_modules/, // Exclude node_modules
         use: {
-          loader: "babel-loader",
+          loader: "babel-loader", // Use Babel to transpile JS
           options: {
             presets: [
               [
-                "@babel/preset-env",
+                "@babel/preset-env", // Target modern browsers
                 {
                   targets: "defaults",
                 },
@@ -40,7 +40,7 @@ module.exports = {
   },
 
   plugins: [
-    // ✅ FORMA PROFESIONAL Y SEGURA
+    // ✅ PROFESSIONAL AND SECURE WAY TO PASS ENV VARIABLES
     new webpack.DefinePlugin({
       "process.env": JSON.stringify({
         FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
@@ -55,6 +55,6 @@ module.exports = {
   ],
 
   resolve: {
-    extensions: [".js"],
+    extensions: [".js"], // Automatically resolve .js extensions
   },
 };

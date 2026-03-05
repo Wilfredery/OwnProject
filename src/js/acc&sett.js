@@ -1,6 +1,28 @@
-/* ======================================================
-   ACCOUNT & SETTINGS – AUTH (3 ESTADOS)
-====================================================== */
+/**
+ * ============================================================
+ *  ACCOUNT & SETTINGS – AUTH MANAGEMENT (3 STATES)
+ * ============================================================
+ *
+ * This module handles:
+ * - Authentication state validation
+ * - UI behavior based on user role
+ * - Logout functionality
+ * - Password change redirect
+ * - Guest-to-user notes migration
+ *
+ * User roles handled:
+ * - guest
+ * - unverified
+ * - verified
+ *
+ * Integrations:
+ * - Firebase Authentication
+ * - Firestore Database
+ * - SweetAlert2 (UX dialogs)
+ * - i18n translation system
+ *
+ * ============================================================
+ */
 
 import { onAuthReady, signOutUser } from "./auth.js";
 import { getCachedAuthState } from "./authState.js";
@@ -19,28 +41,35 @@ import { db } from "./auth.js";
 import Swal from "sweetalert2";
 import { t } from "./i18n/index.js";
 
-/* ======================================================
-   ELEMENTOS DOM
-====================================================== */
+/* ============================================================
+   DOM ELEMENTS
+============================================================ */
 
 const userNameEl = document.querySelector(".settings__user--userName");
 const logoutBtn = document.getElementById("logout-btn");
 const changePassBtn = document.getElementById("change-password-btn");
 const migrateBtn = document.getElementById("migrate-notes-btn");
 
-/* ======================================================
-   ESTADO INICIAL
-====================================================== */
+/* ============================================================
+   INITIAL UI STATE
+============================================================ */
 
+/**
+ * Set safe default UI state before authentication resolves.
+ */
 userNameEl && (userNameEl.textContent = "...");
 logoutBtn && (logoutBtn.disabled = true);
 changePassBtn && (changePassBtn.disabled = true);
 migrateBtn && (migrateBtn.disabled = true);
 
-/* ======================================================
-   ⚡ UX INMEDIATA (CACHE)
-====================================================== */
+/* ============================================================
+   ⚡ IMMEDIATE UX USING CACHED AUTH STATE
+============================================================ */
 
+/**
+ * Uses cached authentication state to avoid UI flicker
+ * while Firebase resolves the real authentication state.
+ */
 const cachedState = getCachedAuthState();
 
 if (cachedState === "verified" || cachedState === "user") {
@@ -53,9 +82,9 @@ if (cachedState === "unverified" || cachedState === "guest") {
   logoutBtn.disabled = false;
 }
 
-/* ======================================================
-   🔐 CONFIRMACIÓN REAL (FIREBASE)
-====================================================== */
+/* ============================================================
+   🔐 REAL AUTH CONFIRMATION (FIREBASE)
+============================================================ */
 
 (async function () {
   if (!userNameEl) return;
@@ -63,6 +92,9 @@ if (cachedState === "unverified" || cachedState === "guest") {
   const authState = await onAuthReady();
   logoutBtn.disabled = false;
 
+  /**
+   * Guest user
+   */
   if (!authState || authState.role === "guest") {
     userNameEl.textContent = t("guest");
     changePassBtn.disabled = true;
@@ -70,6 +102,9 @@ if (cachedState === "unverified" || cachedState === "guest") {
     return;
   }
 
+  /**
+   * Email not verified
+   */
   if (authState.role === "unverified") {
     userNameEl.textContent = t("UserNotVerfied");
     changePassBtn.disabled = true;
@@ -79,7 +114,9 @@ if (cachedState === "unverified" || cachedState === "guest") {
 
   const user = authState.user;
 
-  // 🔥 AQUÍ ESTÁ EL CAMBIO IMPORTANTE
+  /**
+   * Retrieve additional user data from Firestore
+   */
   const userRef = doc(db, "users", user.uid);
   const userSnap = await getDoc(userRef);
 
@@ -89,6 +126,9 @@ if (cachedState === "unverified" || cachedState === "guest") {
     userNameEl.textContent = user.displayName || user.email;
   }
 
+  /**
+   * Enable password change only for email/password users
+   */
   const isEmailProvider = user.providerData.some(
     p => p.providerId === "password"
   );
@@ -97,9 +137,9 @@ if (cachedState === "unverified" || cachedState === "guest") {
   migrateBtn.disabled = false;
 })();
 
-/* ======================================================
-   LOGOUT
-====================================================== */
+/* ============================================================
+   LOGOUT HANDLER
+============================================================ */
 
 logoutBtn?.addEventListener("click", async () => {
   if (logoutBtn.disabled) return;
@@ -120,22 +160,36 @@ logoutBtn?.addEventListener("click", async () => {
   }
 });
 
-/* ======================================================
-   CAMBIAR CONTRASEÑA
-====================================================== */
+/* ============================================================
+   PASSWORD CHANGE REDIRECT
+============================================================ */
 
 changePassBtn?.addEventListener("click", () => {
   if (changePassBtn.disabled) return;
   window.location.href = "/olvidar";
 });
 
-/* ======================================================
-   🧠 FUNCIÓN CENTRAL DE MIGRACIÓN
-====================================================== */
+/* ============================================================
+   🧠 GUEST NOTES MIGRATION
+============================================================ */
 
+/**
+ * Prevents multiple migrations during same session.
+ */
 window.__guestMigrationDoneInSession = false;
 
+/**
+ * Migrates notes stored in localStorage (guest mode)
+ * into Firestore once user becomes verified.
+ *
+ * Handles:
+ * - Duplicate title detection
+ * - Overwrite / Duplicate / Cancel decision
+ * - Firestore write operations
+ * - Post-migration cleanup
+ */
 window.runGuestMigration = async function () {
+
   const authState = await onAuthReady();
   if (!authState || authState.role !== "verified") return;
 
@@ -143,6 +197,9 @@ window.runGuestMigration = async function () {
   const userRef = doc(db, "users", user.uid);
   const userSnap = await getDoc(userRef);
 
+  /**
+   * Prevent re-migration if already completed.
+   */
   if (userSnap.exists() && userSnap.data().guestMigrationDone) {
     window.__guestMigrationDoneInSession = true;
     return Swal.fire({
@@ -164,6 +221,9 @@ window.runGuestMigration = async function () {
     });
   }
 
+  /**
+   * Confirm migration with user
+   */
   const confirm = await Swal.fire({
     title: t("migrateNotesTitle"),
     text: t("migrateNotesText"),
@@ -179,6 +239,9 @@ window.runGuestMigration = async function () {
     return;
   }
 
+  /**
+   * Retrieve existing notes for duplicate detection
+   */
   const snap = await getDocs(
     query(collection(db, "notes"), where("uid", "==", user.uid))
   );
@@ -188,12 +251,17 @@ window.runGuestMigration = async function () {
     usedTitles.set(d.data().title.toLowerCase(), d.id);
   });
 
+  /**
+   * Process each guest note
+   */
   for (const note of guestNotes) {
+
     const baseTitle = note.title;
     const normalized = baseTitle.toLowerCase();
     let finalTitle = baseTitle;
 
     if (usedTitles.has(normalized)) {
+
       const decision = await Swal.fire({
         title: t("duplicateTitle"),
         text: `"${baseTitle}"`,
@@ -226,6 +294,9 @@ window.runGuestMigration = async function () {
     usedTitles.set(finalTitle.toLowerCase(), newDoc.id);
   }
 
+  /**
+   * Mark migration as completed
+   */
   await setDoc(
     userRef,
     { guestMigrationDone: true },

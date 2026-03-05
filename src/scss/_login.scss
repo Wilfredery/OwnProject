@@ -2,13 +2,26 @@
 @use 'sass:color';
 @use 'mixins' as m;
 
+/* ===================================================
+   LOGIN COMPONENT
+   ===================================================
+   Styles for the login page/component, including
+   titles, form inputs, submit button, and additional
+   options (like Google login, "forgot password", and
+   "create account" links). Fully responsive for mobile,
+   tablet, and desktop breakpoints.
+=================================================== */
+
 .login {
 
-  /* ===========================
+  /* --------------------------
      TITLE
-  =========================== */
+     --------------------------
+     Main heading of the login component.
+     Font size and spacing scale responsively for tablet devices.
+  */
   &__titulo {
-    font-size: 2rem; // ⬆️ un poco más legible en móvil
+    font-size: 2rem; // mobile first
     text-align: center;
     margin-bottom: 1.6rem;
 
@@ -18,22 +31,27 @@
     }
   }
 
-  /* ===========================
+  /* --------------------------
      FORM
-  =========================== */
+     --------------------------
+     Container for login input fields and submit button.
+     Flex column layout with responsive gap, max-width,
+     and horizontal padding for mobile.
+  */
   &__form {
     display: flex;
     flex-direction: column;
-    gap: 1.2rem; // ⬆️ más aire
+    gap: 1.2rem;
     max-width: 100%;
     margin: 0 auto;
-    padding: 0 1.6rem; // 🔑 CLAVE: padding lateral en móvil
+    padding: 0 1.6rem; // mobile padding
 
     @include m.tablet {
       max-width: 60rem;
       padding: 0;
     }
 
+    /* Input labels */
     &--tituloEmail,
     &--passw {
       font-weight: bold;
@@ -44,11 +62,12 @@
       }
     }
 
+    /* Input fields */
     &--input {
       font-size: 2rem;
-      padding: 1.3rem 1.2rem; // ⬆️ más alto = más cómodo
+      padding: 1.3rem 1.2rem; 
       border: 1px solid v.$gris-claro;
-      border-radius: .8rem; // ⬆️ un poco más suave
+      border-radius: .8rem;
       outline: none;
 
       &:focus {
@@ -61,10 +80,11 @@
       }
     }
 
+    /* Submit button */
     &--submit {
       background: v.$azul;
       color: v.$blanco;
-      padding: 1.4rem 0; // ⬆️ botón más “app”
+      padding: 1.4rem 0;
       border-radius: .8rem;
       font-size: 1.6rem;
       cursor: pointer;
@@ -85,38 +105,40 @@
       }
     }
   }
-  /* ===========================
+
+  /* --------------------------
      OPTIONS
-  =========================== */
+     --------------------------
+     Container for alternative actions such as
+     Google login, forgot password, or create account links.
+     Flex layout with responsive gap and mobile padding.
+  */
   &__options {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: .8rem;
     margin-top: 1.6rem;
-    padding: 0 1.6rem; // 🔑 mismo padding que el form
-    
+    padding: 0 1.6rem; // match form padding
 
     @include m.tablet {
       padding: 0;
     }
 
+    /* Google login button */
     &--google {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: .8rem;
-
       width: 100%;
       padding: 1.2rem;
       margin: 1.6rem 0 1rem;
-
       background-color: v.$blanco;
       color: v.$negro;
       border: .1rem solid v.$azul;
       border-radius: .8rem;
-
-      font-size: 2.2rem; // ⬇️ un pelín en móvil
+      font-size: 2.2rem;
       font-weight: 800;
       font-family: inherit;
       cursor: pointer;
@@ -151,6 +173,7 @@
       }
     }
 
+    /* Forgot password & Create account links */
     &--olvidar,
     &--crearCuenta {
       color: v.$azul;

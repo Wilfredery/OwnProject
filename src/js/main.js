@@ -1,4 +1,29 @@
-// src/js/main.js
+/**
+ * ============================================================
+ *  MAIN DASHBOARD MODULE
+ * ============================================================
+ *
+ * Central controller for main page behavior.
+ *
+ * Responsibilities:
+ * - Apply translations (i18n)
+ * - Handle language-based guide image swapping
+ * - Manage create/search button permissions
+ * - Sync cached auth state with Firebase
+ * - Guide step navigation
+ * - Image zoom overlay
+ * - Guest → verified migration logic
+ * - Notes counting for UI feedback
+ *
+ * Architecture Notes:
+ * - Uses two-layer auth validation (cache + Firebase)
+ * - UI restrictions are UX-only (real validation happens server-side)
+ * - Migration system is idempotent (safe against duplicates)
+ * - Image system prevents flicker using preloading
+ *
+ * ============================================================
+ */
+
 import { db, onAuthReady } from "./auth.js";
 import { getCachedAuthState } from "./authState.js";
 import {
@@ -13,27 +38,36 @@ import { applyTranslations, getLang } from "./i18n/index.js";
 
 (async function () {
 
+  /**
+   * Apply translations immediately on load.
+   */
   applyTranslations();
 
   /* ======================================================
-     🌍 GUÍA – IMÁGENES POR IDIOMA (ES / EN) CON VITE_IMG_PATH Y PRECARGA EN MEMORIA
+     🌍 GUIDE – LANGUAGE-BASED IMAGES (ES / EN)
+     - Uses VITE_IMG_PATH
+     - Preloads images in memory
+     - Prevents layout flicker on language change
   ====================================================== */
+
   const IMG_PATH = import.meta.env.VITE_IMG_PATH || "/build/img/";
   const preloadedImages = { es: {}, en: {} };
   const mediaItems = document.querySelectorAll(".guide-content__media");
 
+  /**
+   * Preloads both .webp and .png versions
+   * for all supported languages.
+   */
   function preloadImages() {  
     ["es", "en"].forEach(lang => {
       mediaItems.forEach(picture => {
         const baseName = picture.dataset.img;
         if (!baseName) return;
 
-        // precargar webp
         const webp = new Image();
         webp.src = `${IMG_PATH}${baseName}-${lang}.webp`;
         preloadedImages[lang][`${baseName}-webp`] = webp;
 
-        // precargar png
         const png = new Image();
         png.src = `${IMG_PATH}${baseName}-${lang}.png`;
         preloadedImages[lang][`${baseName}-png`] = png;
@@ -41,9 +75,12 @@ import { applyTranslations, getLang } from "./i18n/index.js";
     });
   }
 
+  /**
+   * Updates guide images dynamically
+   * based on active i18n language.
+   */
   function updateGuideImages() {
-    const lang = getLang(); // idioma real del sistema i18n
-    
+    const lang = getLang();
 
     mediaItems.forEach(picture => {
       const baseName = picture.dataset.img;
@@ -55,6 +92,7 @@ import { applyTranslations, getLang } from "./i18n/index.js";
       if (source && preloadedImages[lang][`${baseName}-webp`]) {
         source.srcset = preloadedImages[lang][`${baseName}-webp`].src;
       }
+
       if (img && preloadedImages[lang][`${baseName}-png`]) {
         img.src = preloadedImages[lang][`${baseName}-png`].src;
       }
@@ -62,11 +100,15 @@ import { applyTranslations, getLang } from "./i18n/index.js";
   }
 
   preloadImages();
-  updateGuideImages(); // 🔥 al cargar la página
+  updateGuideImages();
 
   /* ======================================================
-     🔘 BOTONES CREATE / SEARCH
+     🔘 CREATE / SEARCH BUTTON CONTROL
+     - Locked by default
+     - Enabled via cache (fast UX)
+     - Confirmed via Firebase (authoritative)
   ====================================================== */
+
   const createBtn = document.querySelector(".create-btn");
   const searchBtn = document.querySelector(".search-btn");
   if (!createBtn || !searchBtn) return;
@@ -87,9 +129,11 @@ import { applyTranslations, getLang } from "./i18n/index.js";
   searchBtn.classList.add("btn--locked");
 
   /* ======================================================
-     ⚡ CACHE
+     ⚡ AUTH CACHE (INSTANT FEEDBACK)
   ====================================================== */
+
   const cachedState = getCachedAuthState();
+
   if (["guest", "verified", "user"].includes(cachedState)) {
     isAllowed = true;
     createBtn.classList.remove("btn--locked");
@@ -97,8 +141,9 @@ import { applyTranslations, getLang } from "./i18n/index.js";
   }
 
   /* ======================================================
-     🔐 FIREBASE REAL
+     🔐 FIREBASE AUTH (REAL VALIDATION)
   ====================================================== */
+
   const authState = await onAuthReady();
   if (!authState) return;
 
@@ -109,8 +154,11 @@ import { applyTranslations, getLang } from "./i18n/index.js";
   searchBtn.classList.remove("btn--locked");
 
   /* ======================================================
-     🧭 GUÍA DINÁMICA (BEM CORRECTO)
+     🧭 GUIDE STEP NAVIGATION (BEM SAFE)
+     - Circular navigation
+     - Uses modifier: guide-content__step--active
   ====================================================== */
+
   const steps = document.querySelectorAll(".guide-content__step");
   const nextBtn = document.querySelector(".guide-content__nav-btn.next");
   const prevBtn = document.querySelector(".guide-content__nav-btn.prev");
@@ -141,8 +189,12 @@ import { applyTranslations, getLang } from "./i18n/index.js";
   }
 
   /* ======================================================
-     🔍 ZOOM DE IMAGEN (picture + webp)
+     🔍 IMAGE ZOOM OVERLAY
+     - Dynamically injected
+     - Uses currentSrc for correct resolution
+     - Clears src on close (memory safety)
   ====================================================== */
+
   if (mediaItems.length) {
     const overlay = document.createElement("div");
     overlay.className = "img-overlay";
@@ -166,9 +218,15 @@ import { applyTranslations, getLang } from "./i18n/index.js";
       zoomImg.src = "";
     });
   }
+
   /* ======================================================
-    💡 MIGRACIÓN AUTOMÁTICA (CONTROL TOTAL INTELIGENTE)
+     💡 GUEST → VERIFIED MIGRATION SYSTEM
+     - Prevents duplicate migrations
+     - Checks Firestore flag
+     - Marks as migrated if notes already exist
+     - Executes migration only if necessary
   ====================================================== */
+
   if (authState.role === "verified") {
 
     const userRef = doc(db, "users", authState.user.uid);
@@ -178,15 +236,12 @@ import { applyTranslations, getLang } from "./i18n/index.js";
       userSnap.exists() &&
       userSnap.data().guestMigrationDone === true;
 
-    // 🚀 Si ya fue migrado oficialmente → no hacer nada
     if (alreadyMigrated) return;
 
-    // 🔎 Revisar si ya tiene notas en Firestore
     const existingNotesSnap = await getDocs(
       query(collection(db, "notes"), where("uid", "==", authState.user.uid))
     );
 
-    // 🚀 Si ya tiene notas en su cuenta → marcar como migrado y no preguntar más
     if (!existingNotesSnap.empty) {
       await setDoc(
         userRef,
@@ -196,21 +251,18 @@ import { applyTranslations, getLang } from "./i18n/index.js";
       return;
     }
 
-    // 📦 Revisar notas guest
     const guestNotes =
       JSON.parse(localStorage.getItem("guestNotes")) || [];
 
-    if (guestNotes.length === 0) {
-      return;
-    }
+    if (guestNotes.length === 0) return;
 
-    // 🚀 Ejecutar migración
     await window.runGuestMigration();
   }
 
   /* ======================================================
-     🔥 CONTAR NOTAS
+     🔥 NOTES COUNTER (VERIFIED USERS ONLY)
   ====================================================== */
+
   if (authState.role !== "verified") return;
 
   const q = query(
@@ -222,8 +274,11 @@ import { applyTranslations, getLang } from "./i18n/index.js";
   const notesCount = snapshot.size;
 
   /* ======================================================
-     🌍 i18n – PROTECCIÓN
+     🌍 i18n BUTTON TEXT PROTECTION
+     - Dynamically switches between empty/normal text
+     - Re-applies translation safely
   ====================================================== */
+
   const textSpan = createBtn.querySelector(".btn-text");
 
   if (textSpan) {
@@ -239,8 +294,9 @@ import { applyTranslations, getLang } from "./i18n/index.js";
   }
 
   /* ======================================================
-     🔁 EXPONER PARA lang-auto.js
+     🔁 PUBLIC EXPOSURE FOR lang-auto.js
   ====================================================== */
+
   window.updateGuideImages = updateGuideImages;
 
 })();

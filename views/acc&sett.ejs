@@ -1,3 +1,41 @@
+<!-- ==========================================================
+
+Description:
+Account & Settings page template.
+
+This view provides the user interface for managing:
+- User profile information display
+- Theme preferences (light / dark mode)
+- Language selection
+- Security-related actions (password, logout, data migration)
+
+Layout:
+- Includes global header and footer partials.
+- Structured using BEM naming convention.
+- Organized into logical sections: user info, preferences, security.
+
+Client-Side Behavior:
+- Theme toggle is controlled via JavaScript (localStorage + class switching).
+- Language toggle integrates with the i18n system (data-i18n attributes).
+- Security buttons are dynamically enabled/disabled based on
+  authentication state.
+- Logout and password change actions are handled by frontend modules.
+
+Dependencies:
+- theme&lang.js
+- authState.js
+- password.js
+- acc&sett.js
+- dark.js (if applicable)
+- Global bundle.min.js
+
+Notes:
+- Buttons are initially disabled to prevent unauthorized interaction.
+- User name is dynamically injected via JavaScript.
+- Internationalization is handled client-side using data-i18n keys.
+========================================================== -->
+
+
 <%- include('partials/header') %>
 
 <section class="settings">
@@ -12,7 +50,7 @@
   <!-- Tema -->
   <div class="settings__option">
     <div class="settings__option--theme-switcher">
-      <label for="theme-toggle" data-i18n="theme">Tema:</label>
+      <label for="theme-toggle" data-i18n="theme"></label>
       <button id="theme-toggle">Light 🌞</button>
     </div>
   </div>
@@ -20,7 +58,7 @@
   <!-- Idioma -->
   <div class="settings__option">
     <div class="settings__option--lang-switcher">
-      <label for="lang-toggle" data-i18n="language">Idioma:</label>
+      <label for="lang-toggle" data-i18n="language"></label>
       <button id="lang-toggle">Español 🇪🇸</button>
     </div>
   </div>

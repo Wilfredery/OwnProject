@@ -1,10 +1,47 @@
+<!-- ==========================================================
+
+Description:
+Create Note page template.
+
+This view provides the interface for creating a new note,
+including title and content input fields.
+
+Responsibilities:
+- Display note creation form.
+- Provide save button trigger.
+- Support internationalization for labels and placeholders.
+- Integrate with client-side note creation logic.
+
+Structure:
+- Includes global header and footer partials.
+- Organized using BEM methodology.
+- Divided into header (title + save action) and form section.
+
+Client-Side Behavior:
+- "Save" button triggers note creation logic (handled in crear.js).
+- Title and content values are captured via DOM selectors.
+- i18n placeholders are dynamically translated.
+- Validation and persistence are handled client-side.
+
+Dependencies:
+- crear.js
+- search.js (for later note indexing if applicable)
+- i18n system (data-i18n & data-i18n-placeholder)
+- Global bundle.min.js
+
+Notes:
+- This template does not perform direct data submission.
+- Note persistence is managed through JavaScript modules
+  and backend integration (e.g., Firebase).
+========================================================== -->
+
 <%- include('partials/header') %>
 
 <main class="crear">
 
   <header class="crear__header">
     <h1 class="crear__titulo" data-i18n="crear__titulo"></h1>
-    <button class="crear__btnSave" id="save-note" data-i18n="crear__btnSave">Guardar</button>
+    <button class="crear__btnSave" id="save-note" data-i18n="crear__btnSave"></button>
   </header>
 
   <section class="crear__form">

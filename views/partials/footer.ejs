@@ -1,4 +1,29 @@
+<!-- 
+==========================================================
+Description:
+Footer partial template rendered across application views.
 
+Responsibilities:
+- Closes the main content container.
+- Displays dynamic copyright year.
+- Provides external LinkedIn profile link.
+- Loads the compiled frontend JavaScript bundle.
+
+Server Variables:
+- year → Injected from the backend to dynamically display
+  the current year.
+
+Client Dependencies:
+- bundle.min.js → Compiled and minified Webpack output.
+- Font Awesome (for LinkedIn icon rendering).
+- i18n system (data-i18n attribute for translated text).
+
+Notes:
+- The data-i18n attribute allows dynamic language switching.
+- The LinkedIn link opens in a new secure tab using
+  rel="noopener noreferrer" for security best practices.
+- This partial is intended to be included in layout templates.
+========================================================== -->
     </main>
     <footer class="footer">
       <div class="footer__grid">

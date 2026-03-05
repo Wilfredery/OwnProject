@@ -1,6 +1,49 @@
+<!-- ==========================================================
+(Password Recovery Page)
+
+Description:
+Password recovery page template.
+
+This view allows users to request a password reset
+by submitting their registered email address.
+
+Responsibilities:
+- Render password recovery form.
+- Trigger password reset process via frontend logic.
+- Provide navigation back to login page.
+- Support internationalization for dynamic labels and text.
+
+Structure:
+- Includes global header and footer partials.
+- Organized using BEM naming convention.
+- Divided into:
+  1. Recovery form section
+  2. Navigation link section
+
+Client-Side Behavior:
+- Form submission triggers password reset logic (olvidar.js).
+- Email input is validated using HTML5 required attribute.
+- Reset email dispatch handled via Firebase authentication.
+
+Dependencies:
+- olvidar.js
+- firebase.js
+- auth.js (if required)
+- i18n system
+- Global bundle.min.js
+
+Security Notes:
+- Only email address is collected.
+- No password data is processed in this template.
+- Reset logic handled securely via Firebase.
+- No sensitive operations executed directly in this view.
+
+========================================================== -->
+
 <%- include('partials/header') %>
+
 <section class="forgot">
-  <h1 class="forgot__title" data-i18n="forgotTitle">Recuperar contraseña</h1>
+  <h1 class="forgot__title" data-i18n="forgotTitle"></h1>
 
   <form id="forgot-form" class="forgot__form">
     <label class="forgot__form--label" data-i18n="emailForgot"></label>

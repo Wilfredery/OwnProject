@@ -1,4 +1,25 @@
-// src/js/crear.js
+/**
+ * ============================================================
+ *  CREATE NOTE MODULE
+ * ============================================================
+ *
+ * Handles note creation logic depending on authentication state.
+ *
+ * Roles supported:
+ * - Guest → Uses localStorage
+ * - Unverified → Redirect with verification notice
+ * - Verified → Uses Firestore
+ *
+ * Features:
+ * - Duplicate detection (case-insensitive)
+ * - Role-based storage separation
+ * - SweetAlert feedback system
+ * - i18n translation support
+ * - Double-submit protection
+ *
+ * ============================================================
+ */
+
 import Swal from "sweetalert2";
 import { db, serverTimestamp, onAuthReady } from "./auth.js";
 import { 
@@ -17,12 +38,18 @@ import { t } from "./i18n/index.js";
     const saveBtn = document.getElementById("save-note");
     if (!saveBtn) return;
 
+    /**
+     * Prevents double submission
+     */
     let isSaving = false;
 
+    /**
+     * Resolve authentication state
+     */
     const authState = await onAuthReady();
 
     /* ==========================================================
-       👤 GUEST
+       👤 GUEST MODE (LocalStorage)
     ========================================================== */
     if (!authState || authState.role === "guest") {
 
@@ -37,6 +64,9 @@ import { t } from "./i18n/index.js";
         const title = titleInput.value.trim();
         const content = contentInput.value.trim();
 
+        /**
+         * Validate required fields
+         */
         if (!title || !content) {
           isSaving = false;
           Swal.fire({
@@ -52,13 +82,22 @@ import { t } from "./i18n/index.js";
         }
 
         try {
+
+          /**
+           * Retrieve guest notes from localStorage
+           */
           const notes = JSON.parse(localStorage.getItem("guestNotes")) || [];
 
-          // 🔎 Buscar duplicado (case-insensitive)
+          /**
+           * Case-insensitive duplicate detection
+           */
           const duplicatedNote = notes.find(
             n => n.title.toLowerCase() === title.toLowerCase()
           );
 
+          /**
+           * Duplicate confirmation dialog
+           */
           if (duplicatedNote) {
             const confirmDuplicate = await Swal.fire({
               title: t("titleNoteDuplicate"), 
@@ -83,6 +122,9 @@ import { t } from "./i18n/index.js";
             }
           }
 
+          /**
+           * Persist note in localStorage
+           */
           notes.push({
             id: crypto.randomUUID(),
             title,
@@ -92,6 +134,9 @@ import { t } from "./i18n/index.js";
 
           localStorage.setItem("guestNotes", JSON.stringify(notes));
 
+          /**
+           * Success feedback
+           */
           await Swal.fire({
             title: t("savedNote"),
             icon: "success",
@@ -102,6 +147,9 @@ import { t } from "./i18n/index.js";
             showConfirmButton: false
           });
 
+          /**
+           * Post-save decision
+           */
           const choice = await Swal.fire({
             title: t("ask"),
             icon: "question",
@@ -122,7 +170,7 @@ import { t } from "./i18n/index.js";
           }
 
         } catch (err) {
-          console.error(err);
+          // console.error(err);
           isSaving = false;
         }
       });
@@ -131,9 +179,13 @@ import { t } from "./i18n/index.js";
     }
 
     /* ==========================================================
-       🟡 AUTH NO VERIFICADO
+       🟡 UNVERIFIED USER
     ========================================================== */
     if (authState.role === "unverified") {
+
+      /**
+       * Inform user email verification is required
+       */
       await Swal.fire({
         icon: "info",
         title: t("titleplsverifyemail"),
@@ -147,7 +199,7 @@ import { t } from "./i18n/index.js";
     }
 
     /* ==========================================================
-       🟢 AUTH VERIFICADO
+       🟢 VERIFIED USER (Firestore)
     ========================================================== */
     const user = authState.user;
 
@@ -162,6 +214,9 @@ import { t } from "./i18n/index.js";
       const title = titleInput.value.trim();
       const content = contentInput.value.trim();
 
+      /**
+       * Validate required fields
+       */
       if (!title || !content) {
         isSaving = false;
         Swal.fire({
@@ -178,7 +233,9 @@ import { t } from "./i18n/index.js";
 
       try {
 
-        // 🔎 Buscar duplicado en Firestore (case-insensitive)
+        /**
+         * Case-insensitive duplicate detection via normalized field
+         */
         const q = query(
           collection(db, "notes"),
           where("uid", "==", user.uid),
@@ -214,7 +271,9 @@ import { t } from "./i18n/index.js";
           }
         }
 
-        // 💾 Guardar nota con campo normalizado
+        /**
+         * Persist note in Firestore
+         */
         await addDoc(collection(db, "notes"), {
           uid: user.uid,
           title,
@@ -223,6 +282,9 @@ import { t } from "./i18n/index.js";
           created_at: serverTimestamp()
         });
 
+        /**
+         * Success feedback
+         */
         await Swal.fire({
           title: t("savedNote"),
           icon: "success",
@@ -233,6 +295,9 @@ import { t } from "./i18n/index.js";
           showConfirmButton: false
         });
 
+        /**
+         * Post-save decision
+         */
         const choice = await Swal.fire({
           title: t("ask"),
           icon: "question",
@@ -253,7 +318,7 @@ import { t } from "./i18n/index.js";
         }
 
       } catch (err) {
-        console.error("Error guardando nota:", err);
+        // console.error("Error guardando nota:", err);
         isSaving = false;
       }
     });

@@ -2,24 +2,33 @@
 @use 'mixins' as m;
 @use 'sass:color';
 
+/* ======================================================
+   MENU CONTAINER
+   ======================================================
+   Main wrapper for the navigation menu.
+   - Positions menu relative to parent
+   - Handles responsive spacing for mobile and tablet
+====================================================== */
 .menu-container {
   position: relative;
-  margin-top: 1rem;
   margin-left: auto;
 
   @include m.tablet {
-    margin-top: 1.5rem;
     right: 1rem;
   }
 
-  /* ===========================
-     BOTÓN
-  =========================== */
+  /* ======================================================
+     MENU BUTTON
+     ======================================================
+     Toggle button for opening/closing the dropdown menu.
+     - Mobile first font size
+     - Hover effect with slight color adjustment
+  ====================================================== */
   .menu-btn {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 3.2rem; // 📱 mobile
+    font-size: 3.2rem; // mobile
     color: v.$negro;
     display: flex;
     align-items: center;
@@ -35,9 +44,16 @@
       color: color.adjust(v.$blanco, $lightness: -20%);
     }
   }
-  /* ===========================
-    DROPDOWN
-  =========================== */
+
+  /* ======================================================
+     DROPDOWN MENU
+     ======================================================
+     Styles for the dropdown menu.
+     - Initially hidden
+     - Absolute positioning
+     - Responsive adjustments for tablet/desktop
+     - Smooth transition on open/close
+  ====================================================== */
   .dropdown-menu {
     display: none;
     position: absolute;
@@ -50,7 +66,7 @@
     box-shadow: 0px 7px 14px -1px rgba(0,0,0,0.75);
     z-index: 1000;
 
-    /* ✅ FIX SOLO MÓVIL (NO rompe estilos) */
+    /* Mobile fix: max height with scroll */
     max-height: calc(100vh - 6rem);
     overflow-y: auto;
 
@@ -62,7 +78,6 @@
       width: 100%;
       min-width: 32rem;
 
-      /* ⛔ Tablet/Desktop quedan igual */
       max-height: none;
       overflow: visible;
     }
@@ -78,7 +93,7 @@
           display: block;
           width: 100%;
           text-align: left;
-          padding: 2rem 1.2rem; // 📱 mobile
+          padding: 2rem 1.2rem; // mobile
           background: none;
           border: none;
           cursor: pointer;
@@ -104,9 +119,12 @@
     }
   }
 
-  /* ===========================
-     ESTADO ABIERTO
-  =========================== */
+  /* ======================================================
+     OPEN STATE
+     ======================================================
+     Applies when the menu container has the 'open' class.
+     - Makes dropdown visible with smooth transition
+  ====================================================== */
   &.open .dropdown-menu {
     display: block;
     opacity: 1;
@@ -114,9 +132,13 @@
   }
 }
 
-/* ===========================
-   LINKS BLOQUEADOS
-=========================== */
+/* ======================================================
+   LOCKED LINKS
+   ======================================================
+   Styles for disabled/locked links.
+   - Reduced opacity
+   - Not interactive
+====================================================== */
 .link--locked {
   opacity: 0.5;
   cursor: not-allowed;

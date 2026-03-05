@@ -2,11 +2,21 @@
 @use 'mixins' as m;
 @use 'sass:color';
 
+/* ======================================================
+   SEARCH COMPONENT
+   ======================================================
+   Styles for the search page including:
+   - Container and responsive layout
+   - Search input field
+   - Search results listing
+   - Filter panel
+   - Pagination controls
+====================================================== */
 .search {
   display: grid;
   max-width: 100%;
   margin: 0 auto;
-  padding: 1.5rem; // 📱 mobile first
+  padding: 1.5rem; // Mobile first
 
   @include m.tablet {
     max-width: 900px;
@@ -17,23 +27,27 @@
     padding: 3rem 0;
   }
 
-  /* =========================
-     CONTENEDOR SEARCH
-     ========================= */
+  /* ======================================================
+     SEARCH CONTAINER
+     ======================================================
+     Grid layout for input and additional elements
+  ====================================================== */
   &__Cont {
     display: grid;
-    grid-template-columns: 1fr; // 📱 una columna
+    grid-template-columns: 1fr; // Mobile: single column
     gap: 1rem;
 
     @include m.tablet {
-      grid-template-columns: auto 1fr;
+      grid-template-columns: auto 1fr; // Tablet+: label + input
       gap: 1.2rem;
     }
   }
 
-  /* =========================
-     TÍTULO
-     ========================= */
+  /* ======================================================
+     TITLE
+     ======================================================
+     Main page title styling
+  ====================================================== */
   &__titulo {
     font-size: 2.2rem;
     margin-bottom: 1.5rem;
@@ -49,9 +63,11 @@
     }
   }
 
-  /* =========================
-     INPUT SEARCH
-     ========================= */
+  /* ======================================================
+     SEARCH INPUT
+     ======================================================
+     Input field styling for search queries
+  ====================================================== */
   &__input {
     width: 100%;
     padding: 1rem;
@@ -70,9 +86,13 @@
     }
   }
 
-  /* =========================
-     RESULTADOS
-     ========================= */
+  /* ======================================================
+     SEARCH RESULTS
+     ======================================================
+     List of results returned from search
+     - Each item styled as a card with hover effects
+     - Includes info section and action buttons
+  ====================================================== */
   &__results {
     list-style: none;
     padding: 0;
@@ -86,7 +106,7 @@
       border: 1px solid v.$gris-claro;
       box-shadow: 0 4px 12px rgba(0,0,0,0.06);
       display: flex;
-      flex-direction: column; // 📱
+      flex-direction: column; // Mobile
       gap: 1.2rem;
       transition: transform .15s ease, box-shadow .15s ease;
 
@@ -101,7 +121,7 @@
         box-shadow: 2px 4px 17px 3px rgba(0,0,0,0.2);
       }
 
-      /* INFO */
+      /* Info section of each result */
       .info {
         flex: 1;
 
@@ -119,10 +139,10 @@
         }
       }
 
-      /* ACTIONS */
+      /* Action buttons (edit/delete) */
       .actions {
         display: flex;
-        flex-direction: row; // 📱
+        flex-direction: row; // Mobile
         gap: 1rem;
 
         @include m.tablet {
@@ -165,9 +185,11 @@
     }
   }
 
-  /* =========================
-     FILTRO
-     ========================= */
+  /* ======================================================
+     FILTER
+     ======================================================
+     Filter panel for search results with buttons and options
+  ====================================================== */
   &__filter {
     margin-top: 1rem;
 
@@ -197,7 +219,7 @@
       border: .1rem solid v.$azul;
       border-radius: .8rem;
       display: flex;
-      flex-direction: column; // 📱
+      flex-direction: column; // Mobile
       gap: .8rem;
 
       @include m.tablet {
@@ -221,9 +243,11 @@
     }
   }
 
-  /* =========================
-     PAGINACIÓN
-     ========================= */
+  /* ======================================================
+     PAGINATION
+     ======================================================
+     Controls for navigating between result pages
+  ====================================================== */
   &__pagination {
     display: flex;
     justify-content: center;

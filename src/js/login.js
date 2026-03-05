@@ -1,19 +1,51 @@
-// src/js/login.js
+/**
+ * ============================================================
+ *  LOGIN MODULE
+ * ============================================================
+ *
+ * Handles user authentication via email & password.
+ *
+ * Responsibilities:
+ * - Basic client-side validation
+ * - Prevent double form submission
+ * - Handle Firebase authentication
+ * - Provide user feedback via SweetAlert
+ * - Redirect securely after login
+ *
+ * Important:
+ * - Role/permission validation happens server-side (/main).
+ * - Email verification notice is UX-only (does not block login).
+ *
+ * ============================================================
+ */
+
 import Swal from "sweetalert2";
 import { signInWithEmail } from "./auth.js";
 import { t } from "./i18n/index.js";
 
 (function () {
+
   document.addEventListener("DOMContentLoaded", () => {
+
+    /**
+     * Ensure script runs only if login form exists.
+     */
     const loginForm = document.getElementById("login-form");
     if (!loginForm) return;
 
+    /**
+     * Prevents duplicate submissions.
+     */
     let isSubmitting = false;
 
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+
       if (isSubmitting) return;
 
+      /**
+       * Retrieve input values
+       */
       const emailEl = document.getElementById("login-email");
       const passEl = document.getElementById("login-pass");
 
@@ -21,8 +53,9 @@ import { t } from "./i18n/index.js";
       const pass = passEl?.value;
 
       /* ==========================================================
-         ❌ VALIDACIÓN BÁSICA
+         ❌ BASIC VALIDATION
       ========================================================== */
+
       if (!email || !pass) {
         return Swal.fire({
           icon: "warning",
@@ -33,16 +66,19 @@ import { t } from "./i18n/index.js";
       }
 
       try {
+
         isSubmitting = true;
 
         /* ==========================================================
-           🔐 LOGIN REAL
+           🔐 AUTHENTICATION
         ========================================================== */
+
         const result = await signInWithEmail(email, pass);
 
         /* ==========================================================
-           🟡 EMAIL NO VERIFICADO (SOLO UX)
+           🟡 EMAIL NOT VERIFIED (UX NOTICE)
         ========================================================== */
+
         if (!result.isVerified) {
           await Swal.fire({
             icon: "info",
@@ -54,17 +90,29 @@ import { t } from "./i18n/index.js";
         }
 
         /* ==========================================================
-           ✅ REDIRECCIÓN ÚNICA
-           (los permisos reales se validan en /main)
+           ✅ SECURE REDIRECTION
+        ==========================================================
+           - Always redirect to root
+           - Permissions validated server-side
+           - Uses replace() to prevent back navigation
         ========================================================== */
+
         window.location.replace("/");
 
       } catch (err) {
-        console.error("Login error:", err);
 
+        // console.error("Login error:", err);
+
+        /**
+         * Default fallback message
+         */
         let message = t("errorLoginExist");
 
+        /**
+         * Handle specific Firebase error codes
+         */
         switch (err?.code) {
+
           case "auth/user-not-found":
             message = t("errorUserNotFound");
             break;
@@ -86,8 +134,15 @@ import { t } from "./i18n/index.js";
         });
 
       } finally {
+
+        /**
+         * Reset submission lock
+         */
         isSubmitting = false;
       }
+
     });
+
   });
+
 })();

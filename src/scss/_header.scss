@@ -2,7 +2,23 @@
 @use 'sass:color';
 @use 'mixins' as m;
 
+/* ===================================================
+   HEADER COMPONENT
+   ===================================================
+   Defines styles for the main header, including logo,
+   title, and responsive layout. Includes visibility
+   utilities and typography adjustments for mobile,
+   tablet, and desktop.
+=================================================== */
+
 .header {
+  /* --------------------------
+     Header Container
+     --------------------------
+     Flex layout to space elements horizontally and
+     vertically align center. Includes background color
+     and responsive margin adjustments.
+  */
   background-color: v.$azul;
   display: flex;
   justify-content: space-between;
@@ -11,13 +27,23 @@
   
   @include m.tablet {
     margin-top: -2rem;
-    
   }
-  
+
+  /* --------------------------
+     Utility Class: Hidden
+     --------------------------
+     Hides elements visually while keeping them in the DOM.
+  */
   .hidden {
     visibility: hidden;
   }
 
+  /* --------------------------
+     Logo Styles
+     --------------------------
+     Typography and spacing for the header logo.
+     Font size scales for tablet and desktop.
+  */
   &__logo {
     color: v.$blanco;
     font-weight: 400;
@@ -34,10 +60,21 @@
     }
   }
   
+  /* --------------------------
+     Header Title
+     --------------------------
+     Color styling for the main header title.
+  */
   &__titulo {
     color: v.$blanco;
   }
 
+  /* --------------------------
+     Highlighted Span in Title
+     --------------------------
+     Distinguishes part of the title with heavier weight
+     and contrasting color.
+  */
   &__spanTitulo {
     color: v.$negro;
     font-weight: 900;

@@ -1,3 +1,39 @@
+<!-- ==========================================================
+(Base Layout Template)
+
+Description:
+Main layout template used across the application.
+
+This file defines:
+- Global HTML structure
+- Metadata and external resources
+- Header navigation
+- Theme initialization logic
+- Main content wrapper
+
+Server Variables:
+- title → Injected dynamically to define the page title.
+
+Client Responsibilities:
+- Applies saved theme preference from localStorage.
+- Loads global CSS styles.
+- Provides responsive navigation menu.
+- Supports internationalization via data-i18n attributes.
+- Displays different navigation options based on auth state
+  (controlled by frontend JavaScript).
+
+Dependencies:
+- Compiled CSS: /build/css/app.css
+- Google Fonts (Nunito Sans)
+- Font Awesome (icons)
+- Frontend bundle loaded in footer partial
+
+Notes:
+- Dark mode is applied before full render to prevent flash.
+- Header visibility is controlled via JavaScript.
+- This layout is intended to wrap individual view templates.
+========================================================== -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,8 +54,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 
-
-
 </head>
 <body>
     
@@ -39,15 +73,15 @@
             <nav class="dropdown-menu">
                 <ul>
                     <!-- LINKS NORMALES -->
-                    <li><a href="/search"><span>🔍</span><span data-i18n="page_searchNotes">Search Notes</span></a></li>
-                    <li><a href="/crear"><span>✏️</span><span data-i18n="crearNota">crear nota</span></a></li>
-                    <li><a href="/account-settings"><span>🧑</span><span data-i18n="page_accountSettings">Account & Settings</span><span>⚙️</span></a></li>
+                    <li><a href="/search"><span>🔍</span><span data-i18n="page_searchNotes"></span></a></li>
+                    <li><a href="/crear"><span>✏️</span><span data-i18n="crearNota"></span></a></li>
+                    <li><a href="/account-settings"><span>🧑</span><span data-i18n="page_accountSettings"></span><span>⚙️</span></a></li>
                     <li id="guest-controls" style="display:none">
-                    <a href="/login"><span>🔐</span><span data-i18n="login">Iniciar Sesión</span></a>
+                    <a href="/login"><span>🔐</span><span data-i18n="login"></span></a>
                     </li>
 
                     <li id="guest-controls-register" style="display:none">
-                    <a href="/register"><span>📝</span><span data-i18n="register">Crear Cuenta</span></a>
+                    <a href="/register"><span>📝</span><span data-i18n="register"></span></a>
                     </li>
                 </ul>
             </nav>
@@ -55,6 +89,3 @@
     </header>
 
     <main class="shadowbox">
-
-        
-

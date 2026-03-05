@@ -1,7 +1,11 @@
 @use 'variables' as v;
 @use 'sass:color';
 
-/** Media Queries **/
+/* ======================================================
+   MEDIA QUERY MIXINS
+   ======================================================
+   Utility mixins for responsive breakpoints
+====================================================== */
 @mixin telefono {
     @media (min-width: v.$telefono) {
         @content;
@@ -23,6 +27,14 @@
     }
 }
 
+/* ======================================================
+   BUTTON MIXIN
+   ======================================================
+   Styles a button with background color, text color,
+   padding, font size, transition, and hover effect.
+   - $bgColor: background color
+   - $colorTexto: text color
+====================================================== */
 @mixin boton($bgColor, $colorTexto) {
     background-color: $bgColor;
     padding: 1.5rem 4rem;
@@ -43,17 +55,29 @@
     }
 }
 
+/* ======================================================
+   GRID MIXIN
+   ======================================================
+   Creates a CSS grid layout with specified number of
+   columns and gap.
+   - $columnas: number of columns
+   - $espaciado: gap size
+====================================================== */
 @mixin grid($columnas, $espaciado ) {
     display: grid;
     gap: $espaciado;
     grid-template-columns: repeat($columnas, 1fr);
 }
 
+/* ======================================================
+   CONTAINER MIXINS
+   ======================================================
+   Standard width containers for layouts
+====================================================== */
 @mixin contenedor {
     margin: 0 auto;
     width: min(95%, 140rem);
     padding: 1rem 2rem;
-
 }
 
 @mixin contenedor-md {
@@ -64,9 +88,14 @@
 @mixin contenedor-sm {
     margin: 0 auto;
     width: min(95%, 60rem);
-
 }
 
+/* ======================================================
+   TYPOGRAPHY MIXINS
+   ======================================================
+   Common text styles for headings, page titles, and
+   description text
+====================================================== */
 @mixin headings {
     font-family: v.$fuente-principal;
     font-weight: v.$black;
@@ -85,7 +114,6 @@
     color: v.$gris-oscuro;
     line-height: 1.5;
     font-weight: v.$delgada;
-    
 }
 
 @mixin texto-fluido($min, $max) {
@@ -98,6 +126,12 @@
     -webkit-text-fill-color: transparent;
 }
 
+/* ======================================================
+   LOGO MIXIN
+   ======================================================
+   Styles logo text with color, alignment, and spacing.
+   - Adjusts for desktop layout
+====================================================== */
 @mixin logo {
    color: v.$blanco;
    margin-bottom: 2rem;
@@ -110,6 +144,13 @@
    }
 }
 
+/* ======================================================
+   SOCIAL MENU MIXIN
+   ======================================================
+   Styles social media links with icons using FontAwesome
+   - $color: icon color
+   - $size: icon font size
+====================================================== */
 @mixin menu-social($color, $size) {
  
     &__enlace {
@@ -124,32 +165,22 @@
             font-family: "Font Awesome 6 Brands";
         }
  
-        &[href*="facebook.com"]::before {
-            content: "\f39e";
-        }
-        &[href*="github.com"]::before {
-            content: "\f09b";
-        }
-        
-        &[href*="tiktok.com"]::before {
-            content: "\e07b";
-        }
-        &[href*="instagram.com"]::before {
-            content: "\f16d";
-        }
-        &[href*="youtube.com"]::before {
-            content: "\f167";
-        }
-        &[href*="twitter.com"]::before {
-            content: "\f099";
-        }
+        &[href*="facebook.com"]::before { content: "\f39e"; }
+        &[href*="github.com"]::before { content: "\f09b"; }
+        &[href*="tiktok.com"]::before { content: "\e07b"; }
+        &[href*="instagram.com"]::before { content: "\f16d"; }
+        &[href*="youtube.com"]::before { content: "\f167"; }
+        &[href*="twitter.com"]::before { content: "\f099"; }
     }
  
-    &__ocultar {
-        display: none;
-    }
+    &__ocultar { display: none; }
 }
 
+/* ======================================================
+   LINK MIXIN
+   ======================================================
+   Styles links with text color, uppercase, hover effect
+====================================================== */
 @mixin enlace {
     all: unset;
     color: v.$blanco;
@@ -163,16 +194,32 @@
     }
 }
 
+/* ======================================================
+   SHADOW MIXIN
+   ======================================================
+   Applies a common box-shadow style
+====================================================== */
 @mixin shadow {
     box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
 }
 
+/* ======================================================
+   LIST RESET MIXIN
+   ======================================================
+   Removes default list styling (margin, padding, bullets)
+====================================================== */
 @mixin reset-lista {
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
+/* ======================================================
+   TAGS MIXIN
+   ======================================================
+   Styles tag lists using flexbox and spacing
+   - Child <li> elements receive background, padding, font weight
+====================================================== */
 @mixin tags {
     @include reset-lista;
     display: flex;
@@ -180,17 +227,20 @@
     gap: 1.5rem;
     margin-top: 1.5rem;
 
-    //Selector de primer nivel de hijos
     > li {
         background-color: v.$azul;
         padding: 1rem;
         border-radius: 1rem;
         font-weight: v.$bold;
         color: v.$blanco;
-
     }
 }
 
+/* ======================================================
+   CARD MIXIN
+   ======================================================
+   Styles card containers with border, padding, and title
+====================================================== */
 @mixin card {
     border: 1px solid color.adjust(v.$gris, $lightness: 10%);
     border-radius: 1rem;
@@ -203,6 +253,12 @@
     }
 }
 
+/* ======================================================
+   BACKGROUND GRADIENT MIXIN
+   ======================================================
+   Applies a gradient background based on given color
+   - Gradient transitions to a lighter variant
+====================================================== */
 @mixin bg-gradient($bgColor) {
     background-image: linear-gradient(to left top, $bgColor, color.adjust($bgColor, $lightness: 15%));
-} 
+}

@@ -1,3 +1,52 @@
+<!-- ==========================================================
+
+Description:
+Main landing page of the application.
+
+This view provides:
+- Quick access to core features (Create Note / Search Notes)
+- Interactive onboarding guide
+- Step-based visual walkthrough for new users
+
+Responsibilities:
+- Present primary navigation actions.
+- Display interactive guide with multiple steps.
+- Integrate internationalization for all dynamic text.
+- Support client-side navigation via data-href attributes.
+
+Structure:
+- Includes global header and footer partials.
+- Organized using BEM naming convention.
+- Divided into:
+  1. Primary action buttons section
+  2. Interactive guide section
+  3. Navigation controls for guide steps
+
+Client-Side Behavior:
+- Buttons use data-href for JavaScript-based routing.
+- Guide steps toggle active state dynamically.
+- Navigation arrows control step transitions.
+- Images are dynamically loaded using data-img attributes.
+- All textual content is translated via i18n system.
+
+Dependencies:
+- main.js
+- menuHamburguesa.js
+- theme&lang.js
+- i18n system
+- Global bundle.min.js
+
+Performance Considerations:
+- Images use lazy loading.
+- WebP format supported via <picture> element.
+- Minimal initial DOM activation (first step active by default).
+
+Notes:
+- Designed to function as onboarding for first-time users.
+- Step navigation is fully controlled via frontend logic.
+- Layout follows consistent component-based structure.
+========================================================== -->
+
 <%- include('partials/header') %>
 
 <section class="actions">
@@ -22,84 +71,59 @@
   <!-- STEP 1 -->
   <article class="guide-content__step guide-content__step--active">
     <h4 class="guide-content__title" data-i18n="menuHamburguesa"></h4>
-
     <p class="guide-content__text" data-i18n="menuHamburguesaTexto"></p>
-
     <picture class="guide-content__media" data-img="menu-hamburguesa">
       <source type="image/webp">
       <img alt="Menú" loading="lazy">
     </picture>
-
   </article>
 
   <!-- STEP 2 -->
   <article class="guide-content__step">
     <h4 class="guide-content__title" data-i18n="logoInfo"></h4>
-
     <p class="guide-content__text" data-i18n="logoInfoTexto"></p>
-
     <picture class="guide-content__media" data-img="logoInfo">
       <source type="image/webp">
       <img alt="Logo" loading="lazy">
     </picture>
-
-    
   </article>
 
   <!-- STEP 3 -->
   <article class="guide-content__step">
     <h4 class="guide-content__title" data-i18n="mainButton"></h4>
-
     <p class="guide-content__text" data-i18n="mainButtonTexto"></p>
-
     <picture class="guide-content__media" data-img="mainButton">
       <source type="image/webp">
       <img alt="Main buttons" loading="lazy">
     </picture>
-
   </article>
 
   <!-- STEP 4 -->
   <article class="guide-content__step">
     <h4 class="guide-content__title" data-i18n="search"></h4>
-
     <p class="guide-content__text" data-i18n="searchTexto"></p>
-
     <picture class="guide-content__media" data-img="search">
       <source type="image/webp">
       <img alt="Search button" loading="lazy">
     </picture>
-
-
   </article>
 
   <!-- STEP 5 -->
   <article class="guide-content__step">
     <h4 class="guide-content__title" data-i18n="accsett"></h4>
-
     <p class="guide-content__text" data-i18n="accsettTexto"></p>
-
     <picture class="guide-content__media" data-img="acc&Sett">
       <source type="image/webp">
       <img alt="Account and Settings" loading="lazy">
     </picture>
-
-    
   </article>
 
   <!-- NAV -->
   <div class="guide-content__nav">
     <button class="guide-content__nav-btn prev" aria-label="Anterior">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="guide-content__nav-btn-icon"
-      >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" class="guide-content__nav-btn-icon">
         <path d="M21 12h-12" />
         <path d="M13 16l-4 -4l4 -4" />
         <path d="M12 3a9 9 0 1 0 0 18" />
@@ -107,16 +131,9 @@
     </button>
 
     <button class="guide-content__nav-btn next" aria-label="Siguiente">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="guide-content__nav-btn-icon"
-      >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" class="guide-content__nav-btn-icon">
         <path d="M3 12h12" />
         <path d="M11 8l4 4l-4 4" />
         <path d="M12 21a9 9 0 0 0 0 -18" />

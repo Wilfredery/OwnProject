@@ -2,12 +2,24 @@
 @use 'mixins' as m;
 @use 'sass:color';
 
-/* ===========================
-   CREAR BASE
-=========================== */
+/* ===================================================
+   CREATE PAGE STYLES
+   ===================================================
+   This section defines the base styles for the "Crear"
+   (Create) page of the application. It includes the main
+   container, header, buttons, and form elements with a
+   mobile-first responsive approach using BEM naming
+   conventions.
+=================================================== */
 
+/* ==========================
+   Base Container
+   ==========================
+   Defines the main layout of the Create page. Mobile-first
+   responsive design is applied with container width and 
+   padding adjustments for tablet and desktop breakpoints.
+========================== */
 .crear {
-  /* Mobile first */
   @include m.contenedor-sm;
   padding: 1.5rem;
 
@@ -26,10 +38,13 @@
   }
 }
 
-/* ===========================
-   HEADER
-=========================== */
-
+/* ==========================
+   Header Section
+   ==========================
+   Contains page title and save button. Uses flexbox to
+   align items vertically on mobile and horizontally on
+   larger screens.
+========================== */
 .crear__header {
   display: flex;
   flex-direction: column;
@@ -42,12 +57,14 @@
     align-items: center;
   }
 
+  /* Page title */
   .crear__titulo {
     font-weight: 700;
     color: v.$negro;
     @include m.texto-fluido(2.2rem, 3rem);
   }
 
+  /* Save button */
   .crear__btnSave {
     align-self: flex-start;
 
@@ -77,15 +94,20 @@
   }
 }
 
-/* ===========================
-   FORM
-=========================== */
-
+/* ==========================
+   Form Section
+   ==========================
+   Styles for the main form container, title input, and
+   content textarea. Includes responsive font sizes, 
+   focus states, and min-height adjustments for different
+   breakpoints.
+========================== */
 .crear__form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 
+  /* Title input field */
   .crear__inputTitulo {
     font-size: 2rem;
     padding: 1rem;
@@ -102,6 +124,7 @@
     }
   }
 
+  /* Content textarea */
   .crear__inputContenido {
     min-height: 35vh;
     resize: none;

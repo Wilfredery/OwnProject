@@ -1,20 +1,66 @@
+<!-- ==========================================================
+
+Description:
+Edit Note page template.
+
+This view allows users to:
+- Modify an existing note.
+- Persist changes.
+- Delete the note if needed.
+
+Server Variables:
+- noteId → Injected dynamically to identify the note
+  being edited. Stored in a hidden input field for
+  client-side reference.
+
+Responsibilities:
+- Render edit form structure.
+- Provide fields for title and content modification.
+- Expose note ID for update/delete operations.
+- Support internationalization via data-i18n attributes.
+
+Structure:
+- Includes global header and footer partials.
+- Organized using BEM methodology.
+- Divided into form inputs and action buttons section.
+
+Client-Side Behavior:
+- Form submission triggers update logic (handled in editar.js).
+- Delete button triggers note removal process.
+- Note data is loaded dynamically via JavaScript.
+- Validation and persistence handled client-side
+  through Firebase or backend integration.
+
+Dependencies:
+- editar.js
+- authState.js (if edit access depends on authentication)
+- i18n system
+- Global bundle.min.js
+
+Notes:
+- This template does not directly perform data updates.
+- All CRUD operations are managed via frontend modules.
+- Hidden note ID ensures secure reference without
+  exposing sensitive data in visible fields.
+========================================================== -->
+
 <%- include("partials/header") %>
 
 <section class="editar">
-    <h2 class="editar__titulo" data-i18n="edit_note">Editar Nota</h2>
+    <h2 class="editar__titulo" data-i18n="edit_note"></h2>
 
     <form class="editar__form" id="edit-form">
         <input type="hidden" id="note-id" value="<%= noteId %>">
 
-        <label class="editar__tituloForm" data-i18n="title">Título:</label>
+        <label class="editar__tituloForm" data-i18n="title"></label>
         <input id="edit-title" class="editar__input" type="text">
 
-        <label class="editar__contenidoForm" data-i18n="content">Contenido:</label>
+        <label class="editar__contenidoForm" data-i18n="content"></label>
         <textarea id="edit-content" class="editar__textarea"></textarea>
 
         <div class="editar__actions">
-            <button type="submit" class="editar__save-btn">💾 Guardar</button>
-            <button type="button" id="delete-note" class="editar__delete-btn">🗑 Eliminar</button>
+            <button type="submit" class="editar__save-btn" data-i18n="saveEdit"></button>
+            <button type="button" id="delete-note" class="editar__delete-btn" data-i18n="deleteEdit"></button>
         </div>
     </form>
 </section>

@@ -1,3 +1,50 @@
+<!-- ==========================================================
+
+Description:
+Email action confirmation page.
+
+This view is used to handle verification or password-related
+actions triggered through an email link containing an
+out-of-band (OOB) code.
+
+Server Variables:
+- oobCode → Secure action code injected from the backend.
+  Used by client-side JavaScript to complete the verification
+  or password reset process.
+
+Responsibilities:
+- Display confirmation message to the user.
+- Expose the OOB code to frontend logic.
+- Provide navigation back to login page.
+- Support internationalization for dynamic text.
+
+Structure:
+- Includes global header and footer partials.
+- Organized using BEM methodology.
+- Divided into content message and navigation section.
+
+Client-Side Behavior:
+- The OOB code is stored in window.__OOB_CODE__.
+- Frontend logic reads this value to:
+  • Verify email address
+  • Complete password reset
+  • Confirm account-related actions
+- Feedback handling is managed via JavaScript module.
+
+Dependencies:
+- linkconfirm.js
+- firebase.js
+- i18n system
+- Global bundle.min.js
+
+Security Notes:
+- The OOB code is passed securely from the backend.
+- No sensitive logic is executed directly in this template.
+- All verification operations are handled client-side
+  through Firebase or backend integration.
+
+========================================================== -->
+
 <%- include('partials/header') %>
 
 <section class="confirm">
@@ -8,13 +55,14 @@
     </div>
     
     <div class="confirm__links">
-        <button href="/login" class="confirm__links--link" data-i18n="backToLogin"></>
+        <button href="/login" class="confirm__links--link" data-i18n="backToLogin"></button>
     </div>
 </section>
 
 <script>
   window.__OOB_CODE__ = "<%= oobCode %>";
-  // Aquí el JS leerá ese código para completar la verificación o el cambio
+  // The frontend script reads this code to complete
+  // verification or password-related actions.
 </script>
 
 <%- include('partials/footer') %>

@@ -47,6 +47,13 @@ export default {
   crear__inputContenido: "Write your note here...",
   crearNota: "Create note",
 
+  //EDIT NOTE
+  edit_note: "Edit note",
+  title: "Title:",
+  content: "Content:",
+  saveEdit: "💾 Save",
+  deleteEdit: "🗑 Delete",
+
   //SEARCH
   search_placeholder: "Search notes...",
   findlist: "No notes found",
@@ -165,6 +172,12 @@ export default {
 
       //Validation for google.js
       errorGoogleSignIn: "Could not sign in with Google",
+      emailUnable: "Email unavailable",
+      confirmAcc: "Confirm account",
+      infoSelectAcc: "You are going to sign in with:",
+      continue: "Continue",
+      changeAcc: "Change account",
+      
 
       //validation for crear.js
       completeFields: "Please complete all fields",
@@ -185,8 +198,8 @@ export default {
 
       //validation for editar.js
       notewasntFound: "Note not found",
-      //denied: "Access denied",
-      //noteNotNote: "This note does not belong to you",
+      denied: "Access denied",
+      noteNotNote: "This note does not belong to you",
       updatedNote: "Note updated ✔",
       updatedError: "Error updating 😞",
       askDelete: "Are you sure you want to delete?", //From here down search.js
@@ -198,6 +211,8 @@ export default {
       stayHere: "Stay here",
       loadingTitle: "Loading title...",
       loadingText: "Loading content...",
+      
+
 
       //validation linkconfirm.js
       textlinkUnvalid: "The verification link is not valid or has expired.",

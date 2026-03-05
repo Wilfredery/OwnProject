@@ -2,7 +2,23 @@
 @use 'mixins' as m;
 @use 'sass:color';
 
+/* ===================================================
+   EDIT PAGE STYLES
+   ===================================================
+   Styles for the Edit page, including layout containers,
+   header, form inputs, text areas, and action buttons.
+   Mobile-first design with responsive adjustments for
+   tablet and desktop screens.
+=================================================== */
+
 .editar {
+  /* ==========================
+     Base Container
+     ==========================
+     Defines the main layout for the Edit page.
+     Mobile-first with padding and responsive
+     adjustments for tablet and desktop.
+  ========================= */
   @include m.contenedor-sm;
   padding: 2rem;
 
@@ -17,7 +33,12 @@
     @include m.contenedor;
   }
 
-  /* ---------- HEADER ---------- */
+  /* ==========================
+     Header Section
+     ==========================
+     Styles for the page header/title.
+     Responsive typography with spacing.
+  ========================= */
   &__titulo {
     font-weight: 700;
     color: v.$negro;
@@ -27,14 +48,20 @@
     @include m.texto-fluido(2.4rem, 3rem);
   }
 
-  /* ---------- FORM ---------- */
+  /* ==========================
+     Form Section
+     ==========================
+     Layout for form inputs and content areas.
+     Flex column with spacing.
+  ========================= */
   &__form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
 
-  &__tituloForm, &__contenidoForm {
+  &__tituloForm,
+  &__contenidoForm {
     font-size: 2rem;
     font-weight: 600;
     color: v.$negro;
@@ -44,12 +71,17 @@
     }
   }
 
-  /* TÍTULO INPUT */
+  /* ==========================
+     Input Field
+     ==========================
+     Styles for title input fields.
+     Focus state changes border color.
+  ========================= */
   &__input {
     font-size: 2rem;
     padding: 1rem;
     border: 1px solid v.$gris-claro;
-    border-radius: .8rem;
+    border-radius: 0.8rem;
     outline: none;
     margin-bottom: 2rem;
 
@@ -62,14 +94,20 @@
     }
   }
 
-  /* CONTENIDO TEXTAREA */
+  /* ==========================
+     Textarea Field
+     ==========================
+     Styles for content textareas.
+     Resizable disabled with min-height adjustments
+     for tablet screens.
+  ========================= */
   &__textarea {
     height: 45vh;
     resize: none;
     font-size: 2rem;
     padding: 1rem;
     border: 1px solid v.$gris-claro;
-    border-radius: .8rem;
+    border-radius: 0.8rem;
     outline: none;
 
     &:focus {
@@ -82,7 +120,13 @@
     }
   }
 
-  /* ---------- BOTONES ---------- */
+  /* ==========================
+     Action Buttons
+     ==========================
+     Container for Save/Delete buttons.
+     Mobile-first stacked layout with responsive
+     row layout on tablet. Includes hover effects.
+  ========================= */
   &__actions {
     display: flex;
     flex-direction: column;
@@ -115,6 +159,11 @@
       }
     }
 
+    /* ==========================
+       Save Button
+       ==========================
+       Primary action button with hover effect.
+    ========================= */
     & .editar__save-btn {
       background: v.$azul;
       color: v.$blanco;
@@ -124,6 +173,11 @@
       }
     }
 
+    /* ==========================
+       Delete Button
+       ==========================
+       Destructive action button with hover effect.
+    ========================= */
     & .editar__delete-btn {
       background: v.$rojo;
       color: v.$blanco;

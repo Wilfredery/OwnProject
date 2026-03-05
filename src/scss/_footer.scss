@@ -2,12 +2,26 @@
 @use 'mixins' as m;
 @use 'sass:color';
 
+/* ===================================================
+   FOOTER STYLES
+   ===================================================
+   Styles for the site footer including background,
+   typography, grid layout, and social/link icons.
+   Fully responsive with font-size adjustments for
+   tablet, desktop, and XL desktop screens.
+=================================================== */
+
 .footer {
+  /* ==========================
+     Base Footer Styles
+     ==========================
+     Sets background color, text color, font weight,
+     margin, text alignment, and responsive font size.
+  ========================= */
   background-color: v.$azul;
   color: v.$blanco;
   font-weight: 700;
   margin-top: 3rem; 
-  
   text-align: center;
   font-size: 1.6rem;
 
@@ -23,6 +37,12 @@
     font-size: 2.2rem;
   }
 
+  /* ==========================
+     Grid Layout
+     ==========================
+     Sets up a responsive grid for footer content
+     alignment. Adjusts columns and padding for tablet.
+  ========================= */
   &__grid {
     display: grid;
     gap: 1rem;
@@ -34,11 +54,22 @@
     }
   }
 
+  /* ==========================
+     Text Elements
+     ==========================
+     Footer text and year styling with color overrides.
+  ========================= */
   &__texto,
   &__year {
     color: v.$negro;
   }
 
+  /* ==========================
+     LinkedIn / Social Links
+     ==========================
+     Styles for anchor tags and icons within the footer.
+     Includes hover color and transform effects.
+  ========================= */
   .linkdln {
     a {
       color: v.$negro;

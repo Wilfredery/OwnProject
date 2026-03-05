@@ -1,7 +1,35 @@
-// src/js/auth-ui.js
+/**
+ * ============================================================
+ *  HEADER AUTH UI CONTROLLER
+ * ============================================================
+ *
+ * This module manages the header UI based on
+ * the current authentication state.
+ *
+ * Responsibilities:
+ * - Show guest controls (login/register)
+ * - Show authenticated user controls
+ * - Display user name and profile photo
+ * - Prevent UI flicker during auth resolution
+ *
+ * Integration:
+ * - Firebase Auth (via onAuthReady)
+ *
+ * ============================================================
+ */
+
 import { onAuthReady } from "./auth.js";
 
+/* ============================================================
+   GUEST UI
+============================================================ */
+
+/**
+ * Displays UI elements intended for guest users.
+ * Hides authenticated user controls.
+ */
 function showGuestUI() {
+
   const guestLogin = document.getElementById("guest-controls");
   const guestRegister = document.getElementById("guest-controls-register");
   const userControls = document.getElementById("user-controls");
@@ -11,7 +39,18 @@ function showGuestUI() {
   if (userControls) userControls.style.display = "none";
 }
 
+/* ============================================================
+   AUTHENTICATED USER UI
+============================================================ */
+
+/**
+ * Displays authenticated user controls
+ * and populates user information.
+ *
+ * @param {Object} user - Firebase user object
+ */
 function showUserUI(user) {
+
   const guestLogin = document.getElementById("guest-controls");
   const guestRegister = document.getElementById("guest-controls-register");
   const userControls = document.getElementById("user-controls");
@@ -23,22 +62,46 @@ function showUserUI(user) {
   const nameEl = document.getElementById("user-name");
   const photoEl = document.getElementById("user-photo");
 
+  /**
+   * Display user name (fallback to email if displayName not set)
+   */
   if (nameEl) {
     nameEl.textContent = user.displayName || user.email;
   }
 
+  /**
+   * Display profile photo (fallback to default avatar)
+   */
   if (photoEl) {
     photoEl.src = user.photoURL || "/img/default-avatar.png";
   }
 }
 
+/* ============================================================
+   INITIALIZATION
+============================================================ */
+
+/**
+ * Initializes header authentication UI.
+ *
+ * Behavior:
+ * - Waits for Firebase auth resolution
+ * - Treats anonymous users as guests
+ * - Displays appropriate UI state
+ * - Ensures header is revealed only after auth check
+ */
 async function initHeaderAuthUI() {
+
   const header = document.getElementById("main-header");
 
   try {
+
     const user = await onAuthReady();
 
-    // ✅ CLAVE: el guest (anónimo) se trata como NO logueado
+    /**
+     * Anonymous users are treated as guests
+     * (not considered fully authenticated).
+     */
     if (user && !user.isAnonymous) {
       showUserUI(user);
     } else {
@@ -46,12 +109,22 @@ async function initHeaderAuthUI() {
     }
 
   } catch (error) {
-    console.error("Auth UI error:", error);
+
+    // console.error("Auth UI error:", error);
     showGuestUI();
+
   } finally {
-    // Mostrar header cuando todo esté listo
+
+    /**
+     * Remove hidden state once UI is ready
+     * to prevent visual flicker.
+     */
     if (header) header.classList.remove("hidden");
   }
 }
+
+/* ============================================================
+   DOM READY
+============================================================ */
 
 document.addEventListener("DOMContentLoaded", initHeaderAuthUI);

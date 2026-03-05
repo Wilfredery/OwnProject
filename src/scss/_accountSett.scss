@@ -2,12 +2,25 @@
 @use 'mixins' as m;
 @use 'sass:color';
 
-/* ===========================
-   SETTINGS BASE
-=========================== */
+/* ===================================================
+   SETTINGS PAGE STYLES
+   ===================================================
+   This section defines the base styles for the Settings
+   page of the application. It includes layout containers,
+   typography, user display, option blocks, theme & language
+   switchers, and security-related buttons. Mobile-first
+   responsive design is applied with breakpoints for tablet
+   and desktop screens.
+=================================================== */
 
+/* ==========================
+   Base Container
+   ==========================
+   Defines the main layout for the settings page.
+   Mobile-first container with responsive adjustments
+   for tablet and desktop screens.
+========================== */
 .settings {
-  /* Mobile first */
   @include m.contenedor-sm;
 
   @include m.tablet {
@@ -19,12 +32,24 @@
     @include m.contenedor;
   }
 
+  /* ==========================
+     Page Heading
+     ==========================
+     Styles the main heading for the Settings page.
+     Center-aligned with responsive font size.
+  ========================= */
   &__h2 {
     text-align: center;
     margin-bottom: 1.5rem;
     @include m.texto-fluido(2.2rem, 3rem);
   }
 
+  /* ==========================
+     User Info Section
+     ==========================
+     Displays the logged-in user information.
+     Center-aligned with responsive font sizes.
+  ========================= */
   &__user {
     text-align: center;
     margin: 1.5rem 0 2.5rem;
@@ -33,17 +58,19 @@
       font-weight: 600;
       color: v.$azul;
       font-size: 2rem;
-      
+
       @include m.tablet {
         font-size: 2.3rem;
       }
     }
   }
 
-  /* ===========================
-     OPTION BLOCK
-  =========================== */
-
+  /* ==========================
+     Option Blocks
+     ==========================
+     Contains individual setting options.
+     Margins and typography defined for labels.
+  ========================= */
   &__option {
     margin-bottom: 2rem;
 
@@ -59,10 +86,13 @@
       margin-bottom: 0.5rem;
     }
 
-    /* ===========================
-       THEME & LANGUAGE SWITCHERS
-    =========================== */
-
+    /* ==========================
+       Theme & Language Switchers
+       ==========================
+       Flex container for buttons and labels to switch
+       language and theme preferences. Includes hover
+       effects and responsive adjustments.
+    ========================= */
     &--lang-switcher,
     &--theme-switcher {
       display: flex;
@@ -114,10 +144,13 @@
     }
   }
 
-  /* ===========================
-     SECURITY SECTION
-  =========================== */
-
+  /* ==========================
+     Security Section
+     ==========================
+     Styles for security-related buttons such as password
+     change, logout, or account deletion. Includes
+     responsive layout, hover effects, and disabled states.
+  ========================= */
   &__security {
     margin-top: 3rem;
     padding: 1.5rem 0;
@@ -134,6 +167,7 @@
       padding: 3rem 0;
     }
 
+    /* Base button style */
     &--btn {
       flex: 1;
       padding: 1rem;
@@ -159,6 +193,7 @@
       }
     }
 
+    /* Secondary button variant */
     &--btnSecondary {
       background-color: transparent;
       border: 1px solid v.$azul;
@@ -170,6 +205,7 @@
       }
     }
 
+    /* Tertiary button variant */
     &--btnTerciary {
       background-color: transparent;
       border: 1px solid v.$verde;
@@ -181,6 +217,7 @@
       }
     }
 
+    /* Danger button variant */
     &--btnDanger {
       background-color: transparent;
       border: 1px solid v.$rojo;

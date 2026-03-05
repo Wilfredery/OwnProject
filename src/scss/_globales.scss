@@ -1,21 +1,47 @@
 @use 'variables' as v;
 @use 'mixins' as m;
 
+/* ===================================================
+   GLOBAL STYLES / BASE RESET
+   ===================================================
+   Sets foundational styles for HTML, body, typography,
+   images, links, main content area, and SweetAlert popups.
+   Includes responsive font sizing for mobile, tablet,
+   and desktop.
+=================================================== */
+
+/* --------------------------
+   HTML Root
+   --------------------------
+   Sets base font-size for rem calculation and box-sizing.
+*/
 html {
   font-size: 62.5%; // 1rem = 10px
   box-sizing: border-box;
   height: 100%;
 }
 
+/* --------------------------
+   Universal Box Sizing
+   --------------------------
+   Applies border-box sizing to all elements and pseudo-elements.
+*/
 *,
 *:before,
 *:after {
   box-sizing: inherit;
 }
 
+/* --------------------------
+   Body Styles
+   --------------------------
+   Sets primary font, base font-size, layout, min-height,
+   background color, and line-height. Responsive font-size
+   for tablet and desktop.
+*/
 body {
   font-family: v.$fuente_principal;
-  font-size: 1.6rem; // mobile primero
+  font-size: 1.6rem; // mobile first
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -31,21 +57,40 @@ body {
   }
 }
 
+/* --------------------------
+   Anchor Links
+   --------------------------
+   Removes default underline for all anchor tags.
+*/
 a {
   text-decoration: none;
 }
 
+/* --------------------------
+   Images
+   --------------------------
+   Makes images responsive and block-level to prevent inline gaps.
+*/
 img {
   width: 100%;
   height: auto;
   display: block;
 }
 
+/* --------------------------
+   Main Content Area
+   --------------------------
+   Flex property ensures footer stays at the bottom of the viewport.
+*/
 main {
-  flex: 1; // empuja el footer hacia abajo
+  flex: 1; // pushes footer down
 }
 
-/* SweetAlert base */
+/* --------------------------
+   SweetAlert2 Base Styles
+   --------------------------
+   Ensures popup font-size scales responsively for mobile, tablet, desktop.
+*/
 .swal2-popup {
   font-size: 1.6rem !important;
 

@@ -2,10 +2,21 @@
 @use 'mixins' as m;
 @use 'sass:color';
 
+/* ======================================================
+   REGISTER COMPONENT
+   ======================================================
+   Styles for the user registration page including
+   title, form, input fields, submit button, and
+   alternative registration options (e.g., Google login)
+====================================================== */
 .register {
-    /* =========================
-       TÍTULO
-       ========================= */
+
+    /* ======================================================
+       TITLE
+       ======================================================
+       Main title of the registration page
+       - Responsive font size for mobile and tablet
+    ====================================================== */
     &__titulo {
         font-size: 2rem;
         text-align: center;
@@ -14,12 +25,14 @@
         @include m.tablet {
             font-size: 2.4rem;
         }
-
     }
 
-    /* =========================
-       FORMULARIO
-       ========================= */
+    /* ======================================================
+       FORM
+       ======================================================
+       Registration form container and input fields
+       - Mobile-first responsive layout
+    ====================================================== */
     &__form {
         display: flex;
         flex-direction: column;
@@ -36,6 +49,7 @@
             max-width: 460px;
         }
 
+        /* Labels for nickname, email, and password */
         &--nickname, &--tituloEmail, &--passw {
             font-size: 2rem;
             font-weight: bold;
@@ -45,6 +59,7 @@
             }
         }
 
+        /* Input fields styling */
         &--input {
             font-size: 2rem;
             padding: 1rem;
@@ -62,6 +77,7 @@
             }
         }
 
+        /* Submit button styling */
         &--submit {
             background: v.$azul;
             color: v.$blanco;
@@ -85,9 +101,12 @@
         }
     }
 
-    /* =========================
-       OPCIONES
-       ========================= */
+    /* ======================================================
+       OPTIONS
+       ======================================================
+       Alternative registration options, e.g., Google login,
+       and links to create an account or navigate elsewhere
+    ====================================================== */
     &__options {
         display: flex;
         flex-direction: column;
@@ -99,24 +118,21 @@
             margin-top: 2rem;
         }
 
+        /* Google login button */
         &--google {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: .8rem;
-
             padding: 1.2rem 2rem;
             margin: 2rem 0 1rem 0;
-
             background-color: v.$blanco;
             color: v.$negro;
             border: .1rem solid v.$azul;
             border-radius: .6rem;
-
             font-size: 2rem;
             font-weight: 800;
             cursor: pointer;
-
             transition: all 0.2s ease;
 
             @include m.tablet {
@@ -138,6 +154,7 @@
             }
         }
 
+        /* Google icon before the button text */
         &--google::before {
             content: "";
             width: 1.8rem;
@@ -146,11 +163,13 @@
             background-size: cover;
         }
 
+        /* Link to create account or navigate */
         &--cuenta {
             color: v.$azul;
             text-decoration: none;
             font-size: 2rem;
             font-weight: 800;
+            margin-bottom: 2rem;
 
             &:hover {
                 text-decoration: underline;
@@ -159,11 +178,6 @@
             @include m.tablet {
                 font-size: 2.2rem;
             } 
-
-        }
-
-        &--cuenta {
-            margin-bottom: 2rem;
         }
     }
 }

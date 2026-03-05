@@ -1,4 +1,30 @@
-// src/js/auth.js
+/**
+ * ============================================================
+ *  AUTHENTICATION CORE MODULE
+ * ============================================================
+ *
+ * Central authentication controller.
+ *
+ * Responsibilities:
+ * - Guest session handling (local-only)
+ * - Firebase authentication lifecycle
+ * - Firestore user document management
+ * - Role resolution (guest / unverified / verified)
+ * - Auth actions (login, register, logout, reset, verify)
+ *
+ * Architecture:
+ * - Firebase Authentication
+ * - Firestore (users collection)
+ * - LocalStorage guest session fallback
+ *
+ * Roles:
+ * - guest        → No Firebase user
+ * - unverified   → Email/password user without verification
+ * - verified     → Google user OR verified email user
+ *
+ * ============================================================
+ */
+
 import {
   auth,
   provider,
@@ -18,11 +44,16 @@ import {
   serverTimestamp
 } from "./firebase.js";
 
-/* =========================
-   GUEST LOCAL (NO AUTH)
-========================= */
+/* ============================================================
+   GUEST SESSION (LOCAL ONLY – NO FIREBASE)
+============================================================ */
+
 const GUEST_KEY = "guest_session";
 
+/**
+ * Initializes a guest session using a random UUID.
+ * Ensures a consistent local identifier for non-auth users.
+ */
 export function initGuestSession() {
   if (!localStorage.getItem(GUEST_KEY)) {
     localStorage.setItem(GUEST_KEY, crypto.randomUUID());
@@ -30,17 +61,34 @@ export function initGuestSession() {
   return localStorage.getItem(GUEST_KEY);
 }
 
+/**
+ * Clears current guest session.
+ */
 export function clearGuestSession() {
   localStorage.removeItem(GUEST_KEY);
 }
 
+/**
+ * Returns current guest session ID.
+ */
 export function getGuestSession() {
   return localStorage.getItem(GUEST_KEY);
 }
 
-/* =========================
-   USER DOCUMENT
-========================= */
+/* ============================================================
+   USER DOCUMENT MANAGEMENT (FIRESTORE)
+============================================================ */
+
+/**
+ * Creates or updates the Firestore user document.
+ *
+ * Behavior:
+ * - If document exists → update selected fields
+ * - If document does not exist → create new record
+ *
+ * @param {Object} user - Firebase user object
+ * @param {Object} extra - Additional fields to merge
+ */
 export async function createOrUpdateUserDoc(user, extra = {}) {
   if (!user) return;
 
@@ -58,17 +106,27 @@ export async function createOrUpdateUserDoc(user, extra = {}) {
   };
 
   if (snap.exists()) {
+
+    /**
+     * Update existing document
+     * lastSeen is always refreshed
+     */
     await setDoc(
       ref,
       {
         displayName: baseData.displayName,
         photoURL: baseData.photoURL,
         email: baseData.email,
-        lastSeen: serverTimestamp(), // ✅ se actualiza siempre
+        lastSeen: serverTimestamp(),
       },
       { merge: true }
     );
+
   } else {
+
+    /**
+     * Create new user document
+     */
     await setDoc(ref, {
       ...baseData,
       createdAt: serverTimestamp(),
@@ -77,15 +135,28 @@ export async function createOrUpdateUserDoc(user, extra = {}) {
   }
 }
 
-/* =========================
-   AUTH READY (3 ESTADOS REAL)
-========================= */
+/* ============================================================
+   AUTH READY (REAL 3-STATE RESOLUTION)
+============================================================ */
+
+/**
+ * Resolves authentication state once.
+ *
+ * Returns:
+ * - { role: "guest", guestId, user: null }
+ * - { role: "unverified", user }
+ * - { role: "verified", user }
+ *
+ * Ensures:
+ * - Firestore user document is synced
+ */
 export function onAuthReady() {
   return new Promise((resolve) => {
+
     const unsub = onAuthStateChanged(auth, async (user) => {
       unsub();
 
-      /* 👤 GUEST */
+      /* 👤 Guest */
       if (!user) {
         const guestId = initGuestSession();
         return resolve({
@@ -108,18 +179,20 @@ export function onAuthReady() {
         user,
       });
     });
+
   });
 }
 
-/* =========================
+/* ============================================================
    AUTH ACTIONS
-========================= */
+============================================================ */
 
-// 📧 Registro con email
+/* 📧 Email Registration */
 export async function signUpWithEmail(email, password, nickname) {
+
   const res = await createUserWithEmailAndPassword(auth, email, password);
 
-  // 🔐 enviar verificación
+  // Send email verification
   await sendEmailVerification(res.user);
 
   await createOrUpdateUserDoc(res.user, {
@@ -133,11 +206,12 @@ export async function signUpWithEmail(email, password, nickname) {
   return res.user;
 }
 
-// 🔐 Login con email
+/* 🔐 Email Login */
 export async function signInWithEmail(email, password) {
+
   const res = await signInWithEmailAndPassword(auth, email, password);
 
-  // ✅ aquí SÍ es válido reload
+  // Force refresh user state
   await res.user.reload();
 
   await createOrUpdateUserDoc(res.user);
@@ -149,30 +223,36 @@ export async function signInWithEmail(email, password) {
   };
 }
 
-// 🔵 Login con Google
+/* 🔵 Google Login */
 export async function signInWithGoogle() {
+
   const res = await signInWithPopup(auth, provider);
-  await res.user.reload(); // 🔥 fuerza actualización completa
-  return res; //Devuelve todo el resultado para más flexibilidad (email en tokenResponse, etc)
+
+  // Force full refresh
+  await res.user.reload();
+
+  return res;
 }
 
-// 🚪 Logout
+/* 🚪 Logout */
 export async function signOutUser() {
   await signOut(auth);
   initGuestSession();
 }
 
-// 🔁 Password reset
+/* 🔁 Password Reset (request email) */
 export async function sendPasswordReset(email) {
   return sendPasswordResetEmail(auth, email);
 }
 
+/* 🔄 Confirm Password Reset */
 export async function resetPassword(oobCode, newPassword) {
   return confirmPasswordReset(auth, oobCode, newPassword);
 }
 
-// ✅ Confirmar email
+/* ✅ Confirm Email with Action Code */
 export async function confirmEmailWithCode(oobCode) {
+
   await applyActionCode(auth, oobCode);
 
   if (auth.currentUser) {
@@ -180,9 +260,10 @@ export async function confirmEmailWithCode(oobCode) {
   }
 }
 
-/* =========================
-   EXPORTS EXTRA
-========================= */
+/* ============================================================
+   EXTRA EXPORTS
+============================================================ */
+
 export {
   db,
   serverTimestamp

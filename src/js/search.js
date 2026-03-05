@@ -1,4 +1,50 @@
-// src/js/search.js
+/**
+ * ==========================================================
+ *  SEARCH+FILTER+LIST MODULE
+ * ==========================================================
+ *
+ * Description:
+ * Client-side module responsible for managing the search,
+ * filtering, sorting, pagination, and rendering of user notes.
+ *
+ * This module dynamically adapts its behavior based on the
+ * authenticated user state:
+ *
+ * - Guest users → Notes are stored and managed in localStorage.
+ * - Non-verified users → Redirected to /login.
+ * - Verified users → Notes are loaded from Firestore.
+ *
+ * Architectural Responsibilities:
+ * - Wait for authentication state resolution.
+ * - Load notes from appropriate data source.
+ * - Handle edit and delete actions.
+ * - Provide filtering (date and alphabetical).
+ * - Provide real-time search.
+ * - Handle paginated rendering.
+ * - Display localized UI feedback using SweetAlert2.
+ *
+ * Data Sources:
+ * - localStorage (guestNotes)
+ * - Firestore collection: "notes"
+ *
+ * Security Considerations:
+ * - Firestore queries are scoped by authenticated user UID.
+ * - Non-verified users are redirected before data access.
+ * - Deletion operations are scoped to user-owned documents.
+ *
+ * Performance Considerations:
+ * - Notes are loaded once and stored in memory.
+ * - Pagination limits DOM rendering to 6 items per page.
+ * - Sorting operates on in-memory dataset.
+ *
+ * Dependencies:
+ * - sweetalert2
+ * - firebase/firestore
+ * - ./auth.js
+ * - ./i18n/index.js
+ * ==========================================================
+ */
+
 import Swal from "sweetalert2";
 import { db, onAuthReady } from "./auth.js";
 import { collection, getDocs, doc, deleteDoc, query, where } from "firebase/firestore";
@@ -6,6 +52,7 @@ import { t } from "./i18n/index.js";
 
 (async function () {
   document.addEventListener("DOMContentLoaded", async () => {
+
     const searchInput = document.getElementById("search");
     const resultsContainer = document.getElementById("results");
     const paginationContainer = document.getElementById("pagination");
@@ -18,7 +65,7 @@ import { t } from "./i18n/index.js";
 
     let notes = [];
     let currentPage = 1;
-    const ITEMS_PER_PAGE = 5;
+    const ITEMS_PER_PAGE = 10;
     const userLocale = navigator.language || "es-ES";
 
     emptyState.textContent = t("loadingNotes");
@@ -26,10 +73,11 @@ import { t } from "./i18n/index.js";
 
     const authState = await onAuthReady();
 
-    /* ========================
-       GUEST NOTES
-    ======================== */
+    /* ==========================================================
+       GUEST USER FLOW (localStorage-based persistence)
+    ========================================================== */
     if (!authState || authState.role === "guest") {
+
       notes = (JSON.parse(localStorage.getItem("guestNotes")) || []).map(n => ({
         ...n,
         created_at: n.created_at ? new Date(n.created_at) : null
@@ -50,26 +98,35 @@ import { t } from "./i18n/index.js";
       return;
     }
 
-    /* ========================
-       NON-VERIFIED USER
-    ======================== */
+    /* ==========================================================
+       NON-VERIFIED USER FLOW (Access Restricted)
+    ========================================================== */
     if (authState.role !== "verified") {
       window.location.href = "/login";
       return;
     }
 
-    /* ========================
-       VERIFIED USER
-    ======================== */
+    /* ==========================================================
+       VERIFIED USER FLOW (Firestore-based persistence)
+    ========================================================== */
     const user = authState.user;
 
     const loadAuthNotes = async () => {
       const data = [];
-      const snap = await getDocs(query(collection(db, "notes"), where("uid", "==", user.uid)));
+      const snap = await getDocs(
+        query(collection(db, "notes"), where("uid", "==", user.uid))
+      );
+
       snap.forEach(d => {
         const n = d.data();
-        data.push({ id: d.id, title: n.title, content: n.content, created_at: n.created_at ? n.created_at.toDate() : null });
+        data.push({
+          id: d.id,
+          title: n.title,
+          content: n.content,
+          created_at: n.created_at ? n.created_at.toDate() : null
+        });
       });
+
       return data;
     };
 
@@ -88,22 +145,37 @@ import { t } from "./i18n/index.js";
     initFilters();
     renderNotes(notes);
 
-    /* ========================
-       UI HANDLERS
-    ======================== */
+    /* ==========================================================
+       UI INITIALIZATION
+    ========================================================== */
     function initUI({ onEdit, onDelete }) {
+
+      // Real-time search filtering
       searchInput.addEventListener("input", () => {
         const q = searchInput.value.toLowerCase();
         currentPage = 1;
-        renderNotes(notes.filter(n => n.title.toLowerCase().includes(q) || n.content.toLowerCase().includes(q)));
+
+        renderNotes(
+          notes.filter(n =>
+            n.title.toLowerCase().includes(q) ||
+            n.content.toLowerCase().includes(q)
+          )
+        );
       });
 
+      // Delegated click handling for edit/delete buttons
       resultsContainer.addEventListener("click", async e => {
-        if (e.target.classList.contains("edit-btn")) await onEdit(e.target.dataset.id);
-        if (e.target.classList.contains("delete-btn")) await onDelete(e.target.dataset.id);
+        if (e.target.classList.contains("edit-btn"))
+          await onEdit(e.target.dataset.id);
+
+        if (e.target.classList.contains("delete-btn"))
+          await onDelete(e.target.dataset.id);
       });
     }
 
+    /* ==========================================================
+       CONFIRMATION MODALS
+    ========================================================== */
     async function confirmEdit(id) {
       const res = await Swal.fire({
         title: t("askEditNote"),
@@ -113,7 +185,10 @@ import { t } from "./i18n/index.js";
         cancelButtonText: t("cancelEditNote"),
         customClass: { popup: "minimal-alert" }
       });
-      if (res.isConfirmed) window.location.href = `/editar/${id}`;
+
+      if (res.isConfirmed) {
+        window.location.href = `/editar/${id}`;
+      }
     }
 
     async function confirmDelete(id, deleteFn, isAuth = false) {
@@ -121,55 +196,94 @@ import { t } from "./i18n/index.js";
         title: t("askDelete"),
         icon: "warning",
         showCancelButton: true,
-        confirmButtonText: isAuth ? t("confirmDelete") : t("confirmDelete"),
-        cancelButtonText: isAuth ? t("cancelDelete") : t("cancelDelete"),
+        confirmButtonText: t("confirmDelete"),
+        cancelButtonText: t("cancelDelete"),
         customClass: { popup: "minimal-alert" }
       });
+
       if (!res.isConfirmed) return;
+
       await deleteFn(id);
       renderNotes(notes);
     }
 
-    /* ========================
-       FILTERS
-    ======================== */
+    /* ==========================================================
+       FILTERING & SORTING
+    ========================================================== */
     function initFilters() {
       if (!filterToggle || !filterPanel) return;
 
-      filterToggle.addEventListener("click", () => filterPanel.classList.toggle("hidden"));
-      filterOptions.forEach(btn => btn.addEventListener("click", () => {
-        sortNotes(btn.dataset.sort);
-        filterPanel.classList.add("hidden");
-      }));
+      filterToggle.addEventListener("click", () =>
+        filterPanel.classList.toggle("hidden")
+      );
+
+      filterOptions.forEach(btn =>
+        btn.addEventListener("click", () => {
+          sortNotes(btn.dataset.sort);
+          filterPanel.classList.add("hidden");
+        })
+      );
+    }
+
+      /* ==========================================================
+      NATURAL SORT FUNCTION
+      ========================================================== */
+    function naturalCompare(a, b) {
+      const ax = [];
+      const bx = [];
+
+      a.replace(/(\d+)|(\D+)/g, (_, $1, $2) => {
+        ax.push([$1 || Infinity, $2 || ""]);
+      });
+      b.replace(/(\d+)|(\D+)/g, (_, $1, $2) => {
+        bx.push([$1 || Infinity, $2 || ""]);
+      });
+
+      while (ax.length && bx.length) {
+        const an = ax.shift();
+        const bn = bx.shift();
+        const nn = (an[0] - bn[0]) || an[1].localeCompare(bn[1]);
+        if (nn) return nn;
+      }
+
+      return ax.length - bx.length;
     }
 
     function sortNotes(type) {
       switch (type) {
-        case "date-desc": notes.sort((a, b) => (b.created_at || 0) - (a.created_at || 0)); break;
-        case "date-asc": notes.sort((a, b) => (a.created_at || 0) - (b.created_at || 0)); break;
-        case "alpha-asc": notes.sort((a, b) => a.title.localeCompare(b.title)); break;
-        case "alpha-desc": notes.sort((a, b) => b.title.localeCompare(a.title)); break;
+        case "date-desc":
+          notes.sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
+          break;
+        case "date-asc":
+          notes.sort((a, b) => (a.created_at || 0) - (b.created_at || 0));
+          break;
+        case "alpha-asc":
+          notes.sort((a, b) => naturalCompare(a.title, b.title));
+          break;
+        case "alpha-desc":
+          notes.sort((a, b) => naturalCompare(b.title, a.title));
+          break;
       }
+
       currentPage = 1;
       renderNotes(notes);
     }
 
-    /* ========================
-       RENDER NOTES & PAGINATION
-    ======================== */
+    /* ==========================================================
+       PAGINATION & RENDERING
+    ========================================================== */
     function renderPagination(totalItems) {
       paginationContainer.innerHTML = "";
+
       const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
       if (totalPages <= 1) return;
 
       const MAX_VISIBLE = 10;
-
-      // Determina el bloque actual (1-10, 11-20, etc.)
       const currentBlock = Math.ceil(currentPage / MAX_VISIBLE);
       const startPage = (currentBlock - 1) * MAX_VISIBLE + 1;
       const endPage = Math.min(startPage + MAX_VISIBLE - 1, totalPages);
 
-      // ===== BOTÓN << (PRIMERA PÁGINA) =====
+      // First page button
       if (currentPage > 1) {
         const firstBtn = document.createElement("button");
         firstBtn.textContent = "<<";
@@ -181,7 +295,7 @@ import { t } from "./i18n/index.js";
         paginationContainer.appendChild(firstBtn);
       }
 
-      // ===== BOTÓN < (ANTERIOR) =====
+      // Previous button
       if (currentPage > 1) {
         const prevBtn = document.createElement("button");
         prevBtn.textContent = "<";
@@ -193,7 +307,7 @@ import { t } from "./i18n/index.js";
         paginationContainer.appendChild(prevBtn);
       }
 
-      // ===== NÚMEROS DE PÁGINA =====
+      // Page numbers
       for (let i = startPage; i <= endPage; i++) {
         const btn = document.createElement("button");
         btn.textContent = i;
@@ -208,7 +322,7 @@ import { t } from "./i18n/index.js";
         paginationContainer.appendChild(btn);
       }
 
-      // ===== BOTÓN > (SIGUIENTE) =====
+      // Next button
       if (currentPage < totalPages) {
         const nextBtn = document.createElement("button");
         nextBtn.textContent = ">";
@@ -220,11 +334,11 @@ import { t } from "./i18n/index.js";
         paginationContainer.appendChild(nextBtn);
       }
 
-      // ===== BOTÓN >> (ÚLTIMA PÁGINA) =====
+      // Last page button
       if (currentPage < totalPages) {
         const lastBtn = document.createElement("button");
-        lastBtn.classList.add("search__pagination--page-btn");
         lastBtn.textContent = ">>";
+        lastBtn.classList.add("search__pagination--page-btn");
         lastBtn.onclick = () => {
           currentPage = totalPages;
           renderNotes(notes);
@@ -244,27 +358,36 @@ import { t } from "./i18n/index.js";
       }
 
       emptyState.style.display = "none";
+
       const start = (currentPage - 1) * ITEMS_PER_PAGE;
       const end = start + ITEMS_PER_PAGE;
 
       list.slice(start, end).forEach(note => {
         const li = document.createElement("li");
         li.classList.add("note-item");
+
         li.innerHTML = `
           <div class="info">
             <h3>${note.title}</h3>
             <p>${note.content.substring(0, 60)}...</p>
-            <p class="fecha">${
-              note.created_at
-                ? `${note.created_at.toLocaleDateString(userLocale)} · ${note.created_at.toLocaleTimeString(userLocale, { hour: "2-digit", minute: "2-digit" })}`
-                : ""
-            }</p>
+            <p class="fecha">
+              ${
+                note.created_at
+                  ? `${note.created_at.toLocaleDateString(userLocale)} · 
+                     ${note.created_at.toLocaleTimeString(userLocale, {
+                       hour: "2-digit",
+                       minute: "2-digit"
+                     })}`
+                  : ""
+              }
+            </p>
           </div>
           <div class="actions">
             <button class="edit-btn" data-id="${note.id}">${t("editar")}</button>
             <button class="delete-btn" data-id="${note.id}">${t("eliminar")}</button>
           </div>
         `;
+
         resultsContainer.appendChild(li);
       });
 

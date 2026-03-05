@@ -1,6 +1,51 @@
+<!-- ==========================================================
+
+Description:
+User login page template.
+
+This view provides the interface for user authentication,
+including email/password login and Google OAuth sign-in.
+
+Responsibilities:
+- Render login form inputs.
+- Provide authentication triggers.
+- Offer navigation to password recovery and registration.
+- Support internationalization for dynamic text.
+
+Structure:
+- Includes global header and footer partials.
+- Organized using BEM naming convention.
+- Divided into:
+  1. Login form section
+  2. Alternative authentication options
+
+Client-Side Behavior:
+- Form submission triggers authentication logic (login.js).
+- Google button initiates OAuth flow (google.js).
+- Authentication state handled via auth.js and authState.js.
+- UI updates dynamically based on authentication result.
+
+Dependencies:
+- login.js
+- google.js
+- auth.js
+- authState.js
+- firebase.js
+- i18n system
+- Global bundle.min.js
+
+Security Notes:
+- Password field uses type="password" for secure input.
+- Authentication logic is handled client-side via Firebase.
+- No sensitive credentials are processed directly in this template.
+- Form uses required validation attributes.
+
+========================================================== -->
+
 <%- include('partials/header') %>
+
 <section class="login">
-  <h1 class="login__titulo" data-i18n="logintitulo">Iniciar sesión</h1>
+  <h1 class="login__titulo" data-i18n="logintitulo"></h1>
 
   <form id="login-form" class="login__form">
     <label class="login__form--tituloEmail" data-i18n="emailLogin"></label>
@@ -18,7 +63,6 @@
     <a class="login__options--crearCuenta" href="/register" data-i18n="createAcc"></a>
   </div>
 
-  
 </section>
 
 <%- include('partials/footer') %>

@@ -3,12 +3,16 @@
 @use 'sass:color';
 
 /* ======================================================
-   ACCIONES
+   ACTION BUTTONS / LAYOUT
+   ======================================================
+   Grid layout for action buttons with responsive adjustments.
+   - Mobile first: single column
+   - Tablet+: two columns with spacing
+   - Includes primary buttons: create and search
 ====================================================== */
-
 .actions {
   display: grid;
-  grid-template-columns: 1fr; // 📱 mobile
+  grid-template-columns: 1fr; // mobile first
   row-gap: 1.5rem;
   justify-items: center;
 
@@ -18,19 +22,20 @@
     row-gap: 0;
   }
 
+  /* ======================================================
+     BUTTONS
+     ======================================================
+     Styling for create and search buttons with hover effects
+     and responsive max-width handling.
+  ====================================================== */
   .create-btn,
   .search-btn {
     width: 100%;
     max-width: 30rem;
-    @include m.tablet {
-      max-width: none
-    }
-    @include m.desktop {
-      max-width: none
-    }
-    @include m.xl_desktop {
-      max-width: none
-    }
+
+    @include m.tablet { max-width: none }
+    @include m.desktop { max-width: none }
+    @include m.xl_desktop { max-width: none }
 
     @include m.boton(v.$blanco, v.$fuente-principal);
     border: 1px solid v.$azul;
@@ -46,6 +51,11 @@
   }
 }
 
+/* ======================================================
+   LOCKED BUTTON STATE
+   ======================================================
+   Visual style and behavior for disabled/locked buttons.
+====================================================== */
 .btn--locked {
   opacity: 0.5;
 
@@ -58,9 +68,11 @@
 }
 
 /* ======================================================
-   CONTENEDORES / TITULOS
+   CONTAINER BOXES / TITLES
+   ======================================================
+   Shadowed container for content blocks and titles
+   with responsive width adjustments.
 ====================================================== */
-
 .shadowbox {
   box-shadow: 0 0 14px -1px rgba(0, 0, 0, 0.75);
   @include m.contenedor-sm;
@@ -70,6 +82,7 @@
   }
 }
 
+/* Titles for recent notes and guide sections */
 .recent-notes__title,
 .guideTitle {
   text-align: center;
@@ -77,22 +90,24 @@
 }
 
 /* ======================================================
-   🧭 GUÍA
+   GUIDE CONTENT
+   ======================================================
+   Main container for step-by-step guide content
+   including media display, step navigation, and text.
 ====================================================== */
-
 .guide-content {
   max-width: 85%;
   margin: 2rem auto;
   text-align: center;
   position: relative;
   border-radius: 1rem;
-  padding: 1rem 1rem;
+  padding: 1rem;
 
   @include m.tablet {
     max-width: 95%;
   }
 
-  /* ===== STEP ===== */
+  /* Step visibility handling */
   &__step {
     display: none;
 
@@ -101,19 +116,19 @@
     }
   }
 
+  /* Step title */
   &__title {
     font-size: 2rem;
     margin-bottom: 1rem;
     min-height: 2.5rem;
   }
 
-  /* 🖼️ MEDIA — OPTIMIZADA PARA CALIDAD */
+  /* Media container with optimized display for images/videos */
   &__media {
     width: 100%;
     max-width: 700px;
     margin: 0 auto;
-
-    aspect-ratio: 16 / 9; // 🔥 evita reescalado feo
+    aspect-ratio: 16 / 9;
     border-radius: 1rem;
     cursor: zoom-in;
     overflow: hidden;
@@ -121,7 +136,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
     background: v.$blanco;
 
     @include m.tablet {
@@ -131,10 +145,8 @@
     img {
       max-width: 100%;
       max-height: 100%;
-
       width: auto;
       height: auto;
-
       object-fit: contain;
       display: block;
 
@@ -146,17 +158,18 @@
     }
 
     &:hover img {
-      transform: scale(1.02); // 🔥 micro-zoom sin blur
+      transform: scale(1.02); // subtle zoom effect without blur
     }
   }
 
+  /* Step text */
   &__text {
     font-size: 2rem;
     margin-top: 1.2rem;
     min-height: 4.5rem;
   }
 
-  /* ===== NAV ===== */
+  /* Navigation buttons for guide steps */
   &__nav {
     position: absolute;
     top: 50%;
@@ -199,6 +212,7 @@
         color: v.$blanco;
       }
 
+      /* Positioning for previous/next buttons */
       &.prev {
         transform: translateX(-40%);
 
@@ -219,18 +233,20 @@
 }
 
 /* ======================================================
-   🔍 ZOOM IMAGEN — ULTRA NÍTIDO
+   IMAGE ZOOM OVERLAY
+   ======================================================
+   Full-screen overlay for viewing images in high resolution.
+   - Centers content
+   - Handles visibility toggle
+   - Supports Retina/2K screens
 ====================================================== */
-
 .img-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.9);
   display: none;
-
   align-items: center;
   justify-content: center;
-
   z-index: 9999;
   padding: 2rem;
 
@@ -239,20 +255,16 @@
   }
 
   &__img {
-    max-width: min(90vw, 1600px); // 🔥 ideal para 2K / Retina
+    max-width: min(90vw, 1600px);
     max-height: 90vh;
-
     width: auto;
     height: auto;
-
     object-fit: contain;
     border-radius: 1rem;
     cursor: zoom-out;
-
     image-rendering: auto;
     backface-visibility: hidden;
     transform: translateZ(0);
-
     will-change: transform;
   }
 }

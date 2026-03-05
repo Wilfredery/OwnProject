@@ -1,3 +1,47 @@
+<!-- ==========================================================
+(Search Notes Page)
+
+Description:
+Template for displaying the note search interface for users.
+Allows filtering, sorting, and pagination of notes.
+Supports both guest and authenticated users with localized text.
+
+Responsibilities:
+- Provide input for searching notes by title/content.
+- Include a filter panel for sorting notes:
+  • Newest First / Oldest First
+  • Alphabetically A-Z / Z-A
+- Display search results in a paginated list.
+- Show empty state message when no results are found.
+- Handle guest and authenticated note data transparently.
+
+Structure:
+1. Search input and title
+2. Filter toggle button and hidden filter panel
+3. Empty state message placeholder
+4. Results container (ul) for notes
+5. Pagination container
+
+Client-Side Behavior:
+- Input triggers live filtering via search.js
+- Filter buttons trigger sorting without page reload
+- Pagination buttons dynamically update the displayed notes
+- Empty state displayed when the filtered list is empty
+- Supports i18n for all text and placeholders
+
+Dependencies:
+- search.js (handles search, filters, sorting, pagination)
+- auth.js and Firebase Firestore (for authenticated user notes)
+- i18n system for multi-language support
+- Global bundle.min.js
+
+Accessibility & Usability Notes:
+- Filter panel is toggled via button and visually hidden/shown
+- Buttons and inputs include clear labels for screen readers
+- Pagination ensures users can navigate large note lists efficiently
+
+========================================================== -->
+
 <%- include('partials/header') %>
 
 <section class="search">
@@ -7,13 +51,13 @@
         <input class="search__input" type="text" id="search" placeholder="Search notes..." data-i18n-placeholder="search_placeholder">
     </div>
 
-    <!-- 🟦 BOTÓN DE FILTROS -->
+    <!-- 🟦 FILTER BUTTON -->
     <div class="search__filter">
         <button id="filterToggle" class="search__filter--btn" data-i18n="filters">
             🔽 
         </button>
 
-        <!-- PANEL OCULTO -->
+        <!-- HIDDEN FILTER PANEL -->
         <div id="filterPanel" class="search__filter--panel hidden">
             <h3 data-i18n="order_by"></h3>
 
@@ -24,14 +68,13 @@
         </div>
     </div>
 
-    <p
-    id="empty-state"
-    class="no-results"
-    data-i18n="findlist"
-    >
-    </p>
+    <!-- EMPTY STATE MESSAGE -->
+    <p id="empty-state" class="no-results" data-i18n="findlist"></p>
 
+    <!-- SEARCH RESULTS -->
     <ul class="search__results" id="results"></ul>
+
+    <!-- PAGINATION -->
     <div class="search__pagination" id="pagination"></div>
 </section>
 

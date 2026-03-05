@@ -2,13 +2,25 @@
 @use 'sass:color';
 @use 'mixins' as m;
 
+/* ===================================================
+   CONFIRM COMPONENT
+   ===================================================
+   Styles for confirmation modals or messages, including
+   title, content, and actionable links/buttons. 
+   Responsive typography and spacing for mobile, tablet,
+   and desktop breakpoints.
+=================================================== */
+
 .confirm {
 
-  /* ===========================
-     TITLE
-  =========================== */
+  /* --------------------------
+     Title
+     --------------------------
+     Main title of the confirmation component.
+     Font size scales responsively for tablet devices.
+  */
   &__title {
-    font-size: 2rem; // 👈 mobile
+    font-size: 2rem; // mobile first
     text-align: center;
     margin-bottom: 1.2rem;
 
@@ -17,9 +29,12 @@
     }
   }
 
-  /* ===========================
-     CONTENT
-  =========================== */
+  /* --------------------------
+     Content / Text
+     --------------------------
+     Body text inside the confirmation component.
+     Provides spacing and responsive typography for readability.
+  */
   &__content {
     &--text {
       font-size: 2rem;
@@ -33,14 +48,18 @@
     }
   }
 
-  /* ===========================
-     LINKS / ACTIONS
-  =========================== */
+  /* --------------------------
+     Links / Action Buttons
+     --------------------------
+     Container for interactive links or buttons.
+     Flex column layout with gap spacing.
+     Max-width adjusts responsively for tablet and desktop.
+  */
   &__links {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    max-width: 100%; // 👈 mobile
+    max-width: 100%; // mobile first
     margin: 0 auto;
 
     @include m.tablet {
@@ -51,6 +70,13 @@
       max-width: 22rem;
     }
 
+    /* --------------------------
+       Individual Link / Button
+       --------------------------
+       Styles for clickable actions inside the confirmation.
+       Includes background color, typography, padding, border,
+       hover effects, and responsive scaling.
+    */
     &--link {
       background-color: v.$azul;
       color: v.$blanco;

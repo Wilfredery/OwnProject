@@ -1,4 +1,47 @@
+<!-- ==========================================================
+(User Registration Page)
+
+Description:
+Template for user registration. Allows new users to create
+an account using email/password or Google sign-in.
+
+Responsibilities:
+- Render registration form with nickname, email, and password.
+- Provide alternative registration via Google OAuth.
+- Include navigation to login page for existing users.
+- Support internationalization (i18n) for all labels and buttons.
+
+Structure:
+- Includes global header and footer partials.
+- Organized using BEM CSS naming convention.
+- Divided into:
+  1. Registration form section
+  2. Alternative login/Google options section
+
+Client-Side Behavior:
+- Form submission handled by register.js
+- Validates nickname, email, and password fields.
+- Prevents double submission.
+- Provides feedback via SweetAlert2 modals.
+- Supports logout after registration to prevent auto-login session.
+
+Dependencies:
+- register.js
+- auth.js (Firebase or backend integration)
+- Google OAuth scripts (if used)
+- i18n system
+- Global bundle.min.js
+
+Security Notes:
+- Password field uses type="password".
+- Required HTML attributes ensure basic client validation.
+- Nickname and email validated before submission.
+- Sensitive operations handled in JavaScript/backend; no password stored in template.
+
+========================================================== -->
+
 <%- include('partials/header') %>
+
 <section class="register">
   <h1 class="register__titulo" data-i18n="registerTitle"></h1>
 
@@ -20,8 +63,6 @@
     <button id="google-btn" class="register__options--google" data-i18n="googleCreate"></button>
     <a class="register__options--cuenta" href="/login" data-i18n="createExist"></a>
   </div>
-
-  
 </section>
 
 <%- include('partials/footer') %>

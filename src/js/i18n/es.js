@@ -47,6 +47,14 @@ export default {
   crear__inputContenido: "Escribe tu nota aquí...",
   crearNota: "Crear nota",
 
+  // ===== EDIT =====
+  edit_note: "Editar nota",
+  title: "Título:",
+  content: "Contenido:",
+  saveEdit: "💾 Guardar",
+  deleteEdit: "🗑 Eliminar",
+
+
   // ===== SEARCH =====
   search_placeholder: "Buscar notas...",
   findlist: "No se encontraron notas",
@@ -160,6 +168,11 @@ export default {
 
   //Validacion de google.js
   errorGoogleSignIn: "No se pudo iniciar sesión con Google",
+  emailUnable: "Correo no disponible",
+  confirmAcc: "Confirmar cuenta",
+  continue: "Continuar",
+  changeAcc: "Cambiar cuenta",
+  infoSelectAcc: "Vas a iniciar sesión con:",
 
   //validacion de crear.js
   completeFields : "Debes de completar el título y el contenido",
@@ -193,6 +206,8 @@ export default {
   stayHere: "Quedarse aquí",
   loadingTitle: "Cargando título...",
   loadingText: "Cargando contenido...",
+  edit_note: "Editar nota",
+  
 
   //validation linkconfirm.js
   textlinkUnvalid: "El enlace de verificación no es válido o ha expirado.",

@@ -1,15 +1,40 @@
-// src/js/editar.js
+/**
+ * ============================================================
+ *  EDIT NOTE MODULE
+ * ============================================================
+ *
+ * Handles note editing and deletion.
+ *
+ * Supported roles:
+ * - Guest → localStorage
+ * - Unverified → blocked with redirect
+ * - Verified → Firestore
+ *
+ * Features:
+ * - Secure ownership validation (Firestore UID check)
+ * - Loading state management
+ * - Update & Delete operations
+ * - Confirmation dialogs (SweetAlert)
+ * - i18n translation support
+ *
+ * ============================================================
+ */
+
 import Swal from "sweetalert2";
 import { db, onAuthReady } from "./auth.js";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { t } from "./i18n/index.js";
 
 (function () {
+
   document.addEventListener("DOMContentLoaded", async () => {
 
     const noteIdEl = document.getElementById("note-id");
     if (!noteIdEl) return;
 
+    /**
+     * Note identifier (injected via backend or template)
+     */
     const noteId = noteIdEl.value;
 
     const titleInput = document.getElementById("edit-title");
@@ -19,8 +44,15 @@ import { t } from "./i18n/index.js";
     const saveBtn = form.querySelector("button[type='submit']");
 
     /* ==========================================================
-       ⏳ ESTADO INICIAL
+       ⏳ INITIAL LOADING STATE
     ========================================================== */
+
+    /**
+     * Enables or disables form interaction
+     * to prevent user actions during async operations.
+     *
+     * @param {boolean} isLoading
+     */
     function setLoadingState(isLoading) {
       titleInput.disabled = isLoading;
       contentInput.disabled = isLoading;
@@ -28,20 +60,28 @@ import { t } from "./i18n/index.js";
       deleteBtn.disabled = isLoading;
     }
 
+    /**
+     * Temporary loading placeholders
+     */
     titleInput.placeholder = t("loadingTitle");
     contentInput.placeholder = t("loadingText");
     setLoadingState(true);
 
     /* ==========================================================
-       🔐 AUTH
+       🔐 AUTH RESOLUTION
     ========================================================== */
+
     const authState = await onAuthReady();
     if (!authState) return;
 
     const { role, user } = authState;
+
     const isGuest = role === "guest";
     const isUnverified = role === "unverified";
 
+    /**
+     * Block unverified users
+     */
     if (isUnverified) {
       await Swal.fire({
         icon: "info",
@@ -55,18 +95,33 @@ import { t } from "./i18n/index.js";
     }
 
     /* ==========================================================
-       🔥 LOAD NOTE
+       🔥 LOAD NOTE (Role-based)
     ========================================================== */
+
+    /**
+     * Loads note depending on role.
+     * - Guest → localStorage
+     * - Verified → Firestore
+     *
+     * Includes ownership validation for Firestore notes.
+     */
     async function loadNote() {
+
       if (isGuest) {
         const notes = JSON.parse(localStorage.getItem("guestNotes")) || [];
         return notes.find(n => n.id === noteId) || null;
       }
 
       const snap = await getDoc(doc(db, "notes", noteId));
+
       if (!snap.exists()) return null;
 
       const data = snap.data();
+
+      /**
+       * Security check:
+       * Prevent editing notes that don't belong to the user
+       */
       if (data.uid !== user.uid) return null;
 
       return { id: snap.id, ...data };
@@ -74,6 +129,9 @@ import { t } from "./i18n/index.js";
 
     const note = await loadNote();
 
+    /**
+     * If note not found or unauthorized
+     */
     if (!note) {
       await Swal.fire({
         icon: "error",
@@ -87,8 +145,9 @@ import { t } from "./i18n/index.js";
     }
 
     /* ==========================================================
-       ✅ NOTA LISTA
+       ✅ NOTE READY
     ========================================================== */
+
     titleInput.value = note.title;
     contentInput.value = note.content;
 
@@ -97,14 +156,19 @@ import { t } from "./i18n/index.js";
     setLoadingState(false);
 
     /* ==========================================================
-       ✏️ UPDATE
+       ✏️ UPDATE NOTE
     ========================================================== */
+
     form.addEventListener("submit", async (e) => {
+
       e.preventDefault();
 
       const title = titleInput.value.trim();
       const content = contentInput.value.trim();
 
+      /**
+       * Basic validation
+       */
       if (!title) {
         Swal.fire({
           icon: "warning",
@@ -119,16 +183,27 @@ import { t } from "./i18n/index.js";
       setLoadingState(true);
 
       try {
+
         if (isGuest) {
+          /**
+           * Update localStorage note
+           */
           let notes = JSON.parse(localStorage.getItem("guestNotes")) || [];
           notes = notes.map(n =>
             n.id === noteId ? { ...n, title, content } : n
           );
           localStorage.setItem("guestNotes", JSON.stringify(notes));
+
         } else {
+          /**
+           * Update Firestore document
+           */
           await updateDoc(doc(db, "notes", noteId), { title, content });
         }
 
+        /**
+         * Success confirmation
+         */
         const result = await Swal.fire({
           icon: "success",
           title: t("updatedNote"),
@@ -144,7 +219,7 @@ import { t } from "./i18n/index.js";
         }
 
       } catch (err) {
-        console.error(err);
+        // console.error(err);
         Swal.fire({
           icon: "error",
           title: t("updatedError"),
@@ -158,10 +233,14 @@ import { t } from "./i18n/index.js";
     });
 
     /* ==========================================================
-       🗑️ DELETE
+       🗑️ DELETE NOTE
     ========================================================== */
+
     deleteBtn.addEventListener("click", async () => {
 
+      /**
+       * Confirmation dialog
+       */
       const result = await Swal.fire({
         title: t("askDelete"),
         text: t("textAskDelete"),
@@ -177,11 +256,19 @@ import { t } from "./i18n/index.js";
       setLoadingState(true);
 
       try {
+
         if (isGuest) {
+          /**
+           * Delete from localStorage
+           */
           let notes = JSON.parse(localStorage.getItem("guestNotes")) || [];
           notes = notes.filter(n => n.id !== noteId);
           localStorage.setItem("guestNotes", JSON.stringify(notes));
+
         } else {
+          /**
+           * Delete from Firestore
+           */
           await deleteDoc(doc(db, "notes", noteId));
         }
 
@@ -198,7 +285,7 @@ import { t } from "./i18n/index.js";
         }, 1500);
 
       } catch (err) {
-        console.error(err);
+        // console.error(err);
         Swal.fire({
           icon: "error",
           title: t("errorDelete"),
@@ -211,4 +298,5 @@ import { t } from "./i18n/index.js";
     });
 
   });
+
 })();

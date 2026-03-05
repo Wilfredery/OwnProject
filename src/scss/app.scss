@@ -1,3 +1,36 @@
+/* ======================================================
+   MAIN SCSS ENTRY POINT
+   ======================================================
+   This file imports all SCSS modules for the project.
+   It serves as the central entry point for compilation 
+   and ensures consistent styling across the application.
+
+   Modules included:
+
+   - normalize: CSS reset and browser normalization
+   - variables: project-wide SCSS variables (colors, fonts, breakpoints)
+   - main: base styles for the project
+   - globales: global layout and utility styles
+   - mixins: reusable SCSS mixins
+   - menuHamburguesa: hamburger menu styles
+   - header: site header styles
+   - footer: site footer styles
+   - accountSett: account & settings styles
+   - dark: dark theme styles
+   - search: search page and component styles
+   - sweetAlert: custom SweetAlert styles
+   - crear: create form/page styles
+   - editar: edit form/page styles
+   - login: login page styles
+   - register: registration page styles
+   - olvidar: forgot password page styles
+   - password: password reset page styles
+   - linkconfirm: confirmation link page styles
+
+   Notes:
+   - The order of imports matters for proper variable and mixin usage.
+   - All modules follow a mobile-first responsive approach.
+====================================================== */
 @use 'normalize';
 @use 'variables';
 @use "main";

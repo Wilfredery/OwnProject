@@ -4,7 +4,7 @@ const webpack = require("webpack");
 require("dotenv").config(); // Load environment variables from .env
 
 module.exports = {
-  mode: "development", // Set Webpack mode to development
+  mode: "production", // Set Webpack mode to production
 
   // 🔴 IMPORTANT: Use relative path for entry
   entry: "./src/js/app.js", // Entry point for JS bundling

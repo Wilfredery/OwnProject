@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "build": "webpack --config webpack.config.cjs",
     "start-server": "nodemon backend/server.js",
     "gulp": "gulp --gulpfile gulpfile.cjs",
     "images": "node scripts/images.cjs",

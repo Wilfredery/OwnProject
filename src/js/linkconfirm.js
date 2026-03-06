@@ -49,8 +49,7 @@ import { t } from "./i18n/index.js";
   if (!oobCode) {
     Swal.fire({
       icon: "error",
-      title: t("linkUnvalid"),
-      text: t("textlinkUnvalid"),
+      title: t("errorlink"),
       customClass: { popup: "minimal-alert" }
     });
     return;
@@ -108,10 +107,10 @@ import { t } from "./i18n/index.js";
        * Handle specific Firebase error codes
        */
       if (error?.code === "auth/invalid-action-code") {
-        message = t("invalidLink");
+        message = t("errorlink");
 
       } else if (error?.code === "auth/expired-action-code") {
-        message = t("expiredLink");
+        message = t("errorlink");
       }
 
       Swal.fire({

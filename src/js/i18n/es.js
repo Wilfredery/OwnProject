@@ -19,6 +19,7 @@ export default {
   search_notes: "¡Busca tus notas!",
   check_notes: "¡Revisa las notas que ya has hecho aquí abajo!👇",
   footer_text: " Todos los derechos reservados",
+  dev: "Desarrollado por",
   titleplsverifyemail: "Correo no verificado",
   plsverifyemail: "Por favor verifica tu correo para crear y buscar notas.",
   confirmplsverifyemail: "Entendido",

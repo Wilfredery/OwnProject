@@ -15,6 +15,7 @@
   grid-template-columns: 1fr; // mobile first
   row-gap: 1.5rem;
   justify-items: center;
+  margin: 0 2rem;
 
   @include m.tablet {
     grid-template-columns: repeat(2, 1fr);
@@ -22,12 +23,40 @@
     row-gap: 0;
   }
 
+  /* ===== GRID ORDER FIX ===== */
+
+  h2:nth-of-type(1) {
+    @include m.tablet {
+      grid-column: 1;
+      grid-row: 1;
+    }
+  }
+
+  .create-btn {
+    @include m.tablet {
+      grid-column: 1;
+      grid-row: 2;
+    }
+  }
+
+  h2:nth-of-type(2) {
+    @include m.tablet {
+      grid-column: 2;
+      grid-row: 1;
+    }
+  }
+
+  .search-btn {
+    @include m.tablet {
+      grid-column: 2;
+      grid-row: 2;
+    }
+  }
+
   /* ======================================================
      BUTTONS
-     ======================================================
-     Styling for create and search buttons with hover effects
-     and responsive max-width handling.
   ====================================================== */
+
   .create-btn,
   .search-btn {
     width: 100%;
@@ -165,8 +194,14 @@
   /* Step text */
   &__text {
     font-size: 2rem;
-    margin-top: 1.2rem;
+    
+    margin: 1rem 2rem;
     min-height: 4.5rem;
+
+    @include m.tablet {
+      font-size: 2.3rem;
+      margin-top: 1.5rem;
+    }
   }
 
   /* Navigation buttons for guide steps */

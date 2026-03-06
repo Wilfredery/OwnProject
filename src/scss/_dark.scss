@@ -112,7 +112,7 @@ body.dark {
     &__texto,
     &__year { color: v.$gris-claro; }
 
-    .linkdln a {
+    .linkdln, .linkdln__title, a {
       color: v.$blanco;
 
       &:hover { color: v.$azul; }

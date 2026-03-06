@@ -21,7 +21,7 @@
   background-color: v.$azul;
   color: v.$blanco;
   font-weight: 700;
-  margin-top: 3rem; 
+  margin-top: 3rem;
   text-align: center;
   font-size: 1.6rem;
 
@@ -71,12 +71,24 @@
      Includes hover color and transform effects.
   ========================= */
   .linkdln {
+
     a {
       color: v.$negro;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       transition: color 0.3s ease, transform 0.2s ease;
+      margin-bottom: 1rem;
+      
+      .linkdln__title{
+        font-size: 1.3rem;
+        margin-right: .3rem;
+        color: v.$negro;
+
+        @include m.tablet {
+          font-size: 1.2rem;
+        }
+      }
 
       &:hover {
         color: color.scale(v.$blanco, $lightness: -20%);
@@ -88,6 +100,7 @@
 
         @include m.tablet {
           font-size: 2.5rem;
+          margin-bottom: -2rem;
         }
       }
     }

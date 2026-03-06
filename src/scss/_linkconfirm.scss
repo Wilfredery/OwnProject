@@ -63,11 +63,7 @@
     margin: 0 auto;
 
     @include m.tablet {
-      max-width: 20rem;
-    }
-
-    @include m.desktop {
-      max-width: 22rem;
+      max-width: 30rem;
     }
 
     /* --------------------------

@@ -36,9 +36,10 @@
     &__form {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: 1.4rem;
         max-width: 100%;
         margin: 0 auto;
+        padding: 0 1.6rem;
 
         @include m.tablet {
             max-width: 420px;

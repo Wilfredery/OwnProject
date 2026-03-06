@@ -19,6 +19,7 @@ export default {
   search_notes: "Search your notes!",
   check_notes: "Check the notes you’ve already made down bellow!👇",
   footer_text: " All rights reserved",
+  dev: "Developed by",
   titleplsverifyemail: "Email not verified",
   plsverifyemail: "Please verify your email to create and search notes.",
   confirmplsverifyemail: "Understood",
@@ -212,7 +213,6 @@ export default {
       loadingTitle: "Loading title...",
       loadingText: "Loading content...",
       
-
 
       //validation linkconfirm.js
       textlinkUnvalid: "The verification link is not valid or has expired.",

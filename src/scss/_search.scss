@@ -143,6 +143,7 @@
       .actions {
         display: flex;
         flex-direction: row; // Mobile
+        justify-content: space-between;
         gap: 1rem;
 
         @include m.tablet {
@@ -199,6 +200,7 @@
       border: .1rem solid v.$azul;
       border-radius: .6rem;
       font-weight: 600;
+      margin: 1rem 0;
       cursor: pointer;
 
       &:hover {
@@ -230,7 +232,8 @@
     }
 
     &--option {
-      padding: .8rem;
+      padding: 1rem;
+      margin: 1rem 0;
       border: .1rem solid v.$azul;
       border-radius: .6rem;
       font-weight: 600;
@@ -250,11 +253,15 @@
   ====================================================== */
   &__pagination {
     display: flex;
+    max-width: 100%;
     justify-content: center;
+    flex-wrap: wrap; //allow you to wrap the buttons on smaller screens
     gap: .8rem;
     margin-top: 2rem;
 
     &--page-btn {
+      min-width: 3.6rem;
+      text-align: center;
       padding: .6rem 1.2rem;
       border: 1px solid v.$azul;
       background-color: v.$blanco;

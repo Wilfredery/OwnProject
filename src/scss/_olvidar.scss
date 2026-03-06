@@ -39,6 +39,7 @@
     gap: 1rem;
     max-width: 100%; // mobile
     margin: 0 auto;
+    padding: 0 1.6rem;
 
     @include m.tablet {
       max-width: 400px;

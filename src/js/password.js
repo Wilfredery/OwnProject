@@ -1,6 +1,6 @@
 /**
  * ==========================================================
- *  FORGOT PW MODULE
+ *  PASSWORD RESET MODULE
  * ==========================================================
  *
  * Description:
@@ -40,43 +40,28 @@
  */
 
 import Swal from "sweetalert2";
-import { resetPassword } from "./auth.js";
+import { resetPassword, checkPasswordResetCode } from "./auth.js";
 import { t } from "./i18n/index.js";
 
 (function () {
-  document.addEventListener("DOMContentLoaded", () => {
-    /**
-     * Main reset form element.
-     * If not present, script safely exits.
-     */
+
+  document.addEventListener("DOMContentLoaded", async () => {
+
     const form = document.getElementById("reset-form");
     if (!form) return;
 
-    /**
-     * Password input fields.
-     */
     const passInput = document.getElementById("reset-password");
     const confirmInput = document.getElementById("reset-password-confirm");
-
-    /**
-     * Submit button reference (used to disable during processing).
-     */
     const submitBtn = form.querySelector("button[type='submit']");
 
-    /**
-     * Out-of-band code provided by backend template.
-     * Required to validate password reset request.
-     */
     const oobCode = window.__OOB_CODE__;
 
-    /**
-     * Flag to prevent multiple submissions.
-     */
     let isSubmitting = false;
 
-    /**
-     * If reset link is invalid or expired, show error and stop execution.
-     */
+    /* ======================================================
+       VALIDATE RESET CODE BEFORE ALLOWING PASSWORD CHANGE
+    ====================================================== */
+
     if (!oobCode) {
       Swal.fire({
         icon: "error",
@@ -87,21 +72,35 @@ import { t } from "./i18n/index.js";
       return;
     }
 
-    /**
-     * Form submission handler.
-     */
+    try {
+
+      // 🔒 Verify reset code with Firebase
+      await checkPasswordResetCode(oobCode);
+
+    } catch (error) {
+
+      Swal.fire({
+        icon: "error",
+        title: t("linkUnvalid"),
+        text: t("linkExpired"),
+        customClass: { popup: "minimal-alert" }
+      });
+
+      return;
+    }
+
+    /* ======================================================
+       FORM SUBMISSION
+    ====================================================== */
+
     form.addEventListener("submit", async (e) => {
+
       e.preventDefault();
       if (isSubmitting) return;
 
       const password = passInput.value.trim();
       const confirmPassword = confirmInput.value.trim();
 
-      /**
-       * Client-side validation before calling authentication service.
-       */
-
-      // Required fields validation
       if (!password || !confirmPassword) {
         Swal.fire({
           icon: "warning",
@@ -113,7 +112,6 @@ import { t } from "./i18n/index.js";
         return;
       }
 
-      // Minimum password length validation
       if (password.length < 6) {
         Swal.fire({
           icon: "error",
@@ -125,7 +123,6 @@ import { t } from "./i18n/index.js";
         return;
       }
 
-      // Password confirmation validation
       if (password !== confirmPassword) {
         Swal.fire({
           icon: "error",
@@ -138,20 +135,12 @@ import { t } from "./i18n/index.js";
       }
 
       try {
-        /**
-         * Lock submission state.
-         */
+
         isSubmitting = true;
         if (submitBtn) submitBtn.disabled = true;
 
-        /**
-         * Execute secure password reset.
-         */
         await resetPassword(oobCode, password);
 
-        /**
-         * Success feedback.
-         */
         Swal.fire({
           icon: "success",
           title: t("passUpdated"),
@@ -164,26 +153,22 @@ import { t } from "./i18n/index.js";
 
         form.reset();
 
-        /**
-         * Redirect to login page after successful reset.
-         */
         window.location.href = "/login";
 
       } catch (error) {
-        // console.error("Reset password error:", error);
 
-        /**
-         * Default fallback message.
-         */
         let message = t("passWCantBeChanged");
 
-        /**
-         * Specific Firebase error handling.
-         */
         if (error.code === "auth/expired-action-code") {
           message = t("linkExpired");
-        } else if (error.code === "auth/invalid-action-code") {
+        }
+
+        else if (error.code === "auth/invalid-action-code") {
           message = t("linkUnvalid");
+        }
+
+        else if (error.code === "auth/user-disabled") {
+          message = t("accountDisabled");
         }
 
         Swal.fire({
@@ -194,12 +179,14 @@ import { t } from "./i18n/index.js";
         });
 
       } finally {
-        /**
-         * Restore submission state.
-         */
+
         isSubmitting = false;
         if (submitBtn) submitBtn.disabled = false;
+
       }
+
     });
+
   });
+
 })();

@@ -215,6 +215,7 @@ export default {
   emailVerified: "Correo verificado ✅",
   textEmailVerified: "Tu correo ha sido verificado correctamente",
   errorlink : "El enlace es inválido o ya fue utilizado",
+  manualVerificationButton: "Haz clic aquí para completar la verificación",
 
   //Validation de search.js
   askEditNote: "¿Editar nota?",

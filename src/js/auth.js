@@ -37,7 +37,9 @@ import {
   onAuthStateChanged,
   sendEmailVerification,
   confirmPasswordReset,
+  verifyPasswordResetCode,
   applyActionCode,
+  checkActionCode,
   doc,
   setDoc,
   getDoc,
@@ -258,6 +260,20 @@ export async function confirmEmailWithCode(oobCode) {
   if (auth.currentUser) {
     await auth.currentUser.reload();
   }
+}
+
+/**
+ * 🔎 Verify that the email action code is still valid
+ */
+export async function checkEmailActionCode(oobCode) {
+  return checkActionCode(auth, oobCode);
+}
+
+/**
+ * 🔎 Verify that the password reset action code is still valid
+ */
+export async function checkPasswordResetCode(oobCode) {
+  return verifyPasswordResetCode(auth, oobCode);
 }
 
 /* ============================================================

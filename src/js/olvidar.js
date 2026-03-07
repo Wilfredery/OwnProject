@@ -38,7 +38,6 @@ import { t } from "./i18n/index.js";
 
     /**
      * Prevent duplicate listener attachment
-     * (safety in case of re-rendering).
      */
     if (form.dataset.listenerAttached === "true") return;
     form.dataset.listenerAttached = "true";
@@ -47,43 +46,34 @@ import { t } from "./i18n/index.js";
     const submitBtn = form.querySelector("button[type='submit']");
     let isSubmitting = false;
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     /* ======================================================
        RATE LIMIT CONFIGURATION
     ====================================================== */
 
-    const SHORT_COOLDOWN = 30;      // seconds between attempts
-    const MAX_ATTEMPTS = 2;         // max attempts per window
-    const WINDOW_MINUTES = 15;      // rolling time window
+    const SHORT_COOLDOWN = 30;
+    const MAX_ATTEMPTS = 2;
+    const WINDOW_MINUTES = 15;
     const STORAGE_KEY = "forgotPasswordAttempts";
 
-    /**
-     * Retrieve stored attempt timestamps.
-     */
     function getAttempts() {
       const data = localStorage.getItem(STORAGE_KEY);
       return data ? JSON.parse(data) : [];
     }
 
-    /**
-     * Save attempt timestamps.
-     */
     function saveAttempts(attempts) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(attempts));
     }
 
-    /**
-     * Remove attempts outside time window.
-     */
     function cleanOldAttempts(attempts) {
       const windowMs = WINDOW_MINUTES * 60 * 1000;
       const now = Date.now();
       return attempts.filter(ts => now - ts < windowMs);
     }
 
-    /**
-     * Calculate remaining short cooldown time.
-     */
     function getShortCooldownRemaining(attempts) {
+
       if (attempts.length === 0) return 0;
 
       const lastAttempt = attempts[attempts.length - 1];
@@ -102,21 +92,22 @@ import { t } from "./i18n/index.js";
 
       e.preventDefault();
       if (isSubmitting) return;
-      isSubmitting = true;
 
       const email = emailInput.value.trim();
 
       /* ======================================================
-         BASIC EMAIL VALIDATION
+         EMAIL VALIDATION
       ====================================================== */
 
-      if (!email || !email.includes("@")) {
+      if (!email || !emailRegex.test(email)) {
+
         Swal.fire({
           icon: "warning",
           title: t("requiredEmail"),
           text: t("writeEmail"),
           customClass: { popup: "minimal-alert" }
         });
+
         emailInput.focus();
         return;
       }
@@ -125,47 +116,49 @@ import { t } from "./i18n/index.js";
       attempts = cleanOldAttempts(attempts);
 
       /* ======================================================
-         EXTENDED LIMIT CHECK (WINDOW CONTROL)
+         WINDOW LIMIT CHECK
       ====================================================== */
 
       if (attempts.length >= MAX_ATTEMPTS) {
+
         Swal.fire({
           icon: "warning",
           title: t("titleSecurity"),
           text: t("textSecurity"),
           customClass: { popup: "minimal-alert" }
         });
+
         return;
       }
 
       /* ======================================================
-         SHORT COOLDOWN CHECK (ANTI-SPAM)
+         SHORT COOLDOWN CHECK
       ====================================================== */
 
       const remaining = getShortCooldownRemaining(attempts);
 
       if (remaining > 0) {
+
         Swal.fire({
           icon: "info",
           title: t("emailSent"),
           text: t("retrySpam").replace("${remaining}", remaining),
           customClass: { popup: "minimal-alert" }
         });
+
         return;
       }
 
       try {
 
+        isSubmitting = true;
         if (submitBtn) submitBtn.disabled = true;
 
         /**
-         * Trigger Firebase password reset email.
+         * Send password reset email
          */
         await sendPasswordReset(email);
 
-        /**
-         * Store successful attempt timestamp.
-         */
         attempts.push(Date.now());
         saveAttempts(attempts);
 
@@ -180,8 +173,6 @@ import { t } from "./i18n/index.js";
         form.reset();
 
       } catch (error) {
-
-        // console.error("Reset password error:", error.code);
 
         let message = t("errorForgot");
 

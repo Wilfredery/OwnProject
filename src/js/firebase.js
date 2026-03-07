@@ -40,7 +40,9 @@ import {
   onAuthStateChanged,
   sendEmailVerification,
   confirmPasswordReset,
-  applyActionCode
+  verifyPasswordResetCode,
+  applyActionCode,
+  checkActionCode
 } from "firebase/auth";
 
 import {
@@ -128,7 +130,9 @@ export {
   sendEmailVerification,
   onAuthStateChanged,
   confirmPasswordReset,
+  verifyPasswordResetCode,
   applyActionCode,
+  checkActionCode,
 
   /* --------------------
      FIRESTORE METHODS

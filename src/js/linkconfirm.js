@@ -1,52 +1,49 @@
 /**
  * ============================================================
- *  EMAIL VERIFICATION CONFIRMATION MODULE
+ *  EMAIL VERIFICATION CONFIRMATION MODULE (PRO VERSION)
  * ============================================================
  *
  * Handles verification links sent by Firebase.
  *
- * Responsibilities:
- * - Validate presence of action code (oobCode)
- * - Execute email confirmation
- * - Prevent double execution
- * - Handle Firebase error codes gracefully
- * - Redirect safely after success
- *
- * Runs only on confirm page (confirm.ejs).
- *
- * Security:
- * - Uses window.location.replace to prevent
- *   returning to confirmation page via back button.
+ * Improvements:
+ * - Validates action mode from URL
+ * - Verifies action code before applying it
+ * - Prevents bots or prefetch from consuming code
+ * - Handles additional Firebase errors
+ * - Provides safer UX feedback
  *
  * ============================================================
  */
 
 import Swal from "sweetalert2";
-import { confirmEmailWithCode } from "./auth.js";
+import {
+  confirmEmailWithCode,
+  checkEmailActionCode
+} from "./auth.js";
 import { t } from "./i18n/index.js";
 
 (function () {
 
-  /**
-   * Ensure script runs only on confirmation page.
-   */
   const confirmTitle = document.querySelector(".confirm__title");
-  let alreadyHandled = false;
-
-  // ⛔ Exit if not on confirmation page
   if (!confirmTitle) return;
 
+  const verifyBtn = document.getElementById("verify-email-btn");
+  if (!verifyBtn) return;
+
+  let alreadyHandled = false;
+
   /**
-   * Action code injected from backend/template.
-   * Required for Firebase email verification.
+   * Action code injected from backend
    */
   const oobCode = window.__OOB_CODE__;
 
-  /* ==========================================================
-     ❌ INVALID OR MISSING LINK
-  ========================================================== */
+  /**
+   * Validate mode from URL
+   */
+  const params = new URLSearchParams(window.location.search);
+  const mode = params.get("mode");
 
-  if (!oobCode) {
+  if (!oobCode || mode !== "verifyEmail") {
     Swal.fire({
       icon: "error",
       title: t("errorlink"),
@@ -56,22 +53,27 @@ import { t } from "./i18n/index.js";
   }
 
   /* ==========================================================
-     🔐 SINGLE EXECUTION PROTECTION
+     🔐 USER TRIGGERED VERIFICATION
   ========================================================== */
 
-  /**
-   * Immediately invoked async function
-   * to handle confirmation once.
-   */
-  (async () => {
+  verifyBtn.addEventListener("click", async () => {
 
     if (alreadyHandled) return;
+
     alreadyHandled = true;
+    verifyBtn.disabled = true;
 
     try {
 
       /**
-       * Confirm email using Firebase action code
+       * STEP 1
+       * Validate action code before applying
+       */
+      await checkEmailActionCode(oobCode);
+
+      /**
+       * STEP 2
+       * Apply verification
        */
       await confirmEmailWithCode(oobCode);
 
@@ -89,27 +91,21 @@ import { t } from "./i18n/index.js";
       });
 
       /**
-       * Redirect securely to login page
-       * (prevents navigating back to confirmation page)
+       * Secure redirect
        */
       window.location.replace("/login");
 
     } catch (error) {
 
-      // console.error("Confirm email error:", error);
-
-      /**
-       * Default error message
-       */
       let message = t("errorlink");
 
-      /**
-       * Handle specific Firebase error codes
-       */
       if (error?.code === "auth/invalid-action-code") {
         message = t("errorlink");
 
       } else if (error?.code === "auth/expired-action-code") {
+        message = t("errorlink");
+
+      } else if (error?.code === "auth/user-disabled") {
         message = t("errorlink");
       }
 
@@ -119,8 +115,11 @@ import { t } from "./i18n/index.js";
         text: message,
         customClass: { popup: "minimal-alert" }
       });
+
+      verifyBtn.disabled = false;
+      alreadyHandled = false;
     }
 
-  })();
+  });
 
 })();

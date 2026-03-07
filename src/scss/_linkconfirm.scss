@@ -55,18 +55,16 @@
      Flex column layout with gap spacing.
      Max-width adjusts responsively for tablet and desktop.
   */
-  &__links {
+  &__actions {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
-    max-width: 100%; // mobile first
+    gap: 1.5rem;
+    max-width: 95%;
     margin: 0 auto;
+  }
 
-    @include m.tablet {
-      max-width: 30rem;
-    }
-
+  &__links {
     /* --------------------------
        Individual Link / Button
        --------------------------
@@ -74,6 +72,7 @@
        Includes background color, typography, padding, border,
        hover effects, and responsive scaling.
     */
+    
     &--link {
       background-color: v.$azul;
       color: v.$blanco;
@@ -85,7 +84,8 @@
       text-transform: uppercase;
       font-weight: 800;
       transition: background-color 0.2s ease;
-      margin-top: 1.5rem;
+      margin: 1.5rem 0 1rem 0;
+      max-width: 70rem;
 
       @include m.tablet {
         font-size: 2.3rem;

@@ -7,7 +7,7 @@ Designed with clean architecture, modular structure, and production-ready practi
 
 ## Demo
 
-![MyNotes Demo](./demo/mynotes-demo.gif)
+![MyNotes Demo](./demo/MyNotes-demo.gif)
 
 ---
 

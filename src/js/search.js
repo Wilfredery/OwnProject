@@ -150,17 +150,50 @@ import { t } from "./i18n/index.js";
     ========================================================== */
     function initUI({ onEdit, onDelete }) {
 
-      // Real-time search filtering
+      // Real-time search filtering (PRO search ranking)
       searchInput.addEventListener("input", () => {
-        const q = searchInput.value.toLowerCase();
+
+        const q = searchInput.value.toLowerCase().trim();
         currentPage = 1;
 
-        renderNotes(
-          notes.filter(n =>
-            n.title.toLowerCase().includes(q) ||
-            n.content.toLowerCase().includes(q)
-          )
-        );
+        if (!q) {
+          renderNotes(notes);
+          return;
+        }
+
+        const startsWith = [];
+        const titleContains = [];
+        const contentContains = [];
+
+        for (const note of notes) {
+
+          const title = note.title.toLowerCase();
+          const content = note.content.toLowerCase();
+
+          if (title.startsWith(q)) {
+            startsWith.push(note);
+            continue;
+          }
+
+          if (title.includes(q)) {
+            titleContains.push(note);
+            continue;
+          }
+
+          if (content.includes(q)) {
+            contentContains.push(note);
+          }
+
+        }
+
+        const results = [
+          ...startsWith,
+          ...titleContains,
+          ...contentContains
+        ];
+
+        renderNotes(results);
+
       });
 
       // Delegated click handling for edit/delete buttons

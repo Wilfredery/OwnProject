@@ -5,6 +5,10 @@ It allows users to securely create, manage, organize, and store notes with authe
 
 Designed with clean architecture, modular structure, and production-ready practices, this project demonstrates strong backend fundamentals, modern frontend tooling, and security-conscious implementation.
 
+## Demo
+
+![MyNotes Demo](./demo/mynotes-demo.gif)
+
 ---
 
 ## 🚀 Live Overview

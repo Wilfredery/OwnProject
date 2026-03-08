@@ -141,19 +141,18 @@ import { t } from "./i18n/index.js";
 
         await resetPassword(oobCode, password);
 
-        Swal.fire({
+        await Swal.fire({
           icon: "success",
           title: t("passUpdated"),
           text: t("passProcessed"),
-          timer: 4000,
-          showConfirmButton: false,
+          confirmButtonText: "OK",
           allowOutsideClick: false,
           customClass: { popup: "minimal-alert" }
         });
 
         form.reset();
 
-        window.location.href = "/login";
+        window.location.replace("/login");
 
       } catch (error) {
 
